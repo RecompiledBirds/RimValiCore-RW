@@ -61,7 +61,10 @@ namespace RVCRestructured.RVR
                     }
                 }
             }
+            this.comps.Add(new RVRCP());
             base.PostLoad();
         }
+
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RVCRestructured.Defs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,7 @@ namespace RVCRestructured.RVR
     {
         public bool hasHair = false;
         public List<RaceColors> colorGenerators = new List<RaceColors>();
+        public List<RenderableDef> renderableDefs = new List<RenderableDef>();
         public string skinColorSet;
 
         public string bodyTex;

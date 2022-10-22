@@ -11,7 +11,7 @@ namespace RVCRestructured.Defs
     /// <summary>
     /// Used to render the graphics of a pawn into the world.
     /// </summary>
-    public class RenderableDef
+    public class RenderableDef : Def
     {
         public List<BaseTex> textures = new List<BaseTex>();
 
@@ -20,6 +20,7 @@ namespace RVCRestructured.Defs
         public BodyPartGraphicPos south;
         public BodyPartGraphicPos north;
 
+        public RenderableDef linkWith;
         public BodyPartGraphicPos GetPos(Pawn pawn)
         {
             if (west == null)

@@ -59,12 +59,10 @@ namespace RVCRestructured.Graphics
                 {
                     material.renderQueue = req.renderQueue;
                 }
-                if (!req.shaderParameters.NullOrEmpty())
+                int c = req.shaderParameters.Count;
+                for (int i = 0; i < c; i++)
                 {
-                    for (int i = 0; i < req.shaderParameters.Count; i++)
-                    {
-                        req.shaderParameters[i].Apply(material);
-                    }
+                    req.shaderParameters[i].Apply(material);
                 }
                 matDictionary.Add(req, material);
                 if (req.shader == ShaderDatabase.CutoutPlant || req.shader == ShaderDatabase.TransparentPlant)
