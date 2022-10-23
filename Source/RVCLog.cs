@@ -16,8 +16,11 @@ namespace RimValiCore_RW.Source
     }
     public static class RVCLog
     {
-        public static void Log(object o, RVCLogType type = RVCLogType.Message)
+        public static void Log(object o, RVCLogType type = RVCLogType.Message,bool log =true)
         {
+            //Used for some conditional logging.
+            if (!log)
+                return;
             switch (type)
             {
                 case RVCLogType.Message:

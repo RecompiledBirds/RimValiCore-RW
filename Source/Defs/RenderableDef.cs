@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RimValiCore_RW.Source;
+using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,6 +23,27 @@ namespace RVCRestructured.Defs
         public BodyPartGraphicPos north;
 
         public RenderableDef linkWith;
+
+        public bool showsInBed = true;
+
+        public string bodyPart;
+        public override IEnumerable<string> ConfigErrors()
+        {
+            RVCLog.Log($"{defName} has a null east GraphicPos.", RVCLogType.Error,east==null);
+            RVCLog.Log($"{defName} has a null south GraphicPos.", RVCLogType.Error, south == null);
+            RVCLog.Log($"{defName} has a null north GraphicPos.", RVCLogType.Error, north == null);
+            RVCLog.Log($"{defName} has no textures.", RVCLogType.Error, textures.EnumerableNullOrEmpty());
+            return base.ConfigErrors();
+        }
+
+
+        public bool CanDisplay(Pawn pawn, bool portrait = false)
+        {
+            IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
+            bool bodyIsHiding = bodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == bodyPart.ToLower() || x.Label.ToLower() == bodyPart.ToLower());
+            return !portrait ? (!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || showsInBed) && bodyIsHiding : bodyIsHiding;
+        }
+
         public BodyPartGraphicPos GetPos(Pawn pawn)
         {
             if (west == null)
@@ -48,6 +71,7 @@ namespace RVCRestructured.Defs
             }
         }
     }
+
 
     public class BodyPartGraphicPos
     {
@@ -91,6 +115,7 @@ namespace RVCRestructured.Defs
 
         public List<string> alternateMaskPaths = new List<string>();
         public List<string> alternateFemaleMaskPaths = new List<string>();
+
 
         /// <summary>
         /// Can the texture be applied to a pawn?

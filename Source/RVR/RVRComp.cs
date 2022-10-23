@@ -79,7 +79,7 @@ namespace RVCRestructured.RVR
                         continue;
                     }
 
-                    Random rand = new System.Random();
+                    Random rand = new Random();
                     int index = rand.Next(rDef.textures.Count);
 
                     renderableIndexes.Add(rDef.defName, index);

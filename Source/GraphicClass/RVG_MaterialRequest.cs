@@ -26,7 +26,6 @@ namespace RVCRestructured.Graphics
 
         public RVG_MaterialRequest(Texture2D tex)
         {
-            Log.Message("this mat req");
             shader = ShaderDatabase.Cutout;
             mainTex = tex;
             color = Color.red;
@@ -39,7 +38,6 @@ namespace RVCRestructured.Graphics
 
         public RVG_MaterialRequest(Texture2D tex, Shader shader)
         {
-            Log.Message("matreq2");
             this.shader = shader;
             mainTex = tex;
             color = Color.green;
@@ -52,7 +50,6 @@ namespace RVCRestructured.Graphics
 
         public RVG_MaterialRequest(Texture2D tex, Shader shader, Color color)
         {
-            Log.Message("matreq3");
             this.shader = shader;
             mainTex = tex;
             this.color = color;
