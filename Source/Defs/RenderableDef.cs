@@ -29,6 +29,9 @@ namespace RVCRestructured.Defs
         public bool showsInBed = true;
 
         public string bodyPart;
+
+        public BodyPartGraphicPos this[int i] => GetBodyPartGraphicPosFromIntRot(i);
+
         public override IEnumerable<string> ConfigErrors()
         {
             RVCLog.Log($"{defName} has a null east GraphicPos.", RVCLogType.Error,east==null);
@@ -57,7 +60,12 @@ namespace RVCRestructured.Defs
                 west.position.z = east.position.z;
             }
 
-            switch (rot.AsInt)
+            return GetBodyPartGraphicPosFromIntRot(rot.AsInt);
+        }
+
+        private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot)
+        {
+            switch (rot)
             {
                 case 0:
                     return north;
@@ -71,6 +79,7 @@ namespace RVCRestructured.Defs
                     return null;
             }
         }
+
         public BodyPartGraphicPos GetPos(Pawn pawn)
         {
             return GetPos(pawn.Rotation);
