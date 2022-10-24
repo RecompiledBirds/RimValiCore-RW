@@ -38,10 +38,9 @@ namespace RVCRestructured.RVR.Harmony
                 {
                     set = new TriColorSet(Color.red, Color.green, Color.blue, true);
                 }
-              //  Graphic_Multi gra = (Graphic_Multi)GraphicDatabase.Get<Graphic_Multi>(comp.GetTexPath(renderableDef), TriColorShader.tricolorshader, pos.size, set[1], set[2]);
+
                 RVG_Graphic graphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(comp.GetTexPath(renderableDef), pos.size, set[0], set[1], set[2]);
-                GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + pos.position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat) * 114.59156f)), quat, graphic.MatAt(rotation), flags.FlagSet(PawnRenderFlags.DrawNow));
-              //  GenDraw.DrawMeshNowOrLater(gra.MeshAt(rotation), rootLoc + pos.position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat) * 114.59156f)), quat, gra.MatAt(rotation), flags.FlagSet(PawnRenderFlags.DrawNow));
+                GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + pos.position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f), Quaternion.AngleAxis(angle, Vector3.up) * quat, graphic.MatAt(rotation), portrait||flags.FlagSet(PawnRenderFlags.DrawNow));    
 
 
             }

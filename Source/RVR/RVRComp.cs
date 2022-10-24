@@ -21,6 +21,16 @@ namespace RVCRestructured.RVR
     }
     public class RVRComp : ThingComp
     {
+        private List<RenderableDef> defList;
+
+        public List<RenderableDef> RenderableDefs
+        {
+            get
+            {
+                return defList;
+            }
+        }
+
         private Dictionary<string, TriColorSet> sets = new Dictionary<string, TriColorSet>();
         private Dictionary<string, int> masks = new Dictionary<string, int>();
         private Dictionary<string, int> renderableIndexes = new Dictionary<string, int>();
@@ -38,12 +48,13 @@ namespace RVCRestructured.RVR
         public TriColorSet this[string name]{
             get
             {
-                if (!sets.ContainsKey(name))
+                if (sets.ContainsKey(name))
                 {
-                    RVCLog.Log($"ColorSet {name} is not on {parent.def.defName}!", RVCLogType.Error);
-                    return null;
+                    return sets[name];
                 }
-                return sets[name];
+                Pawn pawn = parent as Pawn;
+                RVCLog.Log($"ColorSet {name} is not on {pawn.Name.ToStringShort}!", RVCLogType.Error);
+                return null;
             }
             set
             {
@@ -65,11 +76,19 @@ namespace RVCRestructured.RVR
             Scribe_Collections.Look(ref sets, "sets", LookMode.Value, LookMode.Deep, ref lKeys, ref lSets);
             Scribe_Collections.Look(ref masks, "masks", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
             Scribe_Collections.Look(ref renderableIndexes, "renderableIndexes", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
+            Scribe_Collections.Look(ref defList, "renderableDefs", LookMode.Def);
         }
 
         public void GenGraphics()
         {
             Pawn pawn = this.parent as Pawn;
+
+            if (!(pawn.def is RaceDef raceDef))
+                return;
+
+            if (defList.NullOrEmpty()&& !raceDef.RaceGraphics.renderableDefs.NullOrEmpty())
+                defList = raceDef.raceGraphics.renderableDefs;
+            
             foreach(RenderableDef rDef in raceDef.RaceGraphics.renderableDefs)
             {
                 if (renderableIndexes.ContainsKey(rDef.defName))
@@ -99,7 +118,7 @@ namespace RVCRestructured.RVR
                     masks.Add(rDef.linkWith.defName, index);
                 }
             }
-            foreach(RaceColors colors in raceDef.RaceGraphics.colorGenerators)
+            foreach(RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
             {
                 Color c1 = colors.GeneratorToUse(pawn).colorOne.NewRandomizedColor();
                 Color c2 = colors.GeneratorToUse(pawn).colorTwo.NewRandomizedColor();

@@ -1,4 +1,5 @@
-﻿using RVCRestructured.Graphics;
+﻿using RimWorld;
+using RVCRestructured.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace RVCRestructured.RVR.Harmony
             if (!rDef.RaceGraphics.hasHair)
                 __instance.hairGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
             __instance.headGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(rDef.RaceGraphics.headTex,rDef.RaceGraphics.headSize,skinOne,skinTwo,skinThree);
+            __instance.SetApparelGraphicsDirty();
+            PortraitsCache.SetDirty(pawn);
         }
     }
 }
