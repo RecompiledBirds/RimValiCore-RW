@@ -21,7 +21,8 @@ namespace RVCRestructured.Defs
         public BodyPartGraphicPos south;
         public BodyPartGraphicPos north;
 
-        public RenderableDef linkWith;
+        public RenderableDef linkTexWith;
+        public RenderableDef linkPosWith;
 
         public string colorSet;
 

@@ -45,6 +45,13 @@ namespace RVCRestructured.RVR
             return null;
         }
 
+        public string GetMaskPath(RenderableDef def)
+        {
+            if (masks.ContainsKey(def.defName) && !def.textures[renderableIndexes[def.defName]].alternateMaskPaths.NullOrEmpty())
+                return def.textures[renderableIndexes[def.defName]].alternateMaskPaths[masks[def.defName]];
+            return def.textures[renderableIndexes[def.defName]].texPath;
+        }
+
         public TriColorSet this[string name]{
             get
             {
@@ -102,20 +109,20 @@ namespace RVCRestructured.RVR
                 int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
                 index = rand.Next(maskIndex);
                 masks.Add(rDef.defName, index);
-                if (rDef.linkWith != null)
+                if (rDef.linkTexWith != null)
                 {
                     if (renderableIndexes.ContainsKey(rDef.defName))
                     {
-                        renderableIndexes.Add(rDef.defName, renderableIndexes[rDef.linkWith.defName]);
-                        masks.Add(rDef.defName, masks[rDef.linkWith.defName]);
+                        renderableIndexes.Add(rDef.defName, renderableIndexes[rDef.linkTexWith.defName]);
+                        masks.Add(rDef.defName, masks[rDef.linkTexWith.defName]);
                         continue;
                     }
 
                     
 
-                    renderableIndexes.Add(rDef.linkWith.defName,index);
+                    renderableIndexes.Add(rDef.linkTexWith.defName,index);
 
-                    masks.Add(rDef.linkWith.defName, index);
+                    masks.Add(rDef.linkTexWith.defName, index);
                 }
             }
             foreach(RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
