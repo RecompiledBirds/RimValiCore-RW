@@ -24,19 +24,34 @@ namespace RVCRestructured.RVR
         public Vector2 headSize;
         public Vector2 bodySize = new Vector2(1f, 1f);
 
+        public Dictionary<string, RaceColors> cachedColors = new Dictionary<string, RaceColors>();
+        public RaceColors this[string name]
+        {
+            get
+            {
+                if (cachedColors.ContainsKey(name))
+                    return cachedColors[name];
+
+                for (int i = 0; i < colorGenerators.Count; i++)
+                {
+                    if (colorGenerators[i].name == name)
+                    {
+                        cachedColors[name] = colorGenerators[i];
+                        return colorGenerators[i];
+                    }
+                }
+                return null;
+            }
+        }
+
         public RaceColors GetSkinColorGenerator
         {
             get
             {
                 //If none is defined, use generator 0
-                if (skinColorSet == null)
-                    return colorGenerators[0];
-
-                for(int i = 0; i<colorGenerators.Count; i++)
-                {
-                    if (colorGenerators[i].name==skinColorSet)
-                        return colorGenerators[i];
-                }
+                RaceColors colors = this[this.skinColorSet];
+                if (colors != null)
+                    return colors;
 
                 //If we can't find any that match, log an error and create a temporary/debug color generator.
                 Log.Error($"Could not find a color generator named {skinColorSet}.");

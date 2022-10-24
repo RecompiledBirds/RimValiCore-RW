@@ -1,5 +1,4 @@
-﻿using RimValiCore_RW.Source;
-using RimWorld;
+﻿using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +23,8 @@ namespace RVCRestructured.Defs
 
         public RenderableDef linkWith;
 
+        public string colorSet;
+
         public bool showsInBed = true;
 
         public string bodyPart;
@@ -43,8 +44,7 @@ namespace RVCRestructured.Defs
             bool bodyIsHiding = bodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == bodyPart.ToLower() || x.Label.ToLower() == bodyPart.ToLower());
             return !portrait ? (!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || showsInBed) && bodyIsHiding : bodyIsHiding;
         }
-
-        public BodyPartGraphicPos GetPos(Pawn pawn)
+        public BodyPartGraphicPos GetPos(Rot4 rot)
         {
             if (west == null)
             {
@@ -55,8 +55,8 @@ namespace RVCRestructured.Defs
                 };
                 west.position.z = east.position.z;
             }
-            
-            switch (pawn.Rotation.AsInt)
+
+            switch (rot.AsInt)
             {
                 case 0:
                     return north;
@@ -69,6 +69,10 @@ namespace RVCRestructured.Defs
                 default:
                     return null;
             }
+        }
+        public BodyPartGraphicPos GetPos(Pawn pawn)
+        {
+            return GetPos(pawn.Rotation);
         }
     }
 

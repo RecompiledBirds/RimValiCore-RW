@@ -33,7 +33,7 @@ namespace RVCRestructured.Graphics
             colorThree = Color.blue;
             maskTex = null;
             renderQueue = 0;
-            shaderParameters = null;
+            shaderParameters = new List<ShaderParameter>();
         }
 
         public RVG_MaterialRequest(Texture2D tex, Shader shader)
@@ -45,7 +45,7 @@ namespace RVCRestructured.Graphics
             colorThree = Color.red;
             maskTex = null;
             renderQueue = 0;
-            shaderParameters = null;
+            shaderParameters = new List<ShaderParameter>();
         }
 
         public RVG_MaterialRequest(Texture2D tex, Shader shader, Color color)
@@ -57,7 +57,7 @@ namespace RVCRestructured.Graphics
             colorThree = Color.blue;
             maskTex = null;
             renderQueue = 0;
-            shaderParameters = null;
+            shaderParameters = new List<ShaderParameter>();
         }
 
         public override int GetHashCode()

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RimValiCore_RW.Source
+namespace RVCRestructured
 {
     public enum RVCLogType
     {

@@ -1,4 +1,4 @@
-﻿using RimValiCore_RW.Source;
+﻿using JetBrains.Annotations;
 using RVCRestructured.Defs;
 using System;
 using System.Collections.Generic;
@@ -28,6 +28,12 @@ namespace RVCRestructured.RVR
         private List<string> lKeys = new List<string>();
         private List<TriColorSet> lSets = new List<TriColorSet>();
         private List<int> lInts = new List<int>();
+
+        public string GetTexPath(RenderableDef def) {
+            if (renderableIndexes.ContainsKey(def.defName))
+                return def.textures[renderableIndexes[def.defName]].texPath;
+            return null;
+        }
 
         public TriColorSet this[string name]{
             get
@@ -70,6 +76,13 @@ namespace RVCRestructured.RVR
                 {
                     return;
                 }
+                Random rand = new Random();
+                int index = rand.Next(rDef.textures.Count);
+
+                renderableIndexes[rDef.defName] = index;
+                int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
+                index = rand.Next(maskIndex);
+                masks.Add(rDef.defName, index);
                 if (rDef.linkWith != null)
                 {
                     if (renderableIndexes.ContainsKey(rDef.defName))
@@ -79,14 +92,10 @@ namespace RVCRestructured.RVR
                         continue;
                     }
 
-                    Random rand = new Random();
-                    int index = rand.Next(rDef.textures.Count);
+                    
 
-                    renderableIndexes.Add(rDef.defName, index);
                     renderableIndexes.Add(rDef.linkWith.defName,index);
-                    int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
-                    index=rand.Next(maskIndex);
-                    masks.Add(rDef.defName, index);
+
                     masks.Add(rDef.linkWith.defName, index);
                 }
             }
