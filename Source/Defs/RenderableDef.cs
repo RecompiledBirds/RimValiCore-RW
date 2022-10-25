@@ -30,6 +30,8 @@ namespace RVCRestructured.Defs
 
         public string bodyPart;
 
+        bool flipLayerEastWest = true;
+        bool flipYPos = false;
         public BodyPartGraphicPos this[int i] => GetBodyPartGraphicPosFromIntRot(i);
 
         public override IEnumerable<string> ConfigErrors()
@@ -57,7 +59,10 @@ namespace RVCRestructured.Defs
                     position = -east.position,
                     size = east.size
                 };
-                west.position.z = east.position.z;
+                if(!flipLayerEastWest)
+                    west.position.y = east.position.y;
+                if(!flipYPos)
+                    west.position.z = east.position.z;
             }
 
             return GetBodyPartGraphicPosFromIntRot(rot.AsInt);
@@ -91,6 +96,7 @@ namespace RVCRestructured.Defs
     {
         public Vector3 position;
         public Vector2 size;
+        
     }
 
     public class HediffTex : BaseTex
@@ -148,7 +154,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public bool HasAlternateMasks(Pawn pawn)
         {
-            return pawn.gender == Gender.Female ? alternateFemaleMaskPaths.Count > 0 : alternateMaskPaths.Count > 0;
+            return (alternateFemaleMaskPaths.Count > 0 && pawn.gender == Gender.Female) || alternateMaskPaths.Count > 0;
         }
 
         /// <summary>
@@ -158,7 +164,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public List<string> GetMasks(Pawn pawn)
         {
-            return HasAlternateMasks(pawn) ? pawn.gender == Gender.Male ? alternateMaskPaths : alternateFemaleMaskPaths : new List<string>();
+            return HasAlternateMasks(pawn) ? pawn.gender == Gender.Female ? alternateFemaleMaskPaths : alternateMaskPaths : new List<string>();
         }
     }
 }

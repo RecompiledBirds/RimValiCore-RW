@@ -22,7 +22,10 @@ namespace RVCRestructured
             this.three = three;
             this.dyeable = dyable;
         }
+        public TriColorSet()
+        {
 
+        }
         public bool Dyeable
         {
             get

@@ -45,10 +45,10 @@ namespace RVCRestructured.RVR
             return null;
         }
 
-        public string GetMaskPath(RenderableDef def)
+        public string GetMaskPath(RenderableDef def,Pawn pawn)
         {
-            if (masks.ContainsKey(def.defName) && !def.textures[renderableIndexes[def.defName]].alternateMaskPaths.NullOrEmpty())
-                return def.textures[renderableIndexes[def.defName]].alternateMaskPaths[masks[def.defName]];
+            if (masks.ContainsKey(def.defName) && !def.textures[renderableIndexes[def.defName]].GetMasks(pawn).NullOrEmpty())
+                return def.textures[renderableIndexes[def.defName]].GetMasks(pawn)[masks[def.defName]];
             return def.textures[renderableIndexes[def.defName]].texPath;
         }
 
@@ -88,6 +88,7 @@ namespace RVCRestructured.RVR
 
         public void GenGraphics()
         {
+            RVCLog.Log("test");
             Pawn pawn = this.parent as Pawn;
 
             if (!(pawn.def is RaceDef raceDef))
@@ -100,13 +101,17 @@ namespace RVCRestructured.RVR
             {
                 if (renderableIndexes.ContainsKey(rDef.defName))
                 {
-                    return;
+                    continue;
                 }
                 Random rand = new Random();
                 int index = rand.Next(rDef.textures.Count);
 
                 renderableIndexes[rDef.defName] = index;
                 int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
+                foreach(string str in rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn))
+                {
+                    RVCLog.Log(str, log: pawn.gender == Gender.Female);
+                }
                 index = rand.Next(maskIndex);
                 masks.Add(rDef.defName, index);
                 if (rDef.linkTexWith != null)
@@ -127,6 +132,9 @@ namespace RVCRestructured.RVR
             }
             foreach(RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
             {
+                if (sets.ContainsKey(colors.name))
+                    continue;
+
                 Color c1 = colors.GeneratorToUse(pawn).colorOne.NewRandomizedColor();
                 Color c2 = colors.GeneratorToUse(pawn).colorTwo.NewRandomizedColor();
                 Color c3 = colors.GeneratorToUse(pawn).colorThree.NewRandomizedColor();
