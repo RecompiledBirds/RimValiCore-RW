@@ -54,7 +54,7 @@ namespace RimValiCore_RW.Windows
             if (Widgets.ButtonText(buttonDefSelect, selectedDef.defName)) Find.WindowStack.Add(new FloatMenu(floatMenuOptions)); 
             if (Widgets.ButtonText(buttonPosSize, isPos ? "Position" : "Size")) isPos = !isPos; 
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i <= 3; i++)
             {
                 DrawInputFields(i);
             }
@@ -78,14 +78,14 @@ namespace RimValiCore_RW.Windows
             string bufferY = tempValY.ToString();
             string bufferZ = tempValZ.ToString();
 
-            Widgets.TextFieldPercent(tempX, ref tempValX, ref bufferX, float.MinValue, float.MaxValue);
-            Widgets.TextFieldPercent(tempY, ref tempValY, ref bufferY, float.MinValue, float.MaxValue);
+            Widgets.TextFieldNumeric(tempX, ref tempValX, ref bufferX, float.MinValue, float.MaxValue);
+            Widgets.TextFieldNumeric(tempY, ref tempValY, ref bufferY, float.MinValue, float.MaxValue);
 
             if (isPos)
             {
-                Widgets.TextField(tempZ, bufferZ, int.MaxValue);
-
-                Widgets.TextFieldPercent(tempZ, ref tempValZ, ref bufferZ, float.MinValue, float.MaxValue);
+                //   Widgets.TextField(tempZ, bufferZ, int.MaxValue);
+                Widgets.TextFieldNumeric(tempZ, ref tempValZ, ref bufferZ, float.MinValue, float.MaxValue);
+             //   Widgets.TextFieldPercent(tempZ, ref tempValZ, ref bufferZ, float.MinValue, float.MaxValue);
 
                 selectedDef[i].position.x = tempValX;
                 selectedDef[i].position.y = tempValY;

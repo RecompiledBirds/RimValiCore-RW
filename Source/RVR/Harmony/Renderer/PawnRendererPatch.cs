@@ -30,9 +30,9 @@ namespace RVCRestructured.RVR.Harmony
             {
                 //Render the def
                 BodyPartGraphicPos pos = renderableDef.GetPos(rotation);
-
+                Vector3 position = pos.position;
                 if (renderableDef.linkPosWith != null)
-                    pos.position += renderableDef.linkPosWith.GetPos(rotation).position;
+                   position += renderableDef.linkPosWith.GetPos(rotation).position;
 
                 TriColorSet set = null;
                 if(renderableDef.colorSet != null)
@@ -43,7 +43,7 @@ namespace RVCRestructured.RVR.Harmony
                 }
 
                 RVG_Graphic graphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(comp.GetTexPath(renderableDef), pos.size, set[0], set[1], set[2],comp.GetMaskPath(renderableDef));
-                GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + pos.position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f), Quaternion.AngleAxis(angle, Vector3.up) * quat, graphic.MatAt(rotation), portrait||flags.FlagSet(PawnRenderFlags.DrawNow));    
+                GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f), Quaternion.AngleAxis(angle, Vector3.up) * quat, graphic.MatAt(rotation), portrait||flags.FlagSet(PawnRenderFlags.DrawNow));    
 
 
             }

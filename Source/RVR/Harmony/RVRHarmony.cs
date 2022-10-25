@@ -18,6 +18,8 @@ namespace RVCRestructured.RVR.Harmony
             HarmonyLib.Harmony harmony = new HarmonyLib.Harmony("RecompiledBirds.RVC.RVR");
             harmony.Patch(AccessTools.Method(typeof(PawnRenderer), "RenderPawnInternal", new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(RotDrawMode), typeof(PawnRenderFlags) }),postfix:new HarmonyMethod(typeof(PawnRendererPatch),nameof(PawnRendererPatch.RenderingPostfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGraphicSet), "ResolveAllGraphics"),postfix: new HarmonyMethod(typeof(ResolveGraphicsPostFix),nameof(ResolveGraphicsPostFix.ResolveGraphicsPatch)));
+            harmony.Patch(AccessTools.Constructor(typeof(PawnTextureAtlas)),transpiler: new HarmonyMethod(typeof(RenderTextureTranspiler),nameof(RenderTextureTranspiler.Transpile)));
+            RVCLog.Log("Patches completed.");
         }
     }
 }
