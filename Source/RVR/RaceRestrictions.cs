@@ -1,10 +1,7 @@
 ﻿using RimWorld;
 using RVCRestructured.RVR.Harmony;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace RVCRestructured.RVR
@@ -99,10 +96,10 @@ namespace RVCRestructured.RVR
                 //Try to find the mod.
                 ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
                 //If we can't find it, skip
-                if(pack ==null) continue;
+                if (pack == null) continue;
                 //Add everything considered to be food
                 restrictedFoodDefs.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsNutritionGivingIngestible));
-               
+
             }
 
             //Do equipment restrictions
@@ -146,7 +143,7 @@ namespace RVCRestructured.RVR
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Add everything considered to be a building
-                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.building!=null));
+                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.building != null));
             }
 
             //Do research restrictions
@@ -226,7 +223,7 @@ namespace RVCRestructured.RVR
                 allowedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.building != null));
             }
 
-          
+
 
             //Do apparel allowances
             foreach (string mod in modAllowedApparel)
@@ -241,7 +238,7 @@ namespace RVCRestructured.RVR
             #endregion
 
 
-            
+
         }
     }
 }

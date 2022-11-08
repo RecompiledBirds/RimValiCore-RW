@@ -1,14 +1,9 @@
 ﻿using HarmonyLib;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.AI;
 
 namespace RVCRestructured.RVR.Harmony
 {
@@ -30,14 +25,14 @@ namespace RVCRestructured.RVR.Harmony
         public static int GetAtlasSizeWithPawnsOnMap()
         {
 
-                int pawnCount = Find.CurrentMap.mapPawns.AllPawnsSpawnedCount;
-                float texSizeDivider = pawnCount / 2048;
-                int textureSize = texSize;
-                if (texSizeDivider > 1)
-                {
-                    textureSize /= (int)(texSizeDivider);
-                    return textureSize > 2048 ? textureSize : 2048;
-                }
+            int pawnCount = Find.CurrentMap.mapPawns.AllPawnsSpawnedCount;
+            float texSizeDivider = pawnCount / 2048;
+            int textureSize = texSize;
+            if (texSizeDivider > 1)
+            {
+                textureSize /= (int)(texSizeDivider);
+                return textureSize > 2048 ? textureSize : 2048;
+            }
             return texSize;
         }
     }

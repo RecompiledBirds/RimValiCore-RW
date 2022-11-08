@@ -1,10 +1,4 @@
-﻿using RimWorld;
-using RVCRestructured.Defs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace RVCRestructured.RVR
@@ -16,7 +10,15 @@ namespace RVCRestructured.RVR
     {
         public RaceGraphics raceGraphics = new RaceGraphics();
         public RaceRestrictions restrictions = new RaceRestrictions();
+        public ThoughtReplacer thoughtReplacer = new ThoughtReplacer();
 
+        public ThoughtReplacer ThoughtReplacer
+        {
+            get
+            {
+                return thoughtReplacer;
+            }
+        }
         public RaceRestrictions RaceRestrictions
         {
             get
@@ -43,9 +45,9 @@ namespace RVCRestructured.RVR
         public override void PostLoad()
         {
             this.comps.Add(new RVRCP());
-            base.PostLoad();           
+            base.PostLoad();
         }
 
-        
+
     }
 }

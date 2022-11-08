@@ -1,10 +1,5 @@
 ﻿using HarmonyLib;
 using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace RVCRestructured.RVR.Harmony
@@ -17,7 +12,7 @@ namespace RVCRestructured.RVR.Harmony
             RaceDef raceDef = pawn.def as RaceDef;
             bool restricted = RestrictionsChecker.IsRestricted(raceDef);
 
-            return (restricted &&( raceDef?.RaceRestrictions.restrictedTraits.Contains(trait.def)??false))|| ((!(raceDef?.RaceRestrictions.disabledTraits.Contains(trait.def)??true))&&!restricted);
+            return (restricted && (raceDef?.RaceRestrictions.restrictedTraits.Contains(trait.def) ?? false)) || ((!(raceDef?.RaceRestrictions.disabledTraits.Contains(trait.def) ?? true)) && !restricted);
         }
     }
 }

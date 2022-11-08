@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using Verse;
+﻿using Verse;
 
 namespace RVCRestructured
 {
@@ -13,7 +7,7 @@ namespace RVCRestructured
         public ColorGenerator colorOne;
         public ColorGenerator colorTwo;
         public ColorGenerator colorThree;
-        public bool dyeable=true;
+        public bool dyeable = true;
         public TriColorSet GenerateColors()
         {
             //Make sure we have no null generators and fill what we can, if there are.
@@ -24,7 +18,7 @@ namespace RVCRestructured
             if (colorThree == null)
                 colorThree = colorOne;
 
-            return new TriColorSet(colorOne.NewRandomizedColor(), colorTwo.NewRandomizedColor(), colorThree.NewRandomizedColor(),dyeable);
+            return new TriColorSet(colorOne.NewRandomizedColor(), colorTwo.NewRandomizedColor(), colorThree.NewRandomizedColor(), dyeable);
         }
     }
 

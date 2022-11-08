@@ -1,10 +1,7 @@
 ﻿using RVCRestructured.RVR;
 using RVCRestructured.RVR.Harmony;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
 
@@ -30,8 +27,8 @@ namespace RVCRestructured
                 // Pawn can eat any food and the food is not restricted= true
                 // or
                 // It is an allowed fooditem
-                
-                bool allowedByWhitelist = !(pawn is RaceDef) ||(!restricted&& (raceDef?.RaceRestrictions.canEatAnyFood??true)) || (raceDef?.RaceRestrictions.allowedFoodDefs.Contains(t)??true);
+
+                bool allowedByWhitelist = !(pawn is RaceDef) || (!restricted && (raceDef?.RaceRestrictions.canEatAnyFood ?? true)) || (raceDef?.RaceRestrictions.allowedFoodDefs.Contains(t) ?? true);
 
                 bool cacheData = (allowedByRestrictor || allowedByWhitelist);
 
@@ -43,7 +40,7 @@ namespace RVCRestructured
                 JobFailReason.Is($"{pawn.label} {"CannotEatRVR".Translate(pawn.label.Named("RACE"))}");
             }
             __result &= cachedDefs[__instance];
-         
+
         }
     }
 }

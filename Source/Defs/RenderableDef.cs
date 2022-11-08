@@ -1,9 +1,6 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -36,7 +33,7 @@ namespace RVCRestructured.Defs
 
         public override IEnumerable<string> ConfigErrors()
         {
-            RVCLog.Log($"{defName} has a null east GraphicPos.", RVCLogType.Error,east==null);
+            RVCLog.Log($"{defName} has a null east GraphicPos.", RVCLogType.Error, east == null);
             RVCLog.Log($"{defName} has a null south GraphicPos.", RVCLogType.Error, south == null);
             RVCLog.Log($"{defName} has a null north GraphicPos.", RVCLogType.Error, north == null);
             RVCLog.Log($"{defName} has no textures.", RVCLogType.Error, textures.EnumerableNullOrEmpty());
@@ -59,9 +56,9 @@ namespace RVCRestructured.Defs
                     position = -east.position,
                     size = east.size
                 };
-                if(!flipLayerEastWest)
+                if (!flipLayerEastWest)
                     west.position.y = east.position.y;
-                if(!flipYPos)
+                if (!flipYPos)
                     west.position.z = east.position.z;
             }
 
@@ -96,7 +93,7 @@ namespace RVCRestructured.Defs
     {
         public Vector3 position;
         public Vector2 size;
-        
+
     }
 
     public class HediffTex : BaseTex

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace RVCRestructured.RVR.Harmony
@@ -20,7 +16,7 @@ namespace RVCRestructured.RVR.Harmony
 
         public static void AddRestrictions<T>(List<T> defs) where T : Def
         {
-            foreach(Def def in defs)
+            foreach (Def def in defs)
                 AddRestriction(def);
         }
 

@@ -1,7 +1,6 @@
 ﻿using RVCRestructured.Defs;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using Verse;
 
@@ -46,13 +45,13 @@ namespace RimValiCore_RW.Windows
             renderableDefs = DefDatabase<RenderableDef>.AllDefsListForReading;
             selectedDef = renderableDefs.FirstOrDefault();
 
-            foreach(RenderableDef def in renderableDefs) floatMenuOptions.Add(new FloatMenuOption(def.defName, () => selectedDef = def));
+            foreach (RenderableDef def in renderableDefs) floatMenuOptions.Add(new FloatMenuOption(def.defName, () => selectedDef = def));
         }
 
         public override void DoWindowContents(Rect _)
         {
-            if (Widgets.ButtonText(buttonDefSelect, selectedDef.defName)) Find.WindowStack.Add(new FloatMenu(floatMenuOptions)); 
-            if (Widgets.ButtonText(buttonPosSize, isPos ? "Position" : "Size")) isPos = !isPos; 
+            if (Widgets.ButtonText(buttonDefSelect, selectedDef.defName)) Find.WindowStack.Add(new FloatMenu(floatMenuOptions));
+            if (Widgets.ButtonText(buttonPosSize, isPos ? "Position" : "Size")) isPos = !isPos;
 
             for (int i = 0; i <= 3; i++)
             {
@@ -85,7 +84,7 @@ namespace RimValiCore_RW.Windows
             {
                 //   Widgets.TextField(tempZ, bufferZ, int.MaxValue);
                 Widgets.TextFieldNumeric(tempZ, ref tempValZ, ref bufferZ, float.MinValue, float.MaxValue);
-             //   Widgets.TextFieldPercent(tempZ, ref tempValZ, ref bufferZ, float.MinValue, float.MaxValue);
+                //   Widgets.TextFieldPercent(tempZ, ref tempValZ, ref bufferZ, float.MinValue, float.MaxValue);
 
                 selectedDef[i].position.x = tempValX;
                 selectedDef[i].position.y = tempValY;

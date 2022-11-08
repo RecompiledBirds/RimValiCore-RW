@@ -1,12 +1,6 @@
-﻿using JetBrains.Annotations;
-using RVCRestructured.Defs;
-using System;
+﻿using RVCRestructured.Defs;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 using Verse;
 using Random = System.Random;
 
@@ -39,20 +33,22 @@ namespace RVCRestructured.RVR
         private List<TriColorSet> lSets = new List<TriColorSet>();
         private List<int> lInts = new List<int>();
 
-        public string GetTexPath(RenderableDef def) {
+        public string GetTexPath(RenderableDef def)
+        {
             if (renderableIndexes.ContainsKey(def.defName))
                 return def.textures[renderableIndexes[def.defName]].texPath;
             return null;
         }
 
-        public string GetMaskPath(RenderableDef def,Pawn pawn)
+        public string GetMaskPath(RenderableDef def, Pawn pawn)
         {
             if (masks.ContainsKey(def.defName) && !def.textures[renderableIndexes[def.defName]].GetMasks(pawn).NullOrEmpty())
                 return def.textures[renderableIndexes[def.defName]].GetMasks(pawn)[masks[def.defName]];
             return def.textures[renderableIndexes[def.defName]].texPath;
         }
 
-        public TriColorSet this[string name]{
+        public TriColorSet this[string name]
+        {
             get
             {
                 if (sets.ContainsKey(name))
@@ -94,10 +90,10 @@ namespace RVCRestructured.RVR
             if (!(pawn.def is RaceDef raceDef))
                 return;
 
-            if (defList.NullOrEmpty()&& !raceDef.RaceGraphics.renderableDefs.NullOrEmpty())
+            if (defList.NullOrEmpty() && !raceDef.RaceGraphics.renderableDefs.NullOrEmpty())
                 defList = raceDef.raceGraphics.renderableDefs;
-            
-            foreach(RenderableDef rDef in raceDef.RaceGraphics.renderableDefs)
+
+            foreach (RenderableDef rDef in raceDef.RaceGraphics.renderableDefs)
             {
                 if (renderableIndexes.ContainsKey(rDef.defName))
                 {
@@ -108,7 +104,7 @@ namespace RVCRestructured.RVR
 
                 renderableIndexes[rDef.defName] = index;
                 int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
-                foreach(string str in rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn))
+                foreach (string str in rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn))
                 {
                     RVCLog.Log(str, log: pawn.gender == Gender.Female);
                 }
@@ -123,14 +119,14 @@ namespace RVCRestructured.RVR
                         continue;
                     }
 
-                    
 
-                    renderableIndexes.Add(rDef.linkTexWith.defName,index);
+
+                    renderableIndexes.Add(rDef.linkTexWith.defName, index);
 
                     masks.Add(rDef.linkTexWith.defName, index);
                 }
             }
-            foreach(RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
+            foreach (RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
             {
                 if (sets.ContainsKey(colors.name))
                     continue;
