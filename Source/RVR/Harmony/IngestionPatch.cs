@@ -34,7 +34,7 @@ namespace RVCRestructured.RVR.Harmony
                 if (t != ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal && t != ThoughtDefOf.AteHumanlikeMeatAsIngredient)
                     continue;
 
-
+                
 
 
             }
