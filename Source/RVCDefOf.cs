@@ -11,6 +11,6 @@ namespace RVCRestructured
     [DefOf]
     public static class RVCStatDefOf
     {
-        public static StatDef HealthOffset;
+        public static StatDef RVC_HealthOffset;
     }
 }
