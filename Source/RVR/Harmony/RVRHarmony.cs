@@ -29,8 +29,12 @@ namespace RVCRestructured.RVR.Harmony
             harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "RemoveMemoriesOfDefIf"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
             harmony.Patch(AccessTools.Method(typeof(SituationalThoughtHandler), "TryCreateThought"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatchSIT)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "CanGetThought"), postfix: new HarmonyMethod(typeof(CanGetThoughtPatch), nameof(CanGetThoughtPatch.CanGetPatch)));
-
-            RVCLog.Log("Patches completed.");
+            harmony.Patch(AccessTools.Method(typeof(EquipmentUtility), "CanEquip", new[] { typeof(Thing), typeof(Pawn), typeof(string).MakeByRefType(), typeof(bool) }), postfix: new HarmonyMethod(typeof(EquipingPatch), "EquipingPostfix"));
+            harmony.Patch(AccessTools.Method(typeof(FoodUtility), "ThoughtsFromIngesting"), postfix: new HarmonyMethod(typeof(IngestingPatch),nameof(IngestingPatch.IngestingPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(BodyPartDef), "GetMaxHealth"),postfix: new HarmonyMethod(typeof(BodyPartHealthPatch),nameof(BodyPartHealthPatch.HealthPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "GiveThoughtsForPawnOrganHarvested"), prefix: new HarmonyMethod(typeof(OrganPatch),nameof(OrganPatch.OrganHarvestPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(Corpse), "ButcherProducts"),prefix:new HarmonyMethod(typeof(ButcherPatch),nameof(ButcherPatch.ButcherPrefix)));
+            RVCLog.Log("RVR Patches completed.");
         }
     }
 }

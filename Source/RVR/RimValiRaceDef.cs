@@ -11,6 +11,32 @@ namespace RVCRestructured.RVR
         public RaceGraphics raceGraphics = new RaceGraphics();
         public RaceRestrictions restrictions = new RaceRestrictions();
         public ThoughtReplacer thoughtReplacer = new ThoughtReplacer();
+        public CannibalismThoughtsGetter cannibalismThoughts = new CannibalismThoughtsGetter();
+        public OrganHarvestThoughtGetter organHarvestThoughts = new OrganHarvestThoughtGetter();
+        public ButcherThoughtGetter butcherThoughtGetter = new ButcherThoughtGetter();
+
+        public ButcherThoughtGetter ButcherThoughtGetter
+        {
+            get
+            {
+                return butcherThoughtGetter;
+            }
+        }
+        public OrganHarvestThoughtGetter OrganHarvestThoughtGetter
+        {
+            get
+            {
+                return organHarvestThoughts;
+            }
+        }
+
+        public CannibalismThoughtsGetter CannibalismThoughtsGetter
+        {
+            get
+            {
+                return cannibalismThoughts;
+            }
+        }
 
         public ThoughtReplacer ThoughtReplacer
         {
