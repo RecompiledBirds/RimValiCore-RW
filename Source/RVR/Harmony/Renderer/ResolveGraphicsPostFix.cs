@@ -3,7 +3,7 @@ using RVCRestructured.Graphics;
 using UnityEngine;
 using Verse;
 
-namespace RVCRestructured.RVR.Harmony
+namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class ResolveGraphicsPostFix
     {

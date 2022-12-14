@@ -3,7 +3,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace RVCRestructured.RVR.Harmony
+namespace RVCRestructured.RVR.HarmonyPatches
 {
     [StaticConstructorOnStartup]
     public static class RVRHarmony
@@ -34,6 +34,7 @@ namespace RVCRestructured.RVR.Harmony
             harmony.Patch(AccessTools.Method(typeof(BodyPartDef), "GetMaxHealth"),postfix: new HarmonyMethod(typeof(BodyPartHealthPatch),nameof(BodyPartHealthPatch.HealthPostfix)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "GiveThoughtsForPawnOrganHarvested"), prefix: new HarmonyMethod(typeof(OrganPatch),nameof(OrganPatch.OrganHarvestPrefix)));
             harmony.Patch(AccessTools.Method(typeof(Corpse), "ButcherProducts"),prefix:new HarmonyMethod(typeof(ButcherPatch),nameof(ButcherPatch.ButcherPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"),postfix:new HarmonyMethod(typeof(FactionStartRelations),nameof(FactionStartRelations.Postfix)));
             RVCLog.Log("RVR Patches completed.");
         }
     }

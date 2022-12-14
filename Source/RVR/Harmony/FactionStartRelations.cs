@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.RVR.Harmony
+namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class FactionStartRelations
     {

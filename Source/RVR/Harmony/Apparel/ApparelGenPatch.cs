@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Verse;
 
-namespace RVCRestructured.RVR.Harmony
+namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class ApparelGenPatch
     {

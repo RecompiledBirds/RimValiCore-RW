@@ -5,7 +5,7 @@ using System.Reflection.Emit;
 using UnityEngine;
 using Verse;
 
-namespace RVCRestructured.RVR.Harmony
+namespace RVCRestructured.RVR.HarmonyPatches
 {
     public class RenderTexturePatch
     {
