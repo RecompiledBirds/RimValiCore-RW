@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace RVCRestructured.Graphics
 {
-    public class RVG_Graphic_Multi :RVG_Graphic
+    public class RVG_Graphic_Multi : RVG_Graphic
     {
         private readonly Material[] mats = new Material[4];
         private bool westFlipped;

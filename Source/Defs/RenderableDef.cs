@@ -1,9 +1,6 @@
 ﻿using RimWorld;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -21,16 +18,22 @@ namespace RVCRestructured.Defs
         public BodyPartGraphicPos south;
         public BodyPartGraphicPos north;
 
-        public RenderableDef linkWith;
+        public RenderableDef linkTexWith;
+        public RenderableDef linkPosWith;
 
         public string colorSet;
 
         public bool showsInBed = true;
 
         public string bodyPart;
+
+        bool flipLayerEastWest = true;
+        bool flipYPos = false;
+        public BodyPartGraphicPos this[int i] => GetBodyPartGraphicPosFromIntRot(i);
+
         public override IEnumerable<string> ConfigErrors()
         {
-            RVCLog.Log($"{defName} has a null east GraphicPos.", RVCLogType.Error,east==null);
+            RVCLog.Log($"{defName} has a null east GraphicPos.", RVCLogType.Error, east == null);
             RVCLog.Log($"{defName} has a null south GraphicPos.", RVCLogType.Error, south == null);
             RVCLog.Log($"{defName} has a null north GraphicPos.", RVCLogType.Error, north == null);
             RVCLog.Log($"{defName} has no textures.", RVCLogType.Error, textures.EnumerableNullOrEmpty());
@@ -53,10 +56,18 @@ namespace RVCRestructured.Defs
                     position = -east.position,
                     size = east.size
                 };
-                west.position.z = east.position.z;
+                if (!flipLayerEastWest)
+                    west.position.y = east.position.y;
+                if (!flipYPos)
+                    west.position.z = east.position.z;
             }
 
-            switch (rot.AsInt)
+            return GetBodyPartGraphicPosFromIntRot(rot.AsInt);
+        }
+
+        private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot)
+        {
+            switch (rot)
             {
                 case 0:
                     return north;
@@ -70,6 +81,7 @@ namespace RVCRestructured.Defs
                     return null;
             }
         }
+
         public BodyPartGraphicPos GetPos(Pawn pawn)
         {
             return GetPos(pawn.Rotation);
@@ -81,6 +93,7 @@ namespace RVCRestructured.Defs
     {
         public Vector3 position;
         public Vector2 size;
+
     }
 
     public class HediffTex : BaseTex
@@ -138,7 +151,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public bool HasAlternateMasks(Pawn pawn)
         {
-            return pawn.gender == Gender.Female ? alternateFemaleMaskPaths.Count > 0 : alternateMaskPaths.Count > 0;
+            return (alternateFemaleMaskPaths.Count > 0 && pawn.gender == Gender.Female) || alternateMaskPaths.Count > 0;
         }
 
         /// <summary>
@@ -148,7 +161,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public List<string> GetMasks(Pawn pawn)
         {
-            return HasAlternateMasks(pawn) ? pawn.gender == Gender.Male ? alternateMaskPaths : alternateFemaleMaskPaths : new List<string>();
+            return HasAlternateMasks(pawn) ? pawn.gender == Gender.Female ? alternateFemaleMaskPaths : alternateMaskPaths : new List<string>();
         }
     }
 }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Verse;
-
-namespace RVCRestructured
+﻿namespace RVCRestructured
 {
     public enum RVCLogType
     {
@@ -16,7 +9,7 @@ namespace RVCRestructured
     }
     public static class RVCLog
     {
-        public static void Log(object o, RVCLogType type = RVCLogType.Message,bool log =true)
+        public static void Log(object o, RVCLogType type = RVCLogType.Message, bool log = true)
         {
             //Used for some conditional logging.
             if (!log)

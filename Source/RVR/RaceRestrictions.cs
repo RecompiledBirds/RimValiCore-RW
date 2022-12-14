@@ -1,9 +1,7 @@
 ﻿using RimWorld;
-using System;
+using RVCRestructured.RVR.Harmony;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Verse;
 
 namespace RVCRestructured.RVR
@@ -27,6 +25,8 @@ namespace RVCRestructured.RVR
 
         public List<ThingDef> restrictedApparel = new List<ThingDef>();
 
+        public List<TraitDef> restrictedTraits = new List<TraitDef>();
+
         //Disabled items
         public List<ThoughtDef> disabledThoughts = new List<ThoughtDef>();
         public List<TraitDef> disabledTraits = new List<TraitDef>();
@@ -40,7 +40,9 @@ namespace RVCRestructured.RVR
 
         public List<ThoughtDef> allowThoughtDefs = new List<ThoughtDef>();
 
-        public List<ThingDef> allowApparel = new List<ThingDef>();
+        public List<ThingDef> allowedApparel = new List<ThingDef>();
+
+        public List<TraitDef> allowedTraits = new List<TraitDef>();
 
 
         //Mod items
@@ -77,6 +79,10 @@ namespace RVCRestructured.RVR
 
         public bool useHumanRecipes = true;
 
+        public bool canEatAnyFood = true;
+
+        public bool canUseAnyApparel = true;
+
         /// <summary>
         /// Do some tasks on load, such as getting the modContent lists
         /// </summary>
@@ -90,9 +96,10 @@ namespace RVCRestructured.RVR
                 //Try to find the mod.
                 ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
                 //If we can't find it, skip
-                if(pack ==null) continue;
+                if (pack == null) continue;
                 //Add everything considered to be food
                 restrictedFoodDefs.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsNutritionGivingIngestible));
+
             }
 
             //Do equipment restrictions
@@ -136,7 +143,7 @@ namespace RVCRestructured.RVR
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Add everything considered to be a building
-                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.building!=null));
+                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.building != null));
             }
 
             //Do research restrictions
@@ -158,8 +165,17 @@ namespace RVCRestructured.RVR
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Add everything considered to be apparel
-                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsApparel));
+                restrictedApparel.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsApparel));
             }
+
+            RestrictionsChecker.AddRestrictions(restrictedBuildings);
+            RestrictionsChecker.AddRestrictions(restrictedResearchDefs);
+            RestrictionsChecker.AddRestrictions(restrictedApparel);
+            RestrictionsChecker.AddRestrictions(restricedBodyTypes);
+            RestrictionsChecker.AddRestrictions(restrictedThoughtDefs);
+            RestrictionsChecker.AddRestrictions(restrictedEquipment);
+            RestrictionsChecker.AddRestrictions(restrictedFoodDefs);
+            RestrictionsChecker.AddRestrictions(restrictedTraits);
             #endregion
             #region ---Allowing Content---
             //Do food allowances
@@ -207,7 +223,7 @@ namespace RVCRestructured.RVR
                 allowedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.building != null));
             }
 
-          
+
 
             //Do apparel allowances
             foreach (string mod in modAllowedApparel)
@@ -217,12 +233,12 @@ namespace RVCRestructured.RVR
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Add everything considered to be apparel
-                allowApparel.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsApparel));
+                allowedApparel.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsApparel));
             }
             #endregion
 
 
-            
+
         }
     }
 }
