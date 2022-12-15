@@ -1,6 +1,6 @@
 ﻿using Verse;
 
-namespace RimValiCore_RW.RVCBeds
+namespace RVCRestructured.RVCBeds
 {
     public class ResizedBedCompProperties : CompProperties
     {

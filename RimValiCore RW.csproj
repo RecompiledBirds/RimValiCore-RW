@@ -6,7 +6,7 @@
 		<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<RootNamespace>RimValiCore_RW</RootNamespace>
+		<RootNamespace>RVCRestructured</RootNamespace>
 		<OutputPath>1.4/Assemblies</OutputPath>
 	</PropertyGroup>
 

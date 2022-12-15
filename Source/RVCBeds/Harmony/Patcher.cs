@@ -5,7 +5,7 @@ using RimWorld;
 using System;
 using Verse;
 
-namespace RimValiCore_RW.RVCBeds.HarmonyPatches
+namespace RVCRestructured.RVCBeds.HarmonyPatches
 {
     [StaticConstructorOnStartup]
     public static class Patcher

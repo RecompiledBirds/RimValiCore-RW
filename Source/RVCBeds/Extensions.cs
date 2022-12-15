@@ -2,7 +2,7 @@
 using RimWorld;
 using Verse;
 
-namespace RimValiCore_RW.RVCBeds
+namespace RVCRestructured.RVCBeds
 {
     internal static class Extensions
     {
