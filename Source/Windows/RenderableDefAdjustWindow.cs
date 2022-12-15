@@ -4,15 +4,12 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
-namespace RimValiCore_RW.Windows
+namespace RVCRestructured.Windows
 {
     public static class DebugActions
     {
         [DebugAction("RimValiCore", "Open Renderable Def Adjustment Window", allowedGameStates = AllowedGameStates.PlayingOnMap)]
-        public static void OpenRenderableDefAdjustWindow()
-        {
-            Find.WindowStack.Add(new RenderableDefAdjustWindow());
-        }
+        public static void OpenRenderableDefAdjustWindow() => Find.WindowStack.Add(new RenderableDefAdjustWindow());
     }
 
     public class RenderableDefAdjustWindow : Window
