@@ -11,13 +11,20 @@ using Verse;
 
 namespace RimValiCore_RW.Source
 {
+    [StaticConstructorOnStartup]
     public static class FloorConstructor
     {
+
         private static List<DesignationCategoryDef> toUpdateDesignationCatDefs = new List<DesignationCategoryDef>();
         private static List<DesignatorDropdownGroupDef> toUpdateDropdownDesDefs = new List<DesignatorDropdownGroupDef>();
         private static List<string> materials = new List<string>();
         private static HashSet<TerrainDef> floorsMade = new HashSet<TerrainDef>();
         private static bool canGenerate = true;
+
+        static FloorConstructor()
+        {
+            GenFloors();
+        }
         public static void GenFloors()
         {
             List<TerrainDef> workOn = new List<TerrainDef>();
@@ -81,7 +88,7 @@ namespace RimValiCore_RW.Source
                 DefDatabase<TerrainDef>.Add(def);
             }
 
-            Log.Message("[RimVali Core/FloorConstructor] Updating architect menu..");
+            
 
             //Updates/refreshes menus
             foreach (DesignationCategoryDef def in toUpdateDesignationCatDefs)

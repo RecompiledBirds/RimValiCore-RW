@@ -17,6 +17,7 @@
 
 	<ItemGroup>
 		<Folder Include="1.4\Assemblies\" />
+		<Folder Include="1.4\Defs\" />
 	</ItemGroup>
 
 </Project>
