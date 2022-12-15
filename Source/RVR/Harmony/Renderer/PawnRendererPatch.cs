@@ -15,7 +15,6 @@ namespace RVCRestructured.RVR.Harmony
             //Portrait checks
             bool portrait = flags.HasFlag(PawnRenderFlags.Portrait);
             Rot4 rotation = portrait ? Rot4.South : bodyFacing;
-
             Quaternion quat = Quaternion.AngleAxis(angle, Vector3.up);
 
             RVRComp comp = pawn.TryGetComp<RVRComp>();
@@ -37,7 +36,8 @@ namespace RVCRestructured.RVR.Harmony
                 }
 
                 RVG_Graphic graphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(comp.GetTexPath(renderableDef), pos.size, set[0], set[1], set[2], comp.GetMaskPath(renderableDef, pawn));
-                GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f), Quaternion.AngleAxis(angle, Vector3.up) * quat, graphic.MatAt(rotation), portrait || flags.FlagSet(PawnRenderFlags.DrawNow));
+                GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f),
+                   quat, graphic.MatAt(rotation), flags.FlagSet(PawnRenderFlags.DrawNow));
 
 
             }
