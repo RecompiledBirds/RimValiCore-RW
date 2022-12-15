@@ -1,7 +1,7 @@
 ﻿using RimWorld;
 using Verse;
 
-namespace RVCRestructured.RVR.Harmony
+namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class CanGetThoughtPatch
     {
