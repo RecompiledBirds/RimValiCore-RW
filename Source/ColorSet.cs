@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace RVCRestructured
@@ -22,7 +17,10 @@ namespace RVCRestructured
             this.three = three;
             this.dyeable = dyable;
         }
+        public TriColorSet()
+        {
 
+        }
         public bool Dyeable
         {
             get

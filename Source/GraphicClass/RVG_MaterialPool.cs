@@ -1,9 +1,4 @@
-﻿using RimWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -45,9 +40,7 @@ namespace RVCRestructured.Graphics
             req.colorThree = req.colorThree;
 #pragma warning restore CS1717
 
-            RVCLog.Log(req == null);
-            RVCLog.Log(req.shader.name);
-            
+
             if (!matDictionary.TryGetValue(req, out Material material))
             {
                 material = RVG_MaterialAllocator.Create(req.shader);
@@ -64,8 +57,7 @@ namespace RVCRestructured.Graphics
                 {
                     material.renderQueue = req.renderQueue;
                 }
-                RVCLog.Log("test");
-                RVCLog.Log("Mat is null", log: material == null);
+
                 if (!req.shaderParameters.NullOrEmpty())
                 {
                     int c = req.shaderParameters.Count;
@@ -75,13 +67,12 @@ namespace RVCRestructured.Graphics
                         req.shaderParameters[i].Apply(material);
                     }
                 }
-                RVCLog.Log("test2");
+
                 matDictionary.Add(req, material);
                 if (req.shader == ShaderDatabase.CutoutPlant || req.shader == ShaderDatabase.TransparentPlant)
                 {
                     WindManager.Notify_PlantMaterialCreated(material);
                 }
-                RVCLog.Log("test3");
             }
             return material;
         }

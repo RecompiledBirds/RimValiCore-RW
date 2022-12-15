@@ -1,10 +1,4 @@
-﻿using RimWorld;
-using RVCRestructured.Defs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Verse;
 
 namespace RVCRestructured.RVR
@@ -16,7 +10,41 @@ namespace RVCRestructured.RVR
     {
         public RaceGraphics raceGraphics = new RaceGraphics();
         public RaceRestrictions restrictions = new RaceRestrictions();
+        public ThoughtReplacer thoughtReplacer = new ThoughtReplacer();
+        public CannibalismThoughtsGetter cannibalismThoughts = new CannibalismThoughtsGetter();
+        public OrganHarvestThoughtGetter organHarvestThoughts = new OrganHarvestThoughtGetter();
+        public ButcherThoughtGetter butcherThoughtGetter = new ButcherThoughtGetter();
 
+        public ButcherThoughtGetter ButcherThoughtGetter
+        {
+            get
+            {
+                return butcherThoughtGetter;
+            }
+        }
+        public OrganHarvestThoughtGetter OrganHarvestThoughtGetter
+        {
+            get
+            {
+                return organHarvestThoughts;
+            }
+        }
+
+        public CannibalismThoughtsGetter CannibalismThoughtsGetter
+        {
+            get
+            {
+                return cannibalismThoughts;
+            }
+        }
+
+        public ThoughtReplacer ThoughtReplacer
+        {
+            get
+            {
+                return thoughtReplacer;
+            }
+        }
         public RaceRestrictions RaceRestrictions
         {
             get
@@ -43,9 +71,9 @@ namespace RVCRestructured.RVR
         public override void PostLoad()
         {
             this.comps.Add(new RVRCP());
-            base.PostLoad();           
+            base.PostLoad();
         }
 
-        
+
     }
 }
