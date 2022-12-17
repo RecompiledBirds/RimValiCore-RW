@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RVCRestructured.Source.RVR;
+using System.Collections.Generic;
 using Verse;
 
 namespace RVCRestructured.RVR
@@ -14,7 +15,15 @@ namespace RVCRestructured.RVR
         public CannibalismThoughtsGetter cannibalismThoughts = new CannibalismThoughtsGetter();
         public OrganHarvestThoughtGetter organHarvestThoughts = new OrganHarvestThoughtGetter();
         public ButcherThoughtGetter butcherThoughtGetter = new ButcherThoughtGetter();
+        public BodyTypeGetter bodyTypeGetter = null;
 
+        public BodyTypeGetter BodyTypeGetter
+        {
+            get
+            {
+                return bodyTypeGetter;
+            }
+        }
         public ButcherThoughtGetter ButcherThoughtGetter
         {
             get
@@ -72,6 +81,7 @@ namespace RVCRestructured.RVR
         {
             this.comps.Add(new RVRCP());
             base.PostLoad();
+            bodyTypeGetter = new BodyTypeGetter(this);
         }
 
 

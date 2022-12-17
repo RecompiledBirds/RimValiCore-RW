@@ -17,7 +17,7 @@ namespace RVCRestructured.RVR
 
         public List<ThoughtDef> restrictedThoughtDefs = new List<ThoughtDef>();
 
-        public List<BodyTypeDef> restricedBodyTypes = new List<BodyTypeDef>();
+        public List<BodyTypeDef> restrictedBodyTypes = new List<BodyTypeDef>();
 
         public List<ThingDef> restrictedBeds = new List<ThingDef>();
 
@@ -26,6 +26,7 @@ namespace RVCRestructured.RVR
         public List<ThingDef> restrictedApparel = new List<ThingDef>();
 
         public List<TraitDef> restrictedTraits = new List<TraitDef>();
+
 
         //Disabled items
         public List<ThoughtDef> disabledThoughts = new List<ThoughtDef>();
@@ -44,6 +45,8 @@ namespace RVCRestructured.RVR
 
         public List<TraitDef> allowedTraits = new List<TraitDef>();
 
+        public List<BodyTypeDef> allowedBodyTypes = new List<BodyTypeDef>();   
+
 
         //Mod items
         //Restricted items
@@ -60,6 +63,7 @@ namespace RVCRestructured.RVR
         public List<string> modRestrictedResearch = new List<string>();
 
         public List<string> modRestrictedApparel = new List<string>();
+
 
         //Enabled items
         public List<string> modAllowedFoodDefs = new List<string>();
@@ -132,7 +136,7 @@ namespace RVCRestructured.RVR
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Get all bodytypes from the mod
-                restricedBodyTypes.AddRange(DefDatabase<BodyTypeDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
+                restrictedBodyTypes.AddRange(DefDatabase<BodyTypeDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
             }
 
             //Do building restrictions
@@ -171,13 +175,25 @@ namespace RVCRestructured.RVR
             RestrictionsChecker.AddRestrictions(restrictedBuildings);
             RestrictionsChecker.AddRestrictions(restrictedResearchDefs);
             RestrictionsChecker.AddRestrictions(restrictedApparel);
-            RestrictionsChecker.AddRestrictions(restricedBodyTypes);
+            RestrictionsChecker.AddRestrictions(restrictedBodyTypes);
             RestrictionsChecker.AddRestrictions(restrictedThoughtDefs);
             RestrictionsChecker.AddRestrictions(restrictedEquipment);
             RestrictionsChecker.AddRestrictions(restrictedFoodDefs);
             RestrictionsChecker.AddRestrictions(restrictedTraits);
             #endregion
             #region ---Allowing Content---
+
+            foreach (string mod in modAllowedBodyTypes)
+            {
+                //Try to find the mod.
+                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
+                //If we can't find it, skip
+                if (pack == null) continue;
+                //Add everything considered to be food
+                allowedBodyTypes.AddRange(DefDatabase<BodyTypeDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
+            }
+
+
             //Do food allowances
             foreach (string mod in modAllowedFoodDefs)
             {

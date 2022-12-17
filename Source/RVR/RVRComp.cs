@@ -84,7 +84,6 @@ namespace RVCRestructured.RVR
 
         public void GenGraphics()
         {
-            RVCLog.Log("test");
             Pawn pawn = this.parent as Pawn;
 
             if (!(pawn.def is RaceDef raceDef))

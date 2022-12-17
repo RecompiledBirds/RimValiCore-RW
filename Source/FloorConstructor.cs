@@ -115,6 +115,8 @@ namespace RimValiCore_RW.Source
 
             foreach(ThingDef thingDef in floorMats)
             {
+                if (!materials.Contains(thingDef.defName))
+                    materials.Add(thingDef.defName);
                 ushort id = (ushort)$"{def.defName}_{thingDef.defName}".GetHashCode();
                 if (!DefDatabase<TerrainDef>.AllDefs.Any(t => t.defName == $"{t.defName}_{t.defName}"))
                 {

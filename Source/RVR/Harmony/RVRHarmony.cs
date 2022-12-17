@@ -37,6 +37,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"),postfix:new HarmonyMethod(typeof(FactionStartRelations),nameof(FactionStartRelations.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"),transpiler:new HarmonyMethod(typeof(PawnBlender),nameof(PawnBlender.Transpiler)));
             harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"),postfix:new HarmonyMethod(typeof(FactionStartRelations),nameof(FactionStartRelations.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "GenerateBodyType"), postfix: new HarmonyMethod(typeof(BodyTypeGenPatch),nameof(BodyTypeGenPatch.Posfix)));
             RVCLog.Log("RVR Patches completed.");
         }
     }

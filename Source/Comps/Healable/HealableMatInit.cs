@@ -19,7 +19,6 @@ namespace RVCRestructured.Comps
 
             if (thing.Stuff == null || !mats.ContainsKey(thing.Stuff))
                 return null;
-
             return mats[thing.Stuff];
         }
 
@@ -28,7 +27,7 @@ namespace RVCRestructured.Comps
             int amount = 0;
             foreach(ThingDef def in DefDatabase<ThingDef>.AllDefs)
             {
-                if (!def.HasComp(typeof(HealableMaterialComp)))
+                if (def.GetCompProperties<HealableMaterialCompProperties>()==null)
                     continue;
 
                 mats.Add(def, def.GetCompProperties<HealableMaterialCompProperties>());

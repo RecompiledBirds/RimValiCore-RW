@@ -21,11 +21,9 @@ namespace RVCRestructured.RVR {
                     return;
                 if (hediff.Part.def != __instance)
                     return;
-                Log.Message("test");
                 StatModifier modifier = hediff.CurStage?.statOffsets?.Find(x => x.stat == RVCStatDefOf.RVC_HealthOffset)??null;
                 if (modifier != null)
                     num += modifier.value;
-                Log.Message("test2");
                 modifier = hediff.CurStage?.statFactors?.Find(x => x.stat == RVCStatDefOf.RVC_HealthOffset)??null;
                 if (modifier != null)
                 {
