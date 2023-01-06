@@ -17,7 +17,10 @@ namespace RVCRestructured.RVR.HarmonyPatches
         public static void AddRestrictions<T>(List<T> defs) where T : Def
         {
             foreach (Def def in defs)
+            {
+                RVCLog.Log(def.defName);
                 AddRestriction(def);
+            }
         }
 
         public static bool IsRestricted(Def def)

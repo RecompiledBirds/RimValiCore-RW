@@ -142,12 +142,13 @@ namespace RVCRestructured.RVR
             //Do building restrictions
             foreach (string mod in modRestrictedBuildings)
             {
+                
                 //Try to find the mod.
                 ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Add everything considered to be a building
-                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.building != null));
+                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefs.Where(x => x.modContentPack == pack && x.building!=null&&x.BuildableByPlayer&&x.blueprintDef!=null));
             }
 
             //Do research restrictions
