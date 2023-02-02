@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using RVCRestructured.RVR.Harmony;
 using UnityEngine;
 using Verse;
 
@@ -38,6 +39,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"),transpiler:new HarmonyMethod(typeof(PawnBlender),nameof(PawnBlender.Transpiler)));
             harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"),postfix:new HarmonyMethod(typeof(FactionStartRelations),nameof(FactionStartRelations.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "GenerateBodyType"), postfix: new HarmonyMethod(typeof(BodyTypeGenPatch),nameof(BodyTypeGenPatch.Posfix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"),prefix: new HarmonyMethod(typeof(NamePatch),nameof(NamePatch.Patch)));
+            harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)),postfix: new HarmonyMethod(typeof(ApparelGraphicPatch),nameof(ApparelGraphicPatch.Postfix)));
             RVCLog.Log("RVR Patches completed.");
         }
     }

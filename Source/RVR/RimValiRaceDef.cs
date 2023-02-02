@@ -16,6 +16,7 @@ namespace RVCRestructured.RVR
         public OrganHarvestThoughtGetter organHarvestThoughts = new OrganHarvestThoughtGetter();
         public ButcherThoughtGetter butcherThoughtGetter = new ButcherThoughtGetter();
         public BodyTypeGetter bodyTypeGetter = null;
+        public bool hasUniqueHeadApparel = false;
 
         public BodyTypeGetter BodyTypeGetter
         {

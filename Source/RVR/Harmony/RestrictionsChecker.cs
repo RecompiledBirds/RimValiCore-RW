@@ -18,7 +18,6 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
             foreach (Def def in defs)
             {
-                RVCLog.Log(def.defName);
                 AddRestriction(def);
             }
         }
