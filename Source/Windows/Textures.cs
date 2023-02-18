@@ -9,6 +9,13 @@ using Verse;
 namespace RVCRestructured.Windows
 {
     [StaticConstructorOnStartup]
+    public static class IconTextures
+    {
+        public static readonly Texture2D iconCustomize = ContentFinder<Texture2D>.Get("GUI/Button/CustomizeButton");
+        public static readonly Texture2D iconRename = ContentFinder<Texture2D>.Get("GUI/Button/RenameButton");
+    }
+
+    [StaticConstructorOnStartup]
     public static class ColorTextures
     {
         static ColorTextures() { }
