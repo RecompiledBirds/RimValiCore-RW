@@ -15,66 +15,38 @@ namespace RVCRestructured.RVR.Harmony
         {
             Pawn pawn = apparel.Wearer;
             string path = $"{apparel.def.apparel.wornGraphicPath}";
-            string bodyTypePath = $"{apparel.def.apparel.wornGraphicPath}_{bodyType.defName}";
 
             if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
                 return;
 
             Graphic graphic;
-            if (!apparel.def.apparel.layers.Contains(ApparelLayerDefOf.Overhead))
+            if (apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead || apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover || PawnRenderer.RenderAsPack(apparel) || apparel.WornGraphicPath == BaseContent.PlaceholderImagePath || apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath)
             {
-                if (ContentFinder<Texture2D>.Get($"{bodyTypePath}_south"))
+                string altPath = $"{apparel.def.apparel.wornGraphicPath}_{bodyType.defName}";
+                if (ContentFinder<Texture2D>.Get(altPath, false))
                 {
-                    graphic = GraphicDatabase.Get<Graphic_Multi>(bodyTypePath, ShaderDatabase.Cutout, apparel.DrawSize, apparel.DrawColor);
-                    rec = new ApparelGraphicRecord(graphic, apparel);
-                    return;
+                    path = altPath;
                 }
-
-                if (!ContentFinder<Texture2D>.Get($"{path}_south"))
-                    return;
-
-                graphic = GraphicDatabase.Get<Graphic_Multi>(path, ShaderDatabase.Cutout, apparel.DrawSize, apparel.DrawColor);
-                rec = new ApparelGraphicRecord(graphic, apparel);
-                return;
+                else
+                {
+                    path = apparel.def.apparel.wornGraphicPath;
+                }
             }
-
-
-            if (!(pawn.def is RaceDef))
+            else
             {
-                graphic = GraphicDatabase.Get<Graphic_Multi>(path, ShaderDatabase.Cutout, apparel.DrawSize, apparel.DrawColor);
-                rec = new ApparelGraphicRecord(graphic, apparel);
-                return;
+                path = apparel.WornGraphicPath + "_" + bodyType.defName;
             }
 
-            RaceDef rDef = pawn.def as RaceDef;
-
-            if (!rDef.hasUniqueHeadApparel)
+            Shader shader = ShaderDatabase.Cutout;
+            if (apparel.def.apparel.useWornGraphicMask)
             {
-                graphic = GraphicDatabase.Get<Graphic_Multi>(path, ShaderDatabase.Cutout, apparel.DrawSize, apparel.DrawColor);
-                rec = new ApparelGraphicRecord(graphic, apparel);
-                return;
+                shader = ShaderDatabase.CutoutComplex;
             }
 
-            if (!apparel.def.apparel.layers.Contains(ApparelLayerDefOf.Overhead))
-            {
-                graphic = GraphicDatabase.Get<Graphic_Multi>(path, ShaderDatabase.Cutout, apparel.DrawSize, apparel.DrawColor);
-                rec = new ApparelGraphicRecord(graphic, apparel);
-                return;
-            }
-                        
-            
-            if (ContentFinder<Texture2D>.Get($"{bodyTypePath}_south"))
-            {
-                graphic = GraphicDatabase.Get<Graphic_Multi>(bodyTypePath, ShaderDatabase.Cutout, apparel.DrawSize, apparel.DrawColor);
-                rec = new ApparelGraphicRecord(graphic, apparel);
-                return;
-            }
+            graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.DrawSize, apparel.DrawColor);
 
-            if (!ContentFinder<Texture2D>.Get($"{path}_south"))
-                return;
-
-            graphic = GraphicDatabase.Get<Graphic_Multi>(path, ShaderDatabase.Cutout, apparel.DrawSize, apparel.DrawColor);
             rec = new ApparelGraphicRecord(graphic, apparel);
+            
         }
     }
 }
