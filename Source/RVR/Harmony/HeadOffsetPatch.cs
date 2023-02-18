@@ -1,11 +1,6 @@
 ﻿using RimWorld;
 using RVCRestructured.Defs;
 using RVCRestructured.RVR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
@@ -25,7 +20,7 @@ namespace RVCRestructured.Source.RVR.Harmony
             if (renderableDef == null)
                 return;
 
-            __result = new Vector3(renderableDef.GetPos(pawn).position.x,renderableDef.GetPos(pawn).position.z);
+            __result = new Vector3(renderableDef.GetPos(pawn).position.x,__result.y,renderableDef.GetPos(pawn).position.z);
         }
     }
 }
