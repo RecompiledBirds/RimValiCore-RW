@@ -2,12 +2,15 @@
 using RVCRestructured;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
+using Color = UnityEngine.Color;
 
 namespace RimValiCore_RW.Source
 {
@@ -20,7 +23,7 @@ namespace RimValiCore_RW.Source
         private static List<string> materials = new List<string>();
         private static HashSet<TerrainDef> floorsMade = new HashSet<TerrainDef>();
         private static bool canGenerate = true;
-
+        private static int renderPres = 180;
         static FloorConstructor()
         {
             GenFloors();
@@ -107,6 +110,7 @@ namespace RimValiCore_RW.Source
             RVCLog.Log($"Built  {floorsMade.Count} floors from {materials.Count} materials.");
             //We need to do this or RW has a fit
             WealthWatcher.ResetStaticData();
+            
         }
 
         public static void GenAllVars(TerrainDef def, string name)
@@ -132,10 +136,7 @@ namespace RimValiCore_RW.Source
                 List<string> avoidFields = new List<string>() { "color", "defname", "label", "debugrandomid", "index", "shorthash", "costlist", "uiiconcolor", "designatordropdown" };
                 foreach (FieldInfo field in def.GetType().GetFields(bindingFlags).Where(f => !avoidFields.Contains(f.Name.ToLower())))
                 {
-                    foreach (FieldInfo f2 in output.GetType().GetFields(bindingFlags).Where(f => f.Name == field.Name))
-                    {
-                        f2.SetValue(output, field.GetValue(def));
-                    }
+                    output.GetType().GetField(field.Name,bindingFlags).SetValue(output, field.GetValue(def));
                 }
 
                 List<string> toRemove = new List<string>();
@@ -254,7 +255,7 @@ namespace RimValiCore_RW.Source
 
         private static ThingDef CreateBluePrint(TerrainDef output)
         {
-            ThingDef blueprintDef = new ThingDef()
+            ThingDef blueprintDef = new ThingDef
             {
                 category = ThingCategory.Ethereal,
                 label = "Unspecified blueprint",
@@ -267,10 +268,10 @@ namespace RimValiCore_RW.Source
                             new CompProperties_Forbiddable()
                          },
                 drawerType = DrawerType.MapMeshAndRealTime,
-                ignoreIllegalLabelCharacterConfigError = true
+                ignoreIllegalLabelCharacterConfigError = true,
+                thingClass = typeof(Blueprint_Build),
+                defName = ThingDefGenerator_Buildings.BlueprintDefNamePrefix + output.defName
             };
-            blueprintDef.thingClass = typeof(Blueprint_Build);
-            blueprintDef.defName = ThingDefGenerator_Buildings.BlueprintDefNamePrefix + output.defName;
             blueprintDef.label = output.label + "BlueprintLabelExtra".Translate();
             blueprintDef.entityDefToBuild = output;
             blueprintDef.graphicData = new GraphicData
@@ -289,16 +290,14 @@ namespace RimValiCore_RW.Source
 
         private static TerrainDef GetOutputTerrain(TerrainDef def, ThingDef thingDef, ushort id)
         {
-            TerrainDef output = new TerrainDef()
-            {
-                color = thingDef.GetColorForStuff(thingDef),
-                uiIconColor = thingDef.GetColorForStuff(thingDef),
-                defName = $"{def.defName}_{thingDef.defName}",
-                label = string.Format(def.label, thingDef.label),
-                debugRandomId = id,
-                index = id,
-                shortHash = id,
-                costList = ((Func<List<ThingDefCountClass>>)delegate
+            TerrainDef output = new TerrainDef();
+            output.color = def.GetColorForStuff(thingDef);
+            output.defName = $"{def.defName}_{thingDef.defName}";
+            output.label = string.Format(def.label, thingDef.label);
+            output.debugRandomId = id;
+            output.index = id;
+            output.shortHash = id;
+            output.costList = ((Func<List<ThingDefCountClass>>)delegate
                 {
                     List<ThingDefCountClass> costList = new List<ThingDefCountClass>();
                     int amount = 0;
@@ -312,12 +311,14 @@ namespace RimValiCore_RW.Source
                         count = amount
                     });
                     return costList;
-                })(),
-                designationCategory = def.designationCategory,
-                designatorDropdown = def.designatorDropdown,
-                ignoreIllegalLabelCharacterConfigError = def.ignoreIllegalLabelCharacterConfigError
-            };
-
+                })();
+            output.renderPrecedence = renderPres++;
+            output.designationCategory = def.designationCategory;
+            output.designatorDropdown = def.designatorDropdown;
+            output.ignoreIllegalLabelCharacterConfigError = def.ignoreIllegalLabelCharacterConfigError;
+            output.pollutionColor = new Color(1f, 1f, 1f, 0.8f);
+            output.pollutionOverlayScale = new Vector2(0.75f, 0.75f);
+            output.pollutionOverlayTexturePath = "Terrain/Surfaces/PollutionFloorSmooth";
             return output;
         }
 
