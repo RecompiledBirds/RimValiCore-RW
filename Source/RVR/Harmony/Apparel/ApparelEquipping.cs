@@ -6,12 +6,13 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static bool ApparelAllowedForRace(this ThingDef def, ThingDef race)
         {
-            RaceDef raceDef = race as RaceDef;
-            bool canOnlyWearApprovedApparel = raceDef?.RaceRestrictions.canUseAnyApparel ?? false;
-            bool inAllowedDefs = (raceDef?.RaceRestrictions.allowedApparel.Contains(def) ?? false) || (raceDef?.RaceRestrictions.restrictedApparel.Contains(def) ?? false);
             bool restricted = RestrictionsChecker.IsRestricted(def);
-      
-            return (restricted && inAllowedDefs) || (canOnlyWearApprovedApparel && inAllowedDefs) || !restricted;
+            if (!(race is RaceDef raceDef)) return !restricted;
+
+            bool canOnlyWearApprovedApparel = !raceDef.RaceRestrictions.canUseAnyApparel;
+            bool inAllowedDefs = raceDef.RaceRestrictions.allowedApparel.Contains(def) || raceDef.RaceRestrictions.restrictedApparel.Contains(def);
+
+            return (restricted && inAllowedDefs) || (canOnlyWearApprovedApparel && inAllowedDefs) || !restricted && !canOnlyWearApprovedApparel;
         }
 
         public static void EquipPatch(ref bool __result, Thing thing, Pawn pawn, ref string cantReason)

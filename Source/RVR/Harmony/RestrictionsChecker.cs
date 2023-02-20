@@ -9,8 +9,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         public static void AddRestriction(Def def)
         {
-            if (restrictedDefs.Contains(def))
-                return;
+            if (restrictedDefs.Contains(def)) return;
             restrictedDefs.Add(def);
         }
 

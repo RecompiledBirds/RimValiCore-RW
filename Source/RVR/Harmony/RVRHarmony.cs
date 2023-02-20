@@ -19,7 +19,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             harmony.Patch(AccessTools.Method(typeof(PawnGraphicSet), "ResolveAllGraphics"), postfix: new HarmonyMethod(typeof(ResolveGraphicsPostFix), nameof(ResolveGraphicsPostFix.ResolveGraphicsPatch)));
             harmony.Patch(AccessTools.Constructor(typeof(PawnTextureAtlas)), transpiler: new HarmonyMethod(typeof(RenderTextureTranspiler), nameof(RenderTextureTranspiler.Transpile)));
             harmony.Patch(AccessTools.Method(typeof(RaceProperties), "CanEverEat", new[] { typeof(ThingDef) }), postfix: new HarmonyMethod(typeof(EatingPatch), nameof(EatingPatch.EdiblePatch)));
-            harmony.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "GenerateStartingApparelFor"), prefix: new HarmonyMethod(typeof(ApparelGenPatch), nameof(ApparelGenPatch.ApparelGenPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "CanUsePair"), postfix: new HarmonyMethod(typeof(ApparelGenPatch), nameof(ApparelGenPatch.CanUsePairPatch)));
             harmony.Patch(AccessTools.Method(typeof(EquipmentUtility), "CanEquip", new[] { typeof(Thing), typeof(Pawn), typeof(string).MakeByRefType(), typeof(bool) }), postfix: new HarmonyMethod(typeof(ApparelEquipping), nameof(ApparelEquipping.EquipPatch)));
             harmony.Patch(AccessTools.Method(typeof(RestUtility), "CanUseBedEver"), postfix: new HarmonyMethod(typeof(BedPatch), nameof(BedPatch.CanUseBed)));
             harmony.Patch(AccessTools.Method(typeof(TraitSet), "GainTrait"), prefix: new HarmonyMethod(typeof(TraitPatch), nameof(TraitPatch.TraitPrefix)));
