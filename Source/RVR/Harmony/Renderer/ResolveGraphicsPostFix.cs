@@ -25,6 +25,11 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 skinTwo = comp[set][1];
                 skinThree = comp[set][2];
             }
+            __instance.geneGraphics = new System.Collections.Generic.List<GeneGraphicRecord>();
+            __instance.bodyTattooGraphic= RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
+            __instance.faceTattooGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
+            __instance.furCoveredGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
+            
             __instance.nakedGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(rDef.RaceGraphics.bodyTex, rDef.RaceGraphics.bodySize, skinOne, skinTwo, skinThree);
             if (!rDef.RaceGraphics.hasHair)
                 __instance.hairGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
