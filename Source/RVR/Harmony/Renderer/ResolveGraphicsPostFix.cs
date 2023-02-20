@@ -26,13 +26,18 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 skinThree = comp[set][2];
             }
             __instance.geneGraphics = new System.Collections.Generic.List<GeneGraphicRecord>();
-            __instance.bodyTattooGraphic= RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
+            __instance.bodyTattooGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
             __instance.faceTattooGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
             __instance.furCoveredGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
-            
+
+
+
             __instance.nakedGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(rDef.RaceGraphics.bodyTex, rDef.RaceGraphics.bodySize, skinOne, skinTwo, skinThree);
             if (!rDef.RaceGraphics.hasHair)
+            {
+                __instance.beardGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
                 __instance.hairGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
+            }
             __instance.headGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(rDef.RaceGraphics.headTex, rDef.RaceGraphics.headSize, skinOne, skinTwo, skinThree);
             __instance.SetApparelGraphicsDirty();
             PortraitsCache.SetDirty(pawn);
