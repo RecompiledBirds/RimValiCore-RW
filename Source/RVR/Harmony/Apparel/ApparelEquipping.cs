@@ -8,9 +8,9 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
             RaceDef raceDef = race as RaceDef;
             bool canOnlyWearApprovedApparel = raceDef?.RaceRestrictions.canUseAnyApparel ?? false;
-            bool inAllowedDefs = raceDef?.RaceRestrictions.allowedApparel.Contains(def) ?? false;
+            bool inAllowedDefs = (raceDef?.RaceRestrictions.allowedApparel.Contains(def) ?? false) || (raceDef?.RaceRestrictions.restrictedApparel.Contains(def) ?? false);
             bool restricted = RestrictionsChecker.IsRestricted(def);
-
+      
             return (restricted && inAllowedDefs) || (canOnlyWearApprovedApparel && inAllowedDefs) || !restricted;
         }
 

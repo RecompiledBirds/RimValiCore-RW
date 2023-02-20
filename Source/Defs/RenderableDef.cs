@@ -12,7 +12,7 @@ namespace RVCRestructured.Defs
     public class RenderableDef : Def
     {
         public List<BaseTex> textures = new List<BaseTex>();
-
+        public bool hiddenInBed = false;
         public BodyPartGraphicPos east;
         public BodyPartGraphicPos west = null;
         public BodyPartGraphicPos south;
