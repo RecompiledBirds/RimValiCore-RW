@@ -1,4 +1,5 @@
-﻿using RVCRestructured.Defs;
+﻿using RimWorld;
+using RVCRestructured.Defs;
 using RVCRestructured.Graphics;
 using UnityEngine;
 using Verse;
@@ -27,6 +28,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 if (renderableDef.linkPosWith != null)
                     position += renderableDef.linkPosWith.GetPos(rotation).position;
 
+                if (pawn.InBed() && !pawn.CurrentBed().def.building.bed_showSleeperBody && !renderableDef.showsInBed)
+                    continue;
                 TriColorSet set = null;
                 if (renderableDef.colorSet != null)
                     set = comp[renderableDef.colorSet];

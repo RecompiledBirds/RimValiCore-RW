@@ -30,7 +30,11 @@ namespace RVCRestructured.RVR.HarmonyPatches
             __instance.faceTattooGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
             __instance.furCoveredGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
 
+            __instance.desiccatedHeadGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
+            __instance.dessicatedGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
+            __instance.desiccatedHeadStumpGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
 
+            __instance.headStumpGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
 
             __instance.nakedGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(rDef.RaceGraphics.bodyTex, rDef.RaceGraphics.bodySize, skinOne, skinTwo, skinThree);
             if (!rDef.RaceGraphics.hasHair)
