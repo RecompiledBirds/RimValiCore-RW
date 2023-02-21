@@ -5,6 +5,7 @@ using RVCRestructured.Source.RVR.Harmony;
 using System.Linq.Expressions;
 using UnityEngine;
 using Verse;
+using static RVCRestructured.RVR.HarmonyPatches.CanGetThoughtPatch;
 
 namespace RVCRestructured.RVR.HarmonyPatches
 {
