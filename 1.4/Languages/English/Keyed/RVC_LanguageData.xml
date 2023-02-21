@@ -2,4 +2,5 @@
 <LanguageData>
 	<RVC_Accept>Yes</RVC_Accept>
 	<RVC_Cancel>Cancel</RVC_Cancel>
+	<RVC_CannotWear>{RACE} cannot wear this</RVC_CannotWear>
 </LanguageData>

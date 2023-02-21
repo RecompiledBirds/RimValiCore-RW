@@ -22,7 +22,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             bool allowed = thing.def.ApparelAllowedForRace(pawn.def);
             __result &= allowed;
             if (!allowed)
-                cantReason = "CannotWearRVR".Translate(pawn.def.label.Named("RACE"));
+                cantReason = "RVC_CannotWear".Translate(pawn.def.label.Named("RACE"));
 
         }
     }
