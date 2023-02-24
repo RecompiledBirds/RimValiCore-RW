@@ -67,7 +67,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         public static bool ShouldSwitchPawnkindBased(PawnGenerationRequest request)
         {
-            return (ShuffleDefs.Count != 0 && ShuffleDefs.Any(x => x.targetRaces.Contains(request.KindDef.race))) && request.KindDef.RaceProps.Humanlike;
+            return ShuffleDefs.Count != 0 && ShuffleDefs.Any(x => x.targetRaces.Contains(request.KindDef.race)) && request.KindDef.RaceProps.Humanlike;
         }
         public static bool ShouldSwitch(PawnGenerationRequest request)
         {
@@ -76,21 +76,27 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         public static bool CanSwapRace(ThingDef def)
         {
-            return ExcludedDefs.Count != 0 && !ExcludedDefs.Any(x => x.excludedRaces.Count > 0 && x.excludedRaces.Contains(def));
+            return ExcludedDefs.NullOrEmpty() || !ExcludedDefs.Any(x => x.excludedRaces.Count > 0 && x.excludedRaces.Contains(def));
         }
 
         public static bool CanSwapPawnkind(PawnKindDef def)
         {
-            return ExcludedDefs.Count != 0 && !ExcludedDefs.Any(x => x.excludedPawnKinds.Count > 0 && x.excludedPawnKinds.Contains(def));
+            return ExcludedDefs.NullOrEmpty() || !ExcludedDefs.Any(x => !x.excludedPawnKinds.NullOrEmpty() && x.excludedPawnKinds.Contains(def));
         }
 
         public static Thing GetHumanoidRace(PawnGenerationRequest request)
         {
+         
             ThingDef def = request.KindDef.race;
+            //saftey check for scenario pawns
+            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter))
+                return ThingMaker.MakeThing(def);
+            
             if (!CanSwapRace(def))
             {
                 return ThingMaker.MakeThing(def);
             }
+            
             if (SkipOnce)
             {
                 SkipOnce = false;
@@ -99,9 +105,11 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
             if (ShouldSwitch(request) && CanSwapPawnkind(request.KindDef))
             {
-                IEnumerable<ThingDef> defs = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.race != null && x.race.Humanlike);
-
-                def = defs.RandomElementByWeight(x => x == ThingDefOf.Human ? 50 : 30);
+                List<ThingDef> defs = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.race != null && x.race.Humanlike).ToList();
+                Log.Message(defs.Join());
+                def = defs.RandomElement();
+                Log.Message(def.defName);
+                
             }
 
             if (ShouldSwitchPawnkindBased(request))
@@ -111,6 +119,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
             }
             return ThingMaker.MakeThing(def);
         }
+
+
 
     }
 }

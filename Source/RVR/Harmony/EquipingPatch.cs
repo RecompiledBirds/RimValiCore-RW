@@ -19,7 +19,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             bool allowed = !restricted;
             if (pawn.def is RaceDef rDef)
             {
-                allowed |= rDef.RaceRestrictions.allowedEquipment.Contains(thing.def);
+                allowed |= rDef.RaceRestrictions.allowedEquipment.Contains(thing.def) || rDef.restrictions.restrictedEquipment.Contains(thing.def);
             }
 
             __result &= allowed;

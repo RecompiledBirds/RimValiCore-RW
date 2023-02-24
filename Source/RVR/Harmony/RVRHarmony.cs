@@ -32,6 +32,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "RemoveMemoriesOfDef"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
             harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "RemoveMemoriesOfDefIf"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
             harmony.Patch(AccessTools.Method(typeof(SituationalThoughtHandler), "TryCreateThought"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatchSIT)));
+            harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "TryGainMemory", new[] {typeof(Thought_Memory),typeof(Pawn)}),prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch),nameof(ThoughtReplacerPatch.ReplacePatchCreateMemoryPrefix)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "CanGetThought"), postfix: new HarmonyMethod(typeof(CanGetThoughtPatch), nameof(CanGetThoughtPatch.CanGetPatch)));
             harmony.Patch(AccessTools.Method(typeof(EquipmentUtility), "CanEquip", new[] { typeof(Thing), typeof(Pawn), typeof(string).MakeByRefType(), typeof(bool) }), postfix: new HarmonyMethod(typeof(EquipingPatch), "EquipingPostfix"));
             harmony.Patch(AccessTools.Method(typeof(FoodUtility), "ThoughtsFromIngesting"), postfix: new HarmonyMethod(typeof(IngestingPatch),nameof(IngestingPatch.IngestingPostfix)));
@@ -45,6 +46,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)),postfix: new HarmonyMethod(typeof(ApparelGraphicPatch),nameof(ApparelGraphicPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnRenderer),"BaseHeadOffsetAt"), postfix: new HarmonyMethod(typeof(HeadOffsetPatch), nameof(HeadOffsetPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"),transpiler: new HarmonyMethod(typeof(PawnBlender),nameof(PawnBlender.Transpiler)));
             RVCLog.Log("RVR Patches completed.");
         }
     }

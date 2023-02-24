@@ -14,6 +14,17 @@ namespace RVCRestructured.RVR.HarmonyPatches
             }
         }
 
+        public static bool ReplacePatchCreateMemoryPrefix(Thought_Memory newThought, MemoryThoughtHandler __instance)
+        {
+            Pawn pawn = __instance.pawn;
+            if(pawn.def is RaceDef raceDef)
+            {
+                raceDef.ThoughtReplacer.Replace(ref newThought.def);
+                newThought = ThoughtMaker.MakeThought(newThought.def, newThought.CurStageIndex);
+            }
+            return true;
+        }
+
         public static void ReplacePatchSIT(ref ThoughtDef def, SituationalThoughtHandler __instance)
         {
             Pawn pawn = __instance.pawn;
