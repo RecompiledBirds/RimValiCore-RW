@@ -88,90 +88,38 @@ namespace RVCRestructured.RVR
         public bool canUseAnyApparel = true;
 
         /// <summary>
+        /// Helper function that sets a modList's data based on what it can find from that mod
+        /// </summary>
+        /// <param name="modNames"></param>
+        /// <param name="modList"></param>
+        /// <param name="extraParams"></param>
+        /// <typeparam name="T"></typeparam>
+        private void AddContentsToList<T> (List<string> modNames, ref List<T> modList, System.Func<T, bool> extraParams) where T : Def
+        {
+            foreach (string mod in modNames)
+            {
+                //Try to find the mod.
+                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
+                if (pack == null) continue;
+                //Extra params
+                modList.AddRange(DefDatabase<T>.AllDefsListForReading.Where(x => x.modContentPack == pack && extraParams(x)));
+            }
+        }
+
+        /// <summary>
         /// Do some tasks on load, such as getting the modContent lists
         /// </summary>
         public void OnLoad()
         {
             #region ---Restricting Content---
 
-            //Do food restrictions
-            foreach (string mod in modRestrictedFoodDefs)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Add everything considered to be food
-                restrictedFoodDefs.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsNutritionGivingIngestible));
-
-            }
-
-            //Do equipment restrictions
-            foreach (string mod in modRestrictedEquipment)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Add everything considered to be a weapon
-                restrictedEquipment.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsWeapon));
-            }
-
-            //Do thought restrictions
-            foreach (string mod in modRestrictedThoughts)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Get all thoughts from the mod
-                restrictedThoughtDefs.AddRange(DefDatabase<ThoughtDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
-            }
-
-            //Do BodyType restrictions
-            foreach (string mod in modRestrictedBodyTypes)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Get all bodytypes from the mod
-                restrictedBodyTypes.AddRange(DefDatabase<BodyTypeDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
-            }
-
-            //Do building restrictions
-            foreach (string mod in modRestrictedBuildings)
-            {
-                
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Add everything considered to be a building
-                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefs.Where(x => x.modContentPack == pack && x.building!=null&&x.BuildableByPlayer&&x.blueprintDef!=null));
-            }
-
-            //Do research restrictions
-            foreach (string mod in modRestrictedResearch)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Get all researchprojectdefs from the mod
-                restrictedResearchDefs.AddRange(DefDatabase<ResearchProjectDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
-            }
-
-            //Do apparel restrictions
-            foreach (string mod in modRestrictedApparel)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Add everything considered to be apparel
-                restrictedApparel.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsApparel));
-            }
+            AddContentsToList(modRestrictedFoodDefs, ref restrictedFoodDefs, x => x.IsNutritionGivingIngestible);
+            AddContentsToList(modRestrictedEquipment, ref restrictedEquipment, x => x.IsWeapon);
+            AddContentsToList(modRestrictedThoughts, ref restrictedThoughtDefs, x => true);
+            AddContentsToList(modRestrictedBodyTypes, ref restrictedBodyTypes, x => true);
+            AddContentsToList(modRestrictedBuildings, ref restrictedBuildings, x => x.building != null && x.BuildableByPlayer && x.blueprintDef != null);
+            AddContentsToList(modRestrictedResearch, ref restrictedResearchDefs, x => true);
+            AddContentsToList(modRestrictedApparel, ref restrictedApparel, x => x.IsApparel);
 
             RestrictionsChecker.AddRestrictions(restrictedBuildings);
             RestrictionsChecker.AddRestrictions(restrictedResearchDefs);
