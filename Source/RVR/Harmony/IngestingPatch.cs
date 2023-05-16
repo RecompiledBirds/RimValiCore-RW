@@ -12,7 +12,10 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static void IngestingPostfix(Pawn ingester, Thing foodSource, ThingDef foodDef, ref List<FoodUtility.ThoughtFromIngesting> __result)
         {
-            bool cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
+            bool cannibal = false;
+            // Without this check an NRE will be thrown
+            if (ingester.story != null)
+                cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
 
             if (!(ingester.def is RaceDef rDef))
                 return;
