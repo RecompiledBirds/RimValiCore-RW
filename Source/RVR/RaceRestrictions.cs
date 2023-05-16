@@ -141,9 +141,9 @@ namespace RVCRestructured.RVR
             AddContentsToList(modAllowedEquipment, ref allowedEquipment, x => x.IsWeapon);
             //AddContentsToList(modAllowedThoughts, ref allowedThoughtDefs, x => true);
             AddContentsToList(modAllowedBodyTypes, ref allowedBodyTypes, x => true);
-            AddContentsToList(modAllowedBuildings, ref allowedBuildings, x => true);
+            AddContentsToList(modAllowedBuildings, ref allowedBuildings, x => x.building != null);
             //AddContentsToList(modAllowedResearch, ref allowedResearch, x => true);
-            AddContentsToList(modAllowedApparel, ref allowedApparel, x => true);
+            AddContentsToList(modAllowedApparel, ref allowedApparel, x => x.IsApparel);
 
             #endregion
 
