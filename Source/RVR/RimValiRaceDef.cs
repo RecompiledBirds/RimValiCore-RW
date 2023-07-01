@@ -1,4 +1,5 @@
-﻿using RVCRestructured.Source.RVR;
+﻿using RimWorld;
+using RVCRestructured.Source.RVR;
 using System.Collections.Generic;
 using Verse;
 
@@ -16,6 +17,7 @@ namespace RVCRestructured.RVR
         public OrganHarvestThoughtGetter organHarvestThoughts = new OrganHarvestThoughtGetter();
         public ButcherThoughtGetter butcherThoughtGetter = new ButcherThoughtGetter();
         public BodyTypeGetter bodyTypeGetter = null;
+        public bool useHumanRecipes = true;
         public bool hasUniqueHeadApparel = false;
 
         public BodyTypeGetter BodyTypeGetter
@@ -81,8 +83,18 @@ namespace RVCRestructured.RVR
         public override void PostLoad()
         {
             this.comps.Add(new RVRCP());
-            base.PostLoad();
+            
             bodyTypeGetter = new BodyTypeGetter(this);
+            if (useHumanRecipes)
+            {
+                foreach(RecipeDef def in ThingDefOf.Human.recipes)
+                {
+                    if(!this.recipes.Contains(def)){
+                        this.recipes.Add(def);
+                    }
+                }
+            }
+            base.PostLoad();
         }
 
 
