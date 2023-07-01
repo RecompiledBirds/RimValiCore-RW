@@ -85,16 +85,22 @@ namespace RVCRestructured.RVR
             this.comps.Add(new RVRCP());
             
             bodyTypeGetter = new BodyTypeGetter(this);
+            
+            base.PostLoad();
+        }
+        public override void ResolveReferences()
+        {
             if (useHumanRecipes)
             {
-                foreach(RecipeDef def in ThingDefOf.Human.recipes)
+                foreach (RecipeDef def in ThingDefOf.Human.recipes)
                 {
-                    if(!this.recipes.Contains(def)){
+                    if (!this.recipes.Contains(def))
+                    {
                         this.recipes.Add(def);
                     }
                 }
             }
-            base.PostLoad();
+            base.ResolveReferences();
         }
 
 
