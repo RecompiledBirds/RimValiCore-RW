@@ -112,10 +112,6 @@ namespace RVCRestructured.RVR
 
                 renderableIndexes[rDef.defName] = index;
                 int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
-                foreach (string str in rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn))
-                {
-                    RVCLog.Log(str, log: pawn.gender == Gender.Female);
-                }
                 index = rand.Next(maskIndex);
                 masks.Add(rDef.defName, index);
                 if (rDef.linkTexWith != null)
