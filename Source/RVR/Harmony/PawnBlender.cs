@@ -71,7 +71,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
         }
         public static bool ShouldSwitch(PawnGenerationRequest request)
         {
-            return request.KindDef.RaceProps.Humanlike;
+            return request.KindDef.RaceProps.Humanlike && Rand.Chance(0.3f);
         }
 
         public static bool CanSwapRace(ThingDef def)

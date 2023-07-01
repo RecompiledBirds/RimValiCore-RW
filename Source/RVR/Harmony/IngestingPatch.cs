@@ -17,40 +17,49 @@ namespace RVCRestructured.RVR.HarmonyPatches
             if (!(ingester.def is RaceDef rDef))
                 return;
             ThingDef r;
-            for (int i = 0; i < __result.Count; i++)
+            List<FoodUtility.ThoughtFromIngesting> backupCopy = __result;
+            try
             {
-                ThoughtDef t = __result[i].thought;
-
-                if (t == ThoughtDefOf.AteHumanlikeMeatDirect || t == ThoughtDefOf.AteHumanlikeMeatDirectCannibal)
+                for (int i = 0; i < __result.Count; i++)
                 {
-                    r = foodDef.ingestible.sourceDef;
+                    ThoughtDef t = __result[i].thought;
 
-                    if (r == null)
-                        continue;
-
-                    //TODO: get thoughts for eaten races
-                    __result[i] = new FoodUtility.ThoughtFromIngesting()
+                    if (t == ThoughtDefOf.AteHumanlikeMeatDirect || t == ThoughtDefOf.AteHumanlikeMeatDirectCannibal)
                     {
-                        thought = rDef.CannibalismThoughtsGetter.GetThoughtsForEatenRace(r,cannibal,false)
-                    };
+                        r = foodDef.ingestible.sourceDef;
 
-                }
+                        if (r == null)
+                            continue;
 
-                if (t == ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal || t == ThoughtDefOf.AteHumanlikeMeatAsIngredient)
-                {
-                    r = foodSource.TryGetComp<CompIngredients>().ingredients.Find(x => x.ingestible != null && true);
+                        //TODO: get thoughts for eaten races
+                        __result[i] = new FoodUtility.ThoughtFromIngesting()
+                        {
+                            thought = rDef.CannibalismThoughtsGetter.GetThoughtsForEatenRace(r, cannibal, false)
+                        };
 
+                    }
 
-                    if (r == null)
-                        continue;
-
-                    //TODO: get thoughts for eaten races
-                    __result[i] = new FoodUtility.ThoughtFromIngesting()
+                    if (t == ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal || t == ThoughtDefOf.AteHumanlikeMeatAsIngredient)
                     {
-                        thought = rDef.CannibalismThoughtsGetter.GetThoughtsForEatenRace(r, cannibal, true)
-                    };
+                        r = foodSource.TryGetComp<CompIngredients>().ingredients.Find(x => x.ingestible != null && true);
 
+
+                        if (r == null)
+                            continue;
+
+                        //TODO: get thoughts for eaten races
+                        __result[i] = new FoodUtility.ThoughtFromIngesting()
+                        {
+                            thought = rDef.CannibalismThoughtsGetter.GetThoughtsForEatenRace(r, cannibal, true)
+                        };
+
+                    }
                 }
+            }catch(Exception e)
+            {
+                RVCLog.Log($"Ingestible patch error:{e}", RVCLogType.Error);
+                RVCLog.Log("Reverting ingestible thoughts to previous state.", RVCLogType.Warning);
+                __result = backupCopy;
             }
         }
     }
