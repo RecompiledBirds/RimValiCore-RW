@@ -29,6 +29,20 @@ namespace RVCRestructured
             }
         }
 
+        public Color[] colors
+        {
+            get
+            {
+                return new Color[]{ one,two,three};
+            }
+            set
+            {
+                one = value[0];
+                two = value[1];
+                three = value[2];
+            }
+        }
+
         //Allow access to colors via index
         public Color this[int index]
         {

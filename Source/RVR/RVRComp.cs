@@ -26,6 +26,15 @@ namespace RVCRestructured.RVR
         }
 
         private Dictionary<string, TriColorSet> sets = new Dictionary<string, TriColorSet>();
+        
+        public Dictionary<string,TriColorSet> Colors
+        {
+            get
+            {
+                return sets;
+            }
+        }
+
         private Dictionary<string, int> masks = new Dictionary<string, int>();
         private Dictionary<string, int> renderableIndexes = new Dictionary<string, int>();
         //used in loading

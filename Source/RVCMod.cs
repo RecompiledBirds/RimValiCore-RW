@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Verse;
 
@@ -6,10 +7,17 @@ namespace RVCRestructured
 {
     public class RVCSettings : ModSettings
     {
+        public static List<Color> savedColors = new List<Color>() { Color.black};
 
+        public override void ExposeData()
+        {
+            Scribe_Collections.Look(ref savedColors, "savedColors");
+            base.ExposeData();
+        }
     }
     public class RimValiCore : Mod
     {
+        public static RVCSettings settings;
         public string DataPath
         {
             get
@@ -29,6 +37,7 @@ namespace RVCRestructured
 
         public RimValiCore(ModContentPack content) : base(content)
         {
+            settings=GetSettings<RVCSettings>();
             dir = content.RootDir;
             if (!Directory.Exists(DataPath))
             {

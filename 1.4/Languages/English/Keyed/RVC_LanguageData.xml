@@ -3,4 +3,8 @@
 	<RVC_Accept>Yes</RVC_Accept>
 	<RVC_Cancel>Cancel</RVC_Cancel>
 	<RVC_CannotWear>{RACE} cannot wear this</RVC_CannotWear>
+	<RVC_EditPawn>Edit Pawn</RVC_EditPawn>
+	<RVC_EditColor>Click to edit this color</RVC_EditColor>
+	<RVC_Tutorial>Select one of the sets on the right to start editing the colors on your {0}! (If they have any you can edit.)</RVC_Tutorial>
+	<RVC_WarningColorEdit>After editing the last color of a set, click on the second one to apply changes!</RVC_WarningColorEdit>
 </LanguageData>
