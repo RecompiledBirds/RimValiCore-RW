@@ -106,9 +106,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             if (ShouldSwitch(request) && CanSwapPawnkind(request.KindDef))
             {
                 List<ThingDef> defs = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.race != null && x.race.Humanlike).ToList();
-                Log.Message(defs.Join());
                 def = defs.RandomElement();
-                Log.Message(def.defName);
                 
             }
 
