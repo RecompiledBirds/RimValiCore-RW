@@ -22,14 +22,14 @@ namespace RVCRestructured.RVR.Harmony
             Graphic graphic;
             if (apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead || apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover || PawnRenderer.RenderAsPack(apparel) || apparel.WornGraphicPath == BaseContent.PlaceholderImagePath || apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath)
             {
-                string altPath = $"{apparel.def.apparel.wornGraphicPath}_{bodyType.defName}";
-                if (ContentFinder<Texture2D>.Get(altPath, false))
+                string altPath = $"{apparel.WornGraphicPath}_{bodyType.defName}";
+                if (ContentFinder<Texture2D>.Get($"{altPath}_north", false))
                 {
                     path = altPath;
                 }
                 else
                 {
-                    path = apparel.def.apparel.wornGraphicPath;
+                    path = apparel.WornGraphicPath;
                 }
             }
             else
