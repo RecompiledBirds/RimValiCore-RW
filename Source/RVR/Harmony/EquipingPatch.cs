@@ -10,17 +10,21 @@ namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class EquipingPatch
     {
+        public static bool EquipmentAllowedForRace(this ThingDef def, ThingDef race)
+        {
+            bool restricted = RestrictionsChecker.IsRestricted(def);
+            if (!(race is RaceDef raceDef)) return !restricted;
+
+            bool inAllowedDefs = raceDef.RaceRestrictions.allowedEquipment.Contains(def) || raceDef.RaceRestrictions.restrictedEquipment.Contains(def);
+
+            return (restricted && inAllowedDefs) || !restricted;
+        }
+
         public static void EquipingPostfix(ref bool __result, Thing thing, Pawn pawn, ref string cantReason)
         {
             if (thing.def.IsApparel) return;
 
-            bool restricted = RestrictionsChecker.IsRestricted(thing.def);
-
-            bool allowed = !restricted;
-            if (pawn.def is RaceDef rDef)
-            {
-                allowed = allowed? rDef.RaceRestrictions.allowedEquipment.Contains(thing.def) || rDef.restrictions.restrictedEquipment.Contains(thing.def) : rDef.restrictions.restrictedEquipment.Contains(thing.def);
-            }
+            bool allowed = EquipmentAllowedForRace(thing.def,pawn.def);
 
             __result &= allowed;
 
