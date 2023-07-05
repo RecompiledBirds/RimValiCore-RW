@@ -9,8 +9,9 @@ namespace RVCRestructured
 {
 
     [DefOf]
-    public static class RVCStatDefOf
+    public static class VineDefOf
     {
         public static StatDef RVC_HealthOffset;
+        public static ThoughtDef Vine_ThoughtDidntCare;
     }
 }

@@ -9,10 +9,12 @@
     }
     public static class RVCLog
     {
-        public static void Log(object o, RVCLogType type = RVCLogType.Message, bool log = true)
+        public static void Log(object o, RVCLogType type = RVCLogType.Message, bool condition = true, bool debugOnly = false)
         {
+            if (debugOnly && !RVCSettings.debugMode)
+                return;
             //Used for some conditional logging.
-            if (!log)
+            if (!condition)
                 return;
             switch (type)
             {

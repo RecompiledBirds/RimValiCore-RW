@@ -12,7 +12,7 @@ namespace RVCRestructured.RVR
     {
         public bool caresAboutUndefinedRaces = true;
        public List<CannibalismThoughts> thoughts = new List<CannibalismThoughts>();
-        public ThoughtDef GetThoughtsForEatenRace(ThingDef race, bool cannibal, bool cooked)
+        public ThoughtDef GetThoughtsForEatenRace(ThingDef race, bool cannibal, bool cooked=false)
         {
             for (int i = 0; i < thoughts.Count; i++)
             {
@@ -33,7 +33,7 @@ namespace RVCRestructured.RVR
             }
 
             if (!caresAboutUndefinedRaces)
-                return null;
+                return VineDefOf.Vine_ThoughtDidntCare;
 
             if (cannibal)
             {

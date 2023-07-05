@@ -81,8 +81,6 @@ namespace RVCRestructured.RVR
         public List<string> modAllowedApparel = new List<string>();
 
 
-        public bool useHumanRecipes = true;
-
         public bool canEatAnyFood = true;
 
         public bool canUseAnyApparel = true;

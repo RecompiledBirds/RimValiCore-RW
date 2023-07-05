@@ -27,7 +27,7 @@ namespace RVCRestructured
 
             bool canEatAnyFood = raceDef.RaceRestrictions.canEatAnyFood;
 
-            bool allowed = (restricted && isInAllowedlists) || canEatAnyFood || isInAllowedlists;
+            bool allowed = (restricted && isInAllowedlists) || (canEatAnyFood || isInAllowedlists);
 
             __result &= allowed;
 

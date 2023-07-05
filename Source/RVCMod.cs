@@ -8,6 +8,7 @@ namespace RVCRestructured
     public class RVCSettings : ModSettings
     {
         public static List<Color> savedColors = new List<Color>() { Color.black};
+        public static bool debugMode = false;
 
         public override void ExposeData()
         {

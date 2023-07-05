@@ -10,57 +10,67 @@ namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class IngestingPatch
     {
+        private static bool AteDirectThought(ThoughtDef thought)
+        {
+            return thought == ThoughtDefOf.AteHumanlikeMeatDirect || thought == ThoughtDefOf.AteHumanlikeMeatDirectCannibal;
+        }
+
+        private static bool AteAsIngredientThought(ThoughtDef thought)
+        {
+            return thought == ThoughtDefOf.AteHumanlikeMeatAsIngredient || thought == ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal;
+        }
+
         public static void IngestingPostfix(Pawn ingester, Thing foodSource, ThingDef foodDef, ref List<FoodUtility.ThoughtFromIngesting> __result)
         {
-            bool cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
+            
+            if (!ingester.RaceProps.Humanlike)
+                return;
 
             if (!(ingester.def is RaceDef rDef))
                 return;
-            ThingDef r;
+
             List<FoodUtility.ThoughtFromIngesting> backupCopy = __result;
+            List<FoodUtility.ThoughtFromIngesting> finalResult = new List<FoodUtility.ThoughtFromIngesting>();
+            RaceDef ingesterRace = ingester.def as RaceDef;
+            CannibalismThoughtsGetter thoughtGetter = ingesterRace.CannibalismThoughtsGetter;
+            bool cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
             try
             {
-                for (int i = 0; i < __result.Count; i++)
+                for(int i =0; i < __result.Count; i++)
                 {
-                    ThoughtDef t = __result[i].thought;
-
-                    if (t == ThoughtDefOf.AteHumanlikeMeatDirect || t == ThoughtDefOf.AteHumanlikeMeatDirectCannibal)
+                    ThoughtDef thought = __result[i].thought;
+                    if(AteDirectThought(thought))
+                        thoughtGetter.GetThoughtsForEatenRace(foodDef.ingestible?.sourceDef, cannibal);
+                    if (AteAsIngredientThought(thought))
                     {
-                        r = foodDef.ingestible.sourceDef;
-
-                        if (r == null)
+                        if (foodSource == null)
                             continue;
 
-                        //TODO: get thoughts for eaten races
-                        __result[i] = new FoodUtility.ThoughtFromIngesting()
-                        {
-                            thought = rDef.CannibalismThoughtsGetter.GetThoughtsForEatenRace(r, cannibal, false)
-                        };
+                        CompIngredients ingredients = foodSource.TryGetComp<CompIngredients>();
 
-                    }
-
-                    if (t == ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal || t == ThoughtDefOf.AteHumanlikeMeatAsIngredient)
-                    {
-                        r = foodSource.TryGetComp<CompIngredients>().ingredients.Find(x => x.ingestible != null && true);
-
-
-                        if (r == null)
+                        if (ingredients == null)
                             continue;
 
-                        //TODO: get thoughts for eaten races
-                        __result[i] = new FoodUtility.ThoughtFromIngesting()
-                        {
-                            thought = rDef.CannibalismThoughtsGetter.GetThoughtsForEatenRace(r, cannibal, true)
-                        };
+                        if (ingredients.ingredients == null)
+                            continue;
 
+                        ThingDef race = ingredients.ingredients.First(x => x.ingestible?.sourceDef?.race?.Humanlike ?? false).ingestible?.sourceDef;
+
+                        if (race != null)
+                            thought = thoughtGetter.GetThoughtsForEatenRace(race, cannibal, true);
                     }
+                    finalResult.Add(new FoodUtility.ThoughtFromIngesting { fromPrecept = __result[i].fromPrecept,thought=thought });
                 }
-            }catch(Exception e)
+                __result= finalResult;
+            }
+            catch (Exception e)
             {
                 RVCLog.Log($"Ingestible patch error:{e}", RVCLogType.Error);
                 RVCLog.Log("Reverting ingestible thoughts to previous state.", RVCLogType.Warning);
                 __result = backupCopy;
             }
+                
+            
         }
     }
 }
