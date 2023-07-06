@@ -14,7 +14,7 @@ namespace RVCRestructured.RVR.Harmony
         public static void Postfix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec)
         {
             Pawn pawn = apparel.Wearer;
-            string path = $"{apparel.def.apparel.wornGraphicPath}";
+            string path = "";
 
             if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
                 return;
@@ -31,20 +31,20 @@ namespace RVCRestructured.RVR.Harmony
             }
             else if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
             {
-                if(!(pawn.def is RaceDef raceDef) || !raceDef.useEmptyApparelIfNoDefault) 
+                if(!(pawn.def is RaceDef race) || !race.useEmptyApparelIfNoDefault) 
                     path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
                 else
-                    path = "RVC_Empty";
+                    path = "RVC/Empty";
             }
 
 
             //empty texture, avoids errors..
             else
             {
-                if (!(pawn.def is RaceDef raceDef) || !raceDef.throwApparelError)
+                if (pawn.def is RaceDef race && race.throwApparelError)
                     RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {bodyType.defName}, no bodytype, or thin bodytype. Returning an empty texture...");
 
-                path = "RVC_Empty";
+                path = "RVC/Empty";
             }
 
             Shader shader = ShaderDatabase.Cutout;
