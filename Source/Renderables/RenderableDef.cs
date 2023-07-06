@@ -125,12 +125,14 @@ namespace RVCRestructured.Defs
 
         public string GetTexPath(Pawn pawn)
         {
-            throw new System.NotImplementedException();
+            RVRComp comp = pawn.TryGetComp<RVRComp>();
+            return comp.GetTexPath(this);
         }
 
         public string GetMaskPath(Pawn pawn)
         {
-            throw new System.NotImplementedException();
+            RVRComp comp = pawn.TryGetComp<RVRComp>();
+            return comp.GetMaskPath(this, pawn);
         }
 
         public bool ShowsInBed()
