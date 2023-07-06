@@ -16,9 +16,9 @@ namespace RVCRestructured.Shifter.Patches
             if (shapeshifter!=null && shapeshifter.CurrentForm != thing.def)
             {
                 __result = stat.Worker.GetValue(ThingMaker.MakeThing(shapeshifter.CurrentForm,thing.Stuff), applyPostProcess, cacheStaleAfterTicks);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
         public static bool PrefixGetStatValueForPawn(this Thing thing, StatDef stat, Pawn pawn, bool applyPostProcess, float __result)
@@ -27,22 +27,22 @@ namespace RVCRestructured.Shifter.Patches
             if (shapeshifter != null && shapeshifter.CurrentForm != pawn.def)
             {
                 __result = stat.Worker.GetValue(thing, ThingMaker.MakeThing(shapeshifter.CurrentForm, thing.Stuff) as Pawn, applyPostProcess);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
         public static bool PrefixGetStatValueAbstract(this AbilityDef def, StatDef stat, Pawn forPawn, float __result)
         {
             if (forPawn == null)
-                return false;
+                return true;
             ShapeshifterComp shapeshifter = forPawn.TryGetComp<ShapeshifterComp>();
             if (shapeshifter != null && shapeshifter.CurrentForm != forPawn.def)
             {
                 __result = stat.Worker.GetValueAbstract(def, ThingMaker.MakeThing(shapeshifter.CurrentForm) as Pawn);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
     }
 }
