@@ -20,21 +20,31 @@ namespace RVCRestructured.RVR.Harmony
                 return;
 
             Graphic graphic;
-            if (apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead || apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover || PawnRenderer.RenderAsPack(apparel) || apparel.WornGraphicPath == BaseContent.PlaceholderImagePath || apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath)
+            string altPath = $"{apparel.WornGraphicPath}_{bodyType.defName}";
+            if (ContentFinder<Texture2D>.Get($"{altPath}_north", false))
             {
-                string altPath = $"{apparel.WornGraphicPath}_{bodyType.defName}";
-                if (ContentFinder<Texture2D>.Get($"{altPath}_north", false))
-                {
-                    path = altPath;
-                }
-                else
-                {
-                    path = apparel.WornGraphicPath;
-                }
+                path = altPath;
             }
+            else if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_north", false))
+            {
+                path = apparel.WornGraphicPath;
+            }
+            else if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
+            {
+                if(!(pawn.def is RaceDef raceDef) || !raceDef.useEmptyApparelIfNoDefault) 
+                    path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
+                else
+                    path = "RVC_Empty";
+            }
+
+
+            //empty texture, avoids errors..
             else
             {
-                path = apparel.WornGraphicPath + "_" + bodyType.defName;
+                if (!(pawn.def is RaceDef raceDef) || !raceDef.throwApparelError)
+                    RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {bodyType.defName}, no bodytype, or thin bodytype. Returning an empty texture...");
+
+                path = "RVC_Empty";
             }
 
             Shader shader = ShaderDatabase.Cutout;

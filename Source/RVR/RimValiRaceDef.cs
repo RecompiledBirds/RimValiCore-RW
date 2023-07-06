@@ -19,6 +19,8 @@ namespace RVCRestructured.RVR
         public BodyTypeGetter bodyTypeGetter = null;
         public bool useHumanRecipes = true;
         public bool hasUniqueHeadApparel = false;
+        public bool throwApparelError = false;
+        public bool useEmptyApparelIfNoDefault = true;
 
         public BodyTypeGetter BodyTypeGetter
         {

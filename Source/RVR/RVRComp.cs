@@ -15,13 +15,17 @@ namespace RVCRestructured.RVR
     }
     public class RVRComp : ThingComp
     {
-        private List<RenderableDef> defList;
+        private List<IRenderable> defList;
 
-        public List<RenderableDef> RenderableDefs
+        public List<IRenderable> RenderableDefs
         {
             get
             {
                 return defList;
+            }
+            set
+            {
+                defList = value;
             }
         }
 
@@ -99,7 +103,12 @@ namespace RVCRestructured.RVR
                 return;
 
             if (defList.NullOrEmpty() && !raceDef.RaceGraphics.renderableDefs.NullOrEmpty())
-                defList = raceDef.raceGraphics.renderableDefs;
+            {
+                foreach(RenderableDef def in defList)
+                {
+                    defList.Add(def);
+                }
+            }
 
             foreach (RenderableDef rDef in raceDef.RaceGraphics.renderableDefs)
             {

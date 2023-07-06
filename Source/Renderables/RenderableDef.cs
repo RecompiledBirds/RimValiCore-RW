@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.RVR;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace RVCRestructured.Defs
     /// <summary>
     /// Used to render the graphics of a pawn into the world.
     /// </summary>
-    public class RenderableDef : Def
+    public class RenderableDef : Def, IRenderable
     {
         public List<BaseTex> textures = new List<BaseTex>();
         public bool hiddenInBed = false;
@@ -70,21 +71,84 @@ namespace RVCRestructured.Defs
             switch (rot)
             {
                 case 0:
+                    if (linkPosWith != null)
+                    {
+                        return new BodyPartGraphicPos()
+                        {
+                            position = north.position + linkPosWith.north.position,
+                            size=north.size
+                        };
+                    }
                     return north;
                 case 2:
+                    if (linkPosWith != null)
+                    {
+                        return new BodyPartGraphicPos()
+                        {
+                            position = south.position + linkPosWith.south.position,
+                            size = south.size
+                        };
+                    }
                     return south;
                 case 1:
+                    if (linkPosWith != null)
+                    {
+                        return new BodyPartGraphicPos()
+                        {
+                            position = east.position + linkPosWith.east.position,
+                            size = east.size
+                        };
+                    }
                     return east;
                 case 3:
+                    if (linkPosWith != null)
+                    {
+                        return new BodyPartGraphicPos()
+                        {
+                            position = west.position + linkPosWith.west.position,
+                            size = west.size
+                        };
+                    }
                     return west;
                 default:
                     return null;
             }
         }
 
+       
+
         public BodyPartGraphicPos GetPos(Pawn pawn)
         {
             return GetPos(pawn.Rotation);
+        }
+
+
+        public string GetTexPath(Pawn pawn)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string GetMaskPath(Pawn pawn)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool ShowsInBed()
+        {
+            return showsInBed;
+        }
+
+        public TriColorSet ColorSet(Pawn pawn)
+        {
+            RVRComp comp = pawn.TryGetComp<RVRComp>();
+            TriColorSet set = null;
+            if (colorSet != null)
+                set = comp[colorSet];
+            if (set == null)
+            {
+                set = new TriColorSet(Color.red, Color.green, Color.blue, true);
+            }
+            return set;
         }
     }
 
@@ -93,6 +157,7 @@ namespace RVCRestructured.Defs
     {
         public Vector3 position;
         public Vector2 size;
+
 
     }
 

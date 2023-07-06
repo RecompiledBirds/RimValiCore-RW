@@ -20,25 +20,17 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
             RVRComp comp = pawn.TryGetComp<RVRComp>();
 
-            foreach (RenderableDef renderableDef in rDef.RaceGraphics.renderableDefs)
+            foreach (IRenderable renderableDef in comp.RenderableDefs)
             {
                 //Render the def
                 BodyPartGraphicPos pos = renderableDef.GetPos(rotation);
                 Vector3 position = pos.position;
-                if (renderableDef.linkPosWith != null)
-                    position += renderableDef.linkPosWith.GetPos(rotation).position;
 
-                if (pawn.InBed() && !pawn.CurrentBed().def.building.bed_showSleeperBody && !renderableDef.showsInBed)
+                if (pawn.InBed() && !pawn.CurrentBed().def.building.bed_showSleeperBody && !renderableDef.ShowsInBed())
                     continue;
-                TriColorSet set = null;
-                if (renderableDef.colorSet != null)
-                    set = comp[renderableDef.colorSet];
-                if (set == null)
-                {
-                    set = new TriColorSet(Color.red, Color.green, Color.blue, true);
-                }
+                TriColorSet set = renderableDef.ColorSet(pawn);
 
-                RVG_Graphic graphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(comp.GetTexPath(renderableDef), pos.size, set[0], set[1], set[2], comp.GetMaskPath(renderableDef, pawn));
+                RVG_Graphic graphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(renderableDef.GetTexPath(pawn), pos.size, set[0], set[1], set[2], renderableDef.GetMaskPath(pawn));
                 GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f),
                    quat, graphic.MatAt(rotation), flags.FlagSet(PawnRenderFlags.DrawNow));
 
