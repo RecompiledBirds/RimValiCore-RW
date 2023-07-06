@@ -10,7 +10,7 @@ namespace RVCRestructured.Shifter.Patches
 {
     public static class StatValuePatch
     {
-        public static bool PrefixGetStatValue(this Thing thing, StatDef stat, bool applyPostProcess, int cacheStaleAfterTicks, float __result)
+        public static bool PrefixGetStatValue(this Thing thing, StatDef stat, bool applyPostProcess, int cacheStaleAfterTicks,ref float __result)
         {
             ShapeshifterComp shapeshifter = thing.TryGetComp<ShapeshifterComp>();
             if (shapeshifter!=null && shapeshifter.CurrentForm != thing.def)
@@ -21,7 +21,7 @@ namespace RVCRestructured.Shifter.Patches
             return true;
         }
 
-        public static bool PrefixGetStatValueForPawn(this Thing thing, StatDef stat, Pawn pawn, bool applyPostProcess, float __result)
+        public static bool PrefixGetStatValueForPawn(this Thing thing, StatDef stat, Pawn pawn, bool applyPostProcess,ref  float __result)
         {
             ShapeshifterComp shapeshifter = pawn.TryGetComp<ShapeshifterComp>();
             if (shapeshifter != null && shapeshifter.CurrentForm != pawn.def)
@@ -32,7 +32,7 @@ namespace RVCRestructured.Shifter.Patches
             return true;
         }
 
-        public static bool PrefixGetStatValueAbstract(this AbilityDef def, StatDef stat, Pawn forPawn, float __result)
+        public static bool PrefixGetStatValueAbstract(this AbilityDef def, StatDef stat, Pawn forPawn,ref float __result)
         {
             if (forPawn == null)
                 return true;
