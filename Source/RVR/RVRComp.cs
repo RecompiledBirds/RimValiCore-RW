@@ -1,5 +1,6 @@
 ﻿using RVCRestructured.Defs;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Verse;
 using Random = System.Random;
@@ -15,7 +16,9 @@ namespace RVCRestructured.RVR
     }
     public class RVRComp : ThingComp
     {
-        private List<IRenderable> defList;
+        private List<IRenderable> defList = new List<IRenderable>();
+        private List<Renderable> defListRenderable = new List<Renderable>();
+        private List<RenderableDef> defListRenderableDefs = new List<RenderableDef>();
 
         public List<IRenderable> RenderableDefs
         {
@@ -92,7 +95,32 @@ namespace RVCRestructured.RVR
             Scribe_Collections.Look(ref sets, "sets", LookMode.Value, LookMode.Deep, ref lKeys, ref lSets);
             Scribe_Collections.Look(ref masks, "masks", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
             Scribe_Collections.Look(ref renderableIndexes, "renderableIndexes", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
-            Scribe_Collections.Look(ref defList, "renderableDefs", LookMode.Def);
+            
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                foreach (IRenderable renderable in defList)
+                {
+                    if (renderable is Def)
+                    {
+                        defListRenderableDefs.Append(renderable);
+                    }
+                    else
+                    {
+                        defListRenderable.Append(renderable);
+                    }
+                }
+            }
+
+            Scribe_Collections.Look(ref defListRenderable, nameof(defListRenderable), LookMode.Deep);
+            Scribe_Collections.Look(ref defListRenderableDefs, nameof(defListRenderableDefs), LookMode.Def);
+
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                if (defList.NullOrEmpty()) defList = new List<IRenderable>();
+                if (!defListRenderableDefs.NullOrEmpty()) defList.AddRange(defListRenderableDefs);
+                if (!defListRenderable.NullOrEmpty()) defList.AddRange(defListRenderable);
+            }
         }
 
         public void GenGraphics()
