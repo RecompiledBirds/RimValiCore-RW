@@ -102,7 +102,6 @@ namespace RVCRestructured.RVR
             if (!(pawn.def is RaceDef raceDef))
                 return;
 
-            Log.Message("1");
             if (defList.NullOrEmpty() && !raceDef.RaceGraphics.renderableDefs.NullOrEmpty())
             {
                 defList = new List<IRenderable>();
@@ -111,7 +110,6 @@ namespace RVCRestructured.RVR
                     defList.Add(def);
                 }
             }
-            Log.Message("2");
             foreach (RenderableDef rDef in raceDef.RaceGraphics.renderableDefs)
             {
                 if (renderableIndexes.ContainsKey(rDef.defName))
@@ -141,7 +139,6 @@ namespace RVCRestructured.RVR
                     masks.Add(rDef.linkTexWith.defName, index);
                 }
             }
-            Log.Message("4");
             foreach (RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
             {
                 if (sets.ContainsKey(colors.name))
