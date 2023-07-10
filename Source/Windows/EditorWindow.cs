@@ -169,7 +169,7 @@ namespace RVCRestructured
             int pos = 0;
             foreach (KeyValuePair<string, TriColorSet> kvp in colorSets)
             {
-                string name = $"{SelectedPawn.def.defName}_ColorSet_{kvp.Key}".Translate();
+                string name = kvp.Key;
                 Rect rectTemp = RectColorFields[pos];
                 Rect rectName = rectTemp;
                 Rect rectExpandCollapseIcon = rectTemp.LeftPartPixels(rectTemp.height);
@@ -205,13 +205,12 @@ namespace RVCRestructured
                     {
                         float indent = 15f;
 
-                        string colorName = $"{SelectedPawn.def.defName}_{kvp.Key}_{(Count)i}".Translate();
+                        string colorName = $"RVC_Edit{(Count)i}".Translate();
                         Rect rectColorField = rectTemp.MoveRect(new Vector2(indent, RectColorFieldHeight * (i + 1)));
                         rectColorField.width -= indent + 1f;
 
                         Rect rectColorLabel = rectColorField.RightPartPixels(rectColorField.width - 5f);
                         Rect rectColorColor = rectColorField.RightPartPixels(rectColorLabel.width - 100f - 5f);
-
 
                         Widgets.DrawLightHighlight(rectColorField);
                         Widgets.DrawBoxSolidWithOutline(rectColorColor, kvp.Value[i], new Color(255f, 255f, 255f, 0.5f), 3);
@@ -374,9 +373,9 @@ namespace RVCRestructured
         /// </summary>
         private enum Count
         {
-            First,
-            Second,
-            Third
+            Primary,
+            Secondary,
+            Tetriary
         }
     }
 }
