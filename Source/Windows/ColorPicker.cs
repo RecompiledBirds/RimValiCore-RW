@@ -11,19 +11,19 @@ namespace RVCRestructured.Windows
 {
     public class ColorPickerWindow : Window
     {
-        private const int CreatedBoxes = 6;
-        private const int ColorComponentHeight = 200;
-        private const int HueBarWidth = 20;
+        private const int CREATED_BOXES = 6;
+        private const int COLOR_COMP_HEIGHT = 200;
+        private const int HUE_BAR_WIDTH = 20;
 
-        private const int HistoryColumns = 5;
-        private const int HistoryRows = 2;
+        private const int HISTORY_COLS = 5;
+        private const int HISTORY_ROWS = 2;
 
         private readonly string[] colorBuffers = { "255", "255", "255" };
         private readonly Color[] colorHistory;
 
         private readonly Regex hexRx = new Regex(@"#[a-f0-9]{6}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private readonly Texture2D hueBarTexture = new Texture2D(1, ColorComponentHeight);
+        private readonly Texture2D hueBarTexture = new Texture2D(1, COLOR_COMP_HEIGHT);
 
         private readonly Rect rectColorInput;
 
@@ -53,7 +53,6 @@ namespace RVCRestructured.Windows
 
         public ColorPickerWindow(Action<Color> setColor, Action<Color[]> setColorHistory, Color color, Color[] colorHistory)
         {
-            this.colorHistory = colorHistory;
             this.setColor = setColor;
             this.setColorHistory = setColorHistory;
             SelectedColor = color;
@@ -64,30 +63,35 @@ namespace RVCRestructured.Windows
             onlyOneOfTypeAllowed = true;
 
             rectMain = rectFull.ContractedBy(25f);
-            rectSaturationValueSquare = new Rect(rectMain.position, new Vector2(ColorComponentHeight, ColorComponentHeight));
-            rectHueBar = rectSaturationValueSquare.MoveRect(new Vector2(rectSaturationValueSquare.width + 10f, 0f)).LeftPartPixels(HueBarWidth);
+            rectSaturationValueSquare = new Rect(rectMain.position, new Vector2(COLOR_COMP_HEIGHT, COLOR_COMP_HEIGHT));
+            rectHueBar = rectSaturationValueSquare.MoveRect(new Vector2(rectSaturationValueSquare.width + 10f, 0f)).LeftPartPixels(HUE_BAR_WIDTH);
             rectColorInput = rectHueBar.MoveRect(new Vector2(rectHueBar.width + 10f, 0f));
             rectColorInput.size = new Vector2(rectMain.width - rectColorInput.position.x + 25f, rectSaturationValueSquare.height);
-            rectColorInputBoxes = rectColorInput.DivideVertical(CreatedBoxes).ToList();
+            rectColorInputBoxes = rectColorInput.DivideVertical(CREATED_BOXES).ToList();
             rectRGBInputBoxes = rectColorInputBoxes[3].DivideHorizontal(3).ToList();
-            rectHistoryMain = new Rect(rectMain.position.x, ColorComponentHeight + 25f, rectMain.width, rectMain.height - ColorComponentHeight);
-            rectHistoryArray = new Rect[HistoryRows, HistoryColumns];
-            colorHistory = new Color[HistoryColumns * HistoryRows];
+            rectHistoryMain = new Rect(rectMain.position.x, COLOR_COMP_HEIGHT + 25f, rectMain.width, rectMain.height - COLOR_COMP_HEIGHT);
+            rectHistoryArray = new Rect[HISTORY_ROWS, HISTORY_COLS];
+            this.colorHistory = new Color[HISTORY_COLS * HISTORY_ROWS];
 
-            Rect[] historyRowRects = rectHistoryMain.DivideVertical(HistoryRows).ToArray();
-            for (int i = 0; i < HistoryRows; i++)
+            Rect[] historyRowRects = rectHistoryMain.DivideVertical(HISTORY_ROWS).ToArray();
+            for (int i = 0; i < HISTORY_ROWS; i++)
             {
-                Rect[] historyColumnRects = historyRowRects[i].DivideHorizontal(HistoryColumns).ToArray();
-                for (int j = 0; j < HistoryColumns; j++)
+                Rect[] historyColumnRects = historyRowRects[i].DivideHorizontal(HISTORY_COLS).ToArray();
+                for (int j = 0; j < HISTORY_COLS; j++)
                 {
                     rectHistoryArray[i, j] = historyColumnRects[j];
-                    colorHistory[j + i * HistoryColumns] = Color.black;
+                    this.colorHistory[j + i * HISTORY_COLS] = Color.black;
                 }
             }
 
-            for (int y = 0; y < ColorComponentHeight; y++)
+            for (int i = 0; i < colorHistory.Length; i++)
             {
-                hueBarTexture.SetPixel(0, y, Color.HSVToRGB((float)y / ColorComponentHeight, 1, 1));
+                this.colorHistory[i] = colorHistory[i];
+            }
+
+            for (int y = 0; y < COLOR_COMP_HEIGHT; y++)
+            {
+                hueBarTexture.SetPixel(0, y, Color.HSVToRGB((float)y / COLOR_COMP_HEIGHT, 1, 1));
             }
 
             hueBarTexture.Apply();
@@ -182,21 +186,16 @@ namespace RVCRestructured.Windows
 
         private void DrawColorHistoryButtons()
         {
-            for (int y = 0; y < HistoryRows; y++)
+            for (int y = 0; y < HISTORY_ROWS; y++)
             {
-                for (int x = 0; x < HistoryColumns; x++)
+                for (int x = 0; x < HISTORY_COLS; x++)
                 {
-                    if(x+y*HistoryColumns<colorHistory.Length && x<rectHistoryArray.GetLength(0)&& y<rectHistoryArray.GetLength(1))
-                        continue;
-                    Log.Message("test");
                     Rect historyRect = rectHistoryArray[y, x];
-                    Log.Message("test2");
-                    Widgets.DrawBoxSolidWithOutline(historyRect, colorHistory[x + y * HistoryColumns], new Color(255f, 255f, 255f, 0.5f), 2);
-                    Log.Message("test3");
+
+                    Widgets.DrawBoxSolidWithOutline(historyRect, colorHistory[x + y * HISTORY_COLS], new Color(255f, 255f, 255f, 0.5f), 2);
                     if (Widgets.ButtonInvisible(historyRect))
                     {
-                        
-                        SelectedColor = colorHistory[x + y * HistoryColumns];
+                        SelectedColor = colorHistory[x + y * HISTORY_COLS];
                         InsertColorInHistory(SelectedColor);
                     }
                 }
@@ -208,8 +207,8 @@ namespace RVCRestructured.Windows
             Color.RGBToHSV(SelectedColor, out float _, out float saturation, out float value);
 
             // Cross-hair
-            Rect verticalLine = new Rect(0f, (int)(ColorComponentHeight - value * ColorComponentHeight - 2f), ColorComponentHeight, 3f);
-            Rect horizontalLine = new Rect((int)(saturation * ColorComponentHeight - 2f), 0f, 3f, ColorComponentHeight);
+            Rect verticalLine = new Rect(0f, (int)(COLOR_COMP_HEIGHT - value * COLOR_COMP_HEIGHT - 2f), COLOR_COMP_HEIGHT, 3f);
+            Rect horizontalLine = new Rect((int)(saturation * COLOR_COMP_HEIGHT - 2f), 0f, 3f, COLOR_COMP_HEIGHT);
 
             GUI.BeginGroup(rectSaturationValueSquare);
 
@@ -267,10 +266,10 @@ namespace RVCRestructured.Windows
                 keepTrackingMouseSaturation = true;
                 Vector2 mousePositionInRect = Event.current.mousePosition - rectSaturationValueSquare.position;
 
-                mousePositionInRect.x = Mathf.Clamp(mousePositionInRect.x, 0f, ColorComponentHeight);
-                mousePositionInRect.y = Mathf.Clamp(mousePositionInRect.y, 0f, ColorComponentHeight);
+                mousePositionInRect.x = Mathf.Clamp(mousePositionInRect.x, 0f, COLOR_COMP_HEIGHT);
+                mousePositionInRect.y = Mathf.Clamp(mousePositionInRect.y, 0f, COLOR_COMP_HEIGHT);
 
-                SelectedColor = Color.HSVToRGB(hue, mousePositionInRect.x / ColorComponentHeight, 1f - mousePositionInRect.y / ColorComponentHeight);
+                SelectedColor = Color.HSVToRGB(hue, mousePositionInRect.x / COLOR_COMP_HEIGHT, 1f - mousePositionInRect.y / COLOR_COMP_HEIGHT);
             }
 
             keepTrackingMouseSaturation = keepTrackingMouseSaturation && Input.GetMouseButton(0);
@@ -281,17 +280,17 @@ namespace RVCRestructured.Windows
             if (hue == oldHue) return;
 
             oldHue = hue;
-            Texture2D newTexture = new Texture2D(ColorComponentHeight, ColorComponentHeight)
+            Texture2D newTexture = new Texture2D(COLOR_COMP_HEIGHT, COLOR_COMP_HEIGHT)
             {
                 wrapMode = TextureWrapMode.Clamp
             };
 
-            Color[] colors = new Color[ColorComponentHeight * ColorComponentHeight];
-            for (int x = 0; x < ColorComponentHeight; x++)
+            Color[] colors = new Color[COLOR_COMP_HEIGHT * COLOR_COMP_HEIGHT];
+            for (int x = 0; x < COLOR_COMP_HEIGHT; x++)
             {
-                for (int y = 0; y < ColorComponentHeight; y++)
+                for (int y = 0; y < COLOR_COMP_HEIGHT; y++)
                 {
-                    colors[x + y * ColorComponentHeight] = Color.HSVToRGB(hue, (float)x / ColorComponentHeight, (float)y / ColorComponentHeight);
+                    colors[x + y * COLOR_COMP_HEIGHT] = Color.HSVToRGB(hue, (float)x / COLOR_COMP_HEIGHT, (float)y / COLOR_COMP_HEIGHT);
                 }
             }
 
