@@ -15,7 +15,7 @@ namespace RVCRestructured.Windows
         static HarmonyPatcher()
         {
             Harmony harmony = new Harmony("RecompiledBirds.RVC.Windows");
-           // harmony.Patch(AccessTools.Method(typeof(Page_ConfigureStartingPawns), "DoWindowContents"), postfix: new HarmonyMethod(typeof(ConfigurePatch), nameof(ConfigurePatch.Patch)));
+            harmony.Patch(AccessTools.Method(typeof(Page_ConfigureStartingPawns), "DoWindowContents"), postfix: new HarmonyMethod(typeof(ConfigurePatch), nameof(ConfigurePatch.Patch)));
         }
     }
 }
