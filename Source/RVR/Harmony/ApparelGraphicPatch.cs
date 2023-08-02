@@ -14,7 +14,7 @@ namespace RVCRestructured.RVR.Harmony
         public static void Postfix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec)
         {
             Pawn pawn = apparel.Wearer;
-            string path = "";
+            string path;
 
             if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
                 return;

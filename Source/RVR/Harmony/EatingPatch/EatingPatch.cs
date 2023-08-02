@@ -9,10 +9,20 @@ namespace RVCRestructured
 {
     public static class EatingPatch
     {
+        private static Dictionary<RaceProperties,ThingDef> cache = new Dictionary<RaceProperties, ThingDef> ();
+
+        private static ThingDef GetDef(RaceProperties race)
+        {
+            if (!cache.ContainsKey(race))
+               cache.Add(race,DefDatabase<ThingDef>.AllDefs.First(x => x.race == race));
+            return cache[race];
+
+        }
+
         public static void EdiblePatch(ref bool __result, RaceProperties __instance, ThingDef t)
         {
             bool restricted = RestrictionsChecker.IsRestricted(t);
-            ThingDef def = DefDatabase<ThingDef>.AllDefs.First(x => x.race == __instance);
+            ThingDef def = GetDef(__instance);
             if (!(def is RaceDef raceDef))
             {
                 __result &= !restricted;

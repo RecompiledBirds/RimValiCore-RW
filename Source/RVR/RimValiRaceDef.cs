@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using RVCRestructured.Source.RVR;
 using System.Collections.Generic;
+using System.Linq;
 using Verse;
 
 namespace RVCRestructured.RVR
@@ -100,6 +101,13 @@ namespace RVCRestructured.RVR
                     {
                         this.recipes.Add(def);
                     }
+                }
+
+                IEnumerable<RecipeDef> recipes = DefDatabase<RecipeDef>.AllDefs.Where(x => x.recipeUsers.Contains(ThingDefOf.Human));
+                foreach (RecipeDef def in recipes)
+                {
+                    def.recipeUsers.Add(this);
+                    def.ResolveReferences();
                 }
             }
             base.ResolveReferences();
