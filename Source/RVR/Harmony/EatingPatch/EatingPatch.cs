@@ -11,7 +11,7 @@ namespace RVCRestructured
     {
         private static Dictionary<RaceProperties,ThingDef> cache = new Dictionary<RaceProperties, ThingDef> ();
 
-        private static ThingDef GetDef(RaceProperties race)
+        public static ThingDef GetDef(RaceProperties race)
         {
             if (!cache.ContainsKey(race))
                cache.Add(race,DefDatabase<ThingDef>.AllDefs.First(x => x.race == race));

@@ -47,6 +47,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             harmony.Patch(AccessTools.Method(typeof(PawnRenderer),"BaseHeadOffsetAt"), postfix: new HarmonyMethod(typeof(HeadOffsetPatch), nameof(HeadOffsetPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"),transpiler: new HarmonyMethod(typeof(PawnBlender),nameof(PawnBlender.Transpiler)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)),postfix:new HarmonyMethod(typeof(XenoTypeGenPatch),nameof(XenoTypeGenPatch.Postfix)));
             RVCLog.Log("RVR Patches completed.");
         }
     }

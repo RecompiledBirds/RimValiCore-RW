@@ -27,6 +27,7 @@ namespace RVCRestructured.RVR
 
         public List<TraitDef> restrictedTraits = new List<TraitDef>();
 
+        public List<XenotypeDef> restrictedXenoTypes = new List<XenotypeDef>();
 
         //Disabled items
         public List<ThoughtDef> disabledThoughts = new List<ThoughtDef>();
@@ -45,8 +46,9 @@ namespace RVCRestructured.RVR
 
         public List<TraitDef> allowedTraits = new List<TraitDef>();
 
-        public List<BodyTypeDef> allowedBodyTypes = new List<BodyTypeDef>();   
+        public List<BodyTypeDef> allowedBodyTypes = new List<BodyTypeDef>();
 
+        public List<XenotypeDef> xenoTypeWhitelist = new List<XenotypeDef>();
 
         //Mod items
         //Restricted items
@@ -170,7 +172,7 @@ namespace RVCRestructured.RVR
                 //Add everything considered to be apparel
                 restrictedApparel.AddRange(DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.modContentPack == pack && x.IsApparel));
             }
-
+            RestrictionsChecker.AddRestrictions(restrictedXenoTypes);
             RestrictionsChecker.AddRestrictions(restrictedBuildings);
             RestrictionsChecker.AddRestrictions(restrictedResearchDefs);
             RestrictionsChecker.AddRestrictions(restrictedApparel);
