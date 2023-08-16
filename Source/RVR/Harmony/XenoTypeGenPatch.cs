@@ -16,14 +16,7 @@ namespace RVCRestructured.Source.RVR.Harmony
         public static void Postfix(PawnGenerationRequest request,ref XenotypeDef __result)
         {
             bool restricted = __result != null && RestrictionsChecker.IsRestricted(__result);
-            ThingDef thing = null;
-           
-            if (request.KindDef != null)
-                if(request.KindDef.race!=null)
-                    thing=request.KindDef.race;
-                else if(request.KindDef.RaceProps != null)
-                    thing =EatingPatch.GetDef(request.KindDef.RaceProps);
-            RVCLog.Log(thing != null);
+            ThingDef thing = request.KindDef!=null? request.KindDef.race ?? (request.KindDef.RaceProps != null ? EatingPatch.GetDef(request.KindDef.RaceProps) : null) : null;
             if (thing == null) return;
            
             bool isRace = thing is RaceDef ;
@@ -38,8 +31,6 @@ namespace RVCRestructured.Source.RVR.Harmony
                 return;
             }
             RaceDef race  = thing as RaceDef ;
-            RVCLog.Log("test");
-            RVCLog.Log(race != null);
 
             if (restricted && !(!race.RaceRestrictions.restrictedXenoTypes.NullOrEmpty() && __result != null && race.RaceRestrictions.restrictedXenoTypes.Contains(__result)) || (!race.RaceRestrictions.xenoTypeWhitelist.NullOrEmpty() && __result != null && race.RaceRestrictions.xenoTypeWhitelist.Contains(__result)))
             {
@@ -49,7 +40,6 @@ namespace RVCRestructured.Source.RVR.Harmony
                     __result = PawnGenerator.XenotypesAvailableFor(request.KindDef).RandomElementByWeight(x => x.Value).Key;
                 return;
             }
-            RVCLog.Log("test2");
             if (!race.RaceRestrictions.xenoTypeWhitelist.NullOrEmpty()&&!race.RaceRestrictions.xenoTypeWhitelist.Contains(__result))
             {
                 __result = race.RaceRestrictions.xenoTypeWhitelist.RandomElement();
