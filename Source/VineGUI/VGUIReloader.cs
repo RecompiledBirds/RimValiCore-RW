@@ -27,6 +27,12 @@ namespace RVCRestructured.VineGUI
         }
         private static Dictionary<string,KeyValuePair<MethodInfo, object>> windowInfo = new Dictionary<string, KeyValuePair<MethodInfo, object>>();
         
+        /// <summary>
+        /// Attempt to load and call a gui class written in the directiory Rimworld/VGUI/
+        /// NOTE: ONLY RUN CODE YOU WROTE USING THIS METHOD.
+        /// </summary>
+        /// <param name="name">The file name. Do NOT include the .cs ending.</param>
+        /// <param name="guiArea">The GUI rect.</param>
         public static void OnGUI(string name, Rect guiArea)
         {
             if (!windowInfo.ContainsKey(name))
