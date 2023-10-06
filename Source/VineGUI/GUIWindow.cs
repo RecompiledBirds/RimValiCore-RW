@@ -20,6 +20,8 @@ namespace NesGUI
                 return !VineMod.VineSettings.VGUIEnabled;
             }
         }
+
+        public override bool Visible => VineMod.VineSettings.VGUIEnabled;
         public override void Activate()
         {
             if (!isOpen)
