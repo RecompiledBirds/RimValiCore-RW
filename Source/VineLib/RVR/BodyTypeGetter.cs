@@ -1,6 +1,5 @@
 ﻿using RimWorld;
-using RVCRestructured.RVR;
-using RVCRestructured.RVR.HarmonyPatches;
+using RVCRestructured.Source.VineLib.RVR.Harmony;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.Source.RVR
+namespace RVCRestructured.Source.VineLib.RVR
 {
     public class BodyTypeGetter
     {
@@ -23,19 +22,19 @@ namespace RVCRestructured.Source.RVR
         {
             if (!cache.NullOrEmpty())
                 return cache;
-            
+
             bool isOnWhitelist = !parent.RaceRestrictions.allowedBodyTypes.NullOrEmpty();
             List<BodyTypeDef> defs = DefDatabase<BodyTypeDef>.AllDefsListForReading;
 
-            foreach(BodyTypeDef def in defs)
+            foreach (BodyTypeDef def in defs)
             {
                 bool restricted = RestrictionsChecker.IsRestricted(def);
                 bool allowedByRestriction = parent.RaceRestrictions.restrictedBodyTypes.Contains(def);
                 bool allowedByWhitelist = parent.RaceRestrictions.allowedBodyTypes.Contains(def);
 
-                bool allowed= restricted ? allowedByRestriction || allowedByWhitelist : !isOnWhitelist || allowedByWhitelist;
+                bool allowed = restricted ? allowedByRestriction || allowedByWhitelist : !isOnWhitelist || allowedByWhitelist;
 
-                if(allowed)
+                if (allowed)
                     cache.Add(def);
             }
             return cache;

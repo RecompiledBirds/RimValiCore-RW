@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using RimWorld;
-namespace RVCRestructured.Comps
+
+namespace RVCRestructured.Source.VineLib.Comps.Healable
 {
     [StaticConstructorOnStartup]
     public static class HealableMats
@@ -25,9 +26,9 @@ namespace RVCRestructured.Comps
         static HealableMats()
         {
             int amount = 0;
-            foreach(ThingDef def in DefDatabase<ThingDef>.AllDefs)
+            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
             {
-                if (def.GetCompProperties<HealableMaterialCompProperties>()==null)
+                if (def.GetCompProperties<HealableMaterialCompProperties>() == null)
                     continue;
 
                 mats.Add(def, def.GetCompProperties<HealableMaterialCompProperties>());

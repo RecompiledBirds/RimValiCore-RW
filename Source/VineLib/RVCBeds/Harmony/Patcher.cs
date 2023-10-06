@@ -1,11 +1,10 @@
-﻿using RVCRestructured;
-using UnityEngine;
+﻿using UnityEngine;
 using HarmonyLib;
 using RimWorld;
 using System;
 using Verse;
 
-namespace RVCRestructured.RVCBeds.HarmonyPatches
+namespace RVCRestructured.Source.VineLib.RVCBeds.Harmony
 {
     [StaticConstructorOnStartup]
     public static class Patcher
@@ -19,7 +18,7 @@ namespace RVCRestructured.RVCBeds.HarmonyPatches
                 Harmony harmony = new Harmony("Fluxic.Beds2DPatch");
 
                 harmony.Patch(AccessTools.PropertyGetter(typeof(Building_Bed), nameof(Building_Bed.SleepingSlotsCount)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_SleepingSlotsCount)));
-                harmony.Patch(AccessTools.Method(typeof(Building_Bed), nameof(Building_Bed.GetSleepingSlotPos)),prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_GetSleepingSlotPos)));
+                harmony.Patch(AccessTools.Method(typeof(Building_Bed), nameof(Building_Bed.GetSleepingSlotPos)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_GetSleepingSlotPos)));
                 harmony.Patch(AccessTools.Method(typeof(CompAffectedByFacilities), nameof(CompAffectedByFacilities.CanPotentiallyLinkTo_Static), new Type[] { typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(ThingDef), typeof(IntVec3), typeof(Rot4) }), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_CanPotentiallyLinkTo_Static)));
                 harmony.Patch(AccessTools.Method(typeof(CompProperties_AssignableToPawn), nameof(CompProperties_AssignableToPawn.PostLoadSpecial)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_PostLoadSpecial)));
 
@@ -63,7 +62,7 @@ namespace RVCRestructured.RVCBeds.HarmonyPatches
             __result = __instance.RVC_GetSleepingSlotPos(index);
             return false;
         }
-        
+
         /// <summary>
         ///     Determines if a facility can link to a <see cref="Building_Bed"/> with a <see cref="BedComp"/>.
         ///     Skips to the vanilla function if the given <paramref name="myDef"/> doesn't have the <see cref="BedComp"/>.

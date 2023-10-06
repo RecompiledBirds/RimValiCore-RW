@@ -8,11 +8,11 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RVCRestructured.RVR;
+using RVCRestructured.Source.VineLib.RVR;
 
 namespace RVCRestructured
 {
-   
+
     public static class ConfigurePatch
     {
         public static void Patch()

@@ -1,5 +1,5 @@
 ﻿using RimWorld;
-using RVCRestructured.Defs;
+using RVCRestructured.Source.VineLib.Defs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.RVR.HarmonyPatches
+namespace RVCRestructured.Source.VineLib.RVR.Harmony
 {
     public static class FactionStartRelations
     {
