@@ -1,4 +1,6 @@
 ﻿using RimWorld;
+using RVCRestructured;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,12 @@ namespace NesGUI
     public class OpenGUIWindow : MainButtonWorker
     {
         static bool isOpen = false;
+        public override bool Disabled {
+            get
+            {
+                return !VineMod.VineSettings.VGUIEnabled;
+            }
+        }
         public override void Activate()
         {
             if (!isOpen)
