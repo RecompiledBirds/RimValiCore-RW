@@ -17,12 +17,21 @@ namespace RVCRestructured
                 return settings;
             }
         }
+        private string dir;
+        public string ModDir
+        {
+            get
+            {
+                return dir;
+            }
+        }
         private static VineSettings settings;
         private ModContentPack modContentPack;
         public VineMod(ModContentPack content) : base(content)
         {
             modContentPack= content;
             settings = GetSettings<VineSettings>();
+            dir = modContentPack.RootDir;
         }
 
         public override void DoSettingsWindowContents(Rect inRect)

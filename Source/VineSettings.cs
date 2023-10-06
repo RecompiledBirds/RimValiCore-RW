@@ -11,7 +11,7 @@ namespace RVCRestructured
     {
         public bool VGUIEnabled=false;
         public bool RaceBlender=true;
-
+        
         public VineSettings() { }
         public override void ExposeData()
         {
