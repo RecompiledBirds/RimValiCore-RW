@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+<MainButtonDef>
+    <defName>NesGUI</defName>
+    <label>NesGUI/RimGUI designer</label>
+    <description>Open GUI designer.</description>
+    <workerClass>NesGUI.OpenGUIWindow</workerClass>
+    <order>79</order>
+    <minimized>True</minimized>
+    <iconPath>NesGUI/NGUILogo</iconPath>
+    <defaultHotKey></defaultHotKey>
+  </MainButtonDef>
+  </Defs>
