@@ -22,6 +22,8 @@ namespace RVCRestructured.Defs
         public RenderableDef linkTexWith;
         public RenderableDef linkPosWith;
 
+        public bool linkWithHeadPos = false;
+
         public string colorSet;
 
         public bool showsInBed = true;
@@ -64,6 +66,25 @@ namespace RVCRestructured.Defs
             }
 
             return GetBodyPartGraphicPosFromIntRot(rot.AsInt);
+        }
+
+
+        public BodyPartGraphicPos GetPos(Rot4 rot,PawnGraphicSet set)
+        {
+            if (west == null)
+            {
+                west = new BodyPartGraphicPos()
+                {
+                    position = -east.position,
+                    size = east.size
+                };
+                if (!flipLayerEastWest)
+                    west.position.y = east.position.y;
+                if (!flipYPos)
+                    west.position.z = east.position.z;
+            }
+
+            return GetBodyPartGraphicPosFromIntRot(rot.AsInt,set);
         }
 
         private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot)
@@ -115,7 +136,17 @@ namespace RVCRestructured.Defs
             }
         }
 
-       
+        private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot,PawnGraphicSet set)
+        {
+            BodyPartGraphicPos pos = GetBodyPartGraphicPosFromIntRot(rot);
+            if (!linkWithHeadPos) return pos;
+            Vector3 offset = set.headGraphic.DrawOffset(new Rot4(rot));
+            pos.position.x +=offset.x;
+            pos.position.y += offset.y;
+            pos.position.z += offset.z;
+            return pos;
+        }
+
 
         public BodyPartGraphicPos GetPos(Pawn pawn)
         {
@@ -139,10 +170,8 @@ namespace RVCRestructured.Defs
         {
             return showsInBed;
         }
-
-        public TriColorSet ColorSet(Pawn pawn)
+        public TriColorSet ColorSet(RVRComp comp)
         {
-            RVRComp comp = pawn.TryGetComp<RVRComp>();
             TriColorSet set = null;
             if (colorSet != null)
                 set = comp[colorSet];
@@ -151,6 +180,17 @@ namespace RVCRestructured.Defs
                 set = new TriColorSet(Color.red, Color.green, Color.blue, true);
             }
             return set;
+        }
+
+        public TriColorSet ColorSet(Pawn pawn)
+        {
+
+            RVRComp comp = pawn.TryGetComp<RVRComp>();
+            if (comp == null)
+            {
+                return new TriColorSet(pawn.DrawColor,pawn.DrawColorTwo,pawn.DrawColorTwo,false);
+            }
+            return ColorSet(comp);
         }
     }
 

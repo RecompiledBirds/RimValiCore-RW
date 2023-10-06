@@ -1,4 +1,5 @@
 ﻿using RVCRestructured.Defs;
+using RVCRestructured.RVR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,10 @@ namespace RVCRestructured
         string GetTexPath(Pawn pawn);
         string GetMaskPath(Pawn pawn);
         bool ShowsInBed();
+        TriColorSet ColorSet(RVRComp comp);
         TriColorSet ColorSet(Pawn pawn);
         BodyPartGraphicPos GetPos(Rot4 rotation);
+        BodyPartGraphicPos GetPos(Rot4 rotation,PawnGraphicSet set);
 
     }
 }
