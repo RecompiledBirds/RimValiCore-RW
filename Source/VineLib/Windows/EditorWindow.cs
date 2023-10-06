@@ -8,7 +8,7 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RVCRestructured.Source.VineLib.RVR;
+using RVCRestructured.RVR;
 
 namespace RVCRestructured
 {

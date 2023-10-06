@@ -4,7 +4,7 @@ using RimWorld;
 using System;
 using Verse;
 
-namespace RVCRestructured.Source.VineLib.RVCBeds.Harmony
+namespace RVCRestructured.RVCBeds
 {
     [StaticConstructorOnStartup]
     public static class Patcher

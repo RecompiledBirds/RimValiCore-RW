@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.Defs
+namespace RVCRestructured
 {
     public class FactionRelationDef : Def
     {

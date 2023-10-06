@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.Source.VineLib.Defs
+namespace RVCRestructured
 {
     public class ExcludedRaceShuffleDef : Def
     {

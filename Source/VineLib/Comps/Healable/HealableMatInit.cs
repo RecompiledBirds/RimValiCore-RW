@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Verse;
 using RimWorld;
 
-namespace RVCRestructured.Source.VineLib.Comps.Healable
+namespace RVCRestructured.Comps
 {
     [StaticConstructorOnStartup]
     public static class HealableMats

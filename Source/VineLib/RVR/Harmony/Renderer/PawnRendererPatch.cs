@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
-namespace RVCRestructured.RVR.HarmonyPatches
+namespace RVCRestructured.RVR
 {
     public static class PawnRendererPatch
     {
@@ -20,24 +20,28 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
 
             //genetic drawing
-            IEnumerable<GeneRenderableDef> defs = (IEnumerable<GeneRenderableDef>)pawn.genes.GenesListForReading.Where(x => x.def is GeneRenderableDef);
-            
-            foreach(GeneRenderableDef def in defs)
+
+            if (pawn.genes!=null && !pawn.genes.GenesListForReading.NullOrEmpty())
             {
-                RenderableDef renderableDef = def.renderableDef;
-                BodyPartGraphicPos pos = renderableDef.GetPos(rotation, __instance.graphics);
-                Vector3 position = pos.position;
+                IEnumerable<Gene> defs = (IEnumerable<Gene>)pawn.genes.GenesListForReading.Where(x => x.def is GeneRenderableDef);
 
-                if (pawn.InBed() && !pawn.CurrentBed().def.building.bed_showSleeperBody && !renderableDef.ShowsInBed())
-                    continue;
-                TriColorSet set = renderableDef.ColorSet(pawn);
+                foreach (Gene gene in defs)
+                {
+                    GeneRenderableDef def = gene.def as GeneRenderableDef;
+                    RenderableDef renderableDef = def.renderableDef;
+                    BodyPartGraphicPos pos = renderableDef.GetPos(rotation, __instance.graphics);
+                    Vector3 position = pos.position;
 
-                RVG_Graphic graphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(renderableDef.GetTexPath(pawn), pos.size, set[0], set[1], set[2], renderableDef.GetMaskPath(pawn));
-                GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f),
-                   quat, graphic.MatAt(rotation), flags.FlagSet(PawnRenderFlags.DrawNow));
+                    if (pawn.InBed() && !pawn.CurrentBed().def.building.bed_showSleeperBody && !renderableDef.ShowsInBed())
+                        continue;
+                    TriColorSet set = renderableDef.ColorSet(pawn);
 
+                    RVG_Graphic graphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(renderableDef.GetTexPath(pawn), pos.size, set[0], set[1], set[2], renderableDef.GetMaskPath(pawn));
+                    GenDraw.DrawMeshNowOrLater(graphic.MeshAt(rotation), rootLoc + position.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.60f),
+                       quat, graphic.MatAt(rotation), flags.FlagSet(PawnRenderFlags.DrawNow));
+
+                }
             }
-            
             
             
             

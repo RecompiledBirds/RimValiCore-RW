@@ -1,7 +1,7 @@
 ﻿using Verse;
 using Verse.AI;
 
-namespace RVCRestructured.Source.VineLib.RVR.Harmony
+namespace RVCRestructured.RVR
 {
     public static class ConstructionPatch
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Verse;
 
-namespace RVCRestructured.RVR.HarmonyPatches
+namespace RVCRestructured.RVR
 {
     public static class RestrictionsChecker
     {
