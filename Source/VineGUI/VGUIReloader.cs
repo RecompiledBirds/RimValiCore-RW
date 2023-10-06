@@ -47,7 +47,7 @@ namespace RVCRestructured.VineGUI
         }
         
         
-        public static MethodInfo LoadGUIInfo(string name, out object instance)
+        private static MethodInfo LoadGUIInfo(string name, out object instance)
         {
             instance = null;
             Assembly asm = GetFile(name);
@@ -59,10 +59,10 @@ namespace RVCRestructured.VineGUI
             return info;
         }
 
-        
 
 
-        public static Assembly GetFile(string name)
+
+        private static Assembly GetFile(string name)
         {
             if(!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
             FileInfo file = new FileInfo($"{dirPath}{name}.cs");
