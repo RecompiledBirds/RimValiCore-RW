@@ -76,7 +76,7 @@ namespace RVCRestructured
 
         public RVRGraphicsComp()
         {
-            compClass = typeof(GraphicsComp);
+            this.compClass = typeof(GraphicsComp);
         }
     }
 

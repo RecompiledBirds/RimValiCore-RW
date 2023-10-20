@@ -46,6 +46,11 @@ namespace RVCRestructured
                 return ThoughtDefOf.AteHumanlikeMeatAsIngredient;
             return ThoughtDefOf.AteHumanlikeMeatDirect;
         }
+
+        public RVRCannibalismComp()
+        {
+            this.compClass=typeof(CannibalismComp);
+        }
     }
 
     public class CannibalismThoughts

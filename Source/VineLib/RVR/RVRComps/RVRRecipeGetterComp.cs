@@ -10,8 +10,12 @@ namespace RVCRestructured
 {
     public class RVRRecipeGetterComp : CompProperties
     {
+        private bool resolved = false;
+        
         public override void ResolveReferences(ThingDef parentDef)
         {
+            if(resolved) return;
+            resolved = true;
             foreach (RecipeDef def in ThingDefOf.Human.recipes)
             {
                 if (!parentDef.recipes.Contains(def))
@@ -21,6 +25,7 @@ namespace RVCRestructured
             }
             parentDef.ResolveReferences();
         }
+        
         public RVRRecipeGetterComp()
         {
             this.compClass=typeof(RVRRecipeSetterComp);

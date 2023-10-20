@@ -1,6 +1,7 @@
 ﻿using RVCRestructured.Defs;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using Verse;
 using Random = System.Random;
@@ -123,16 +124,20 @@ namespace RVCRestructured
             if (comp == null)
                 return;
 
-            if (defList.NullOrEmpty() && comp.Props.renderableDefs.NullOrEmpty())
+            if (defList.NullOrEmpty() && !comp.Props.renderableDefs.NullOrEmpty())
             {
+                
                 defList = new List<IRenderable>();
                 foreach(RenderableDef def in comp.Props.renderableDefs)
                 {
+                    Log.Message(def.defName);
+
                     defList.Add(def);
                 }
             }
             foreach (RenderableDef rDef in comp.Props.renderableDefs)
             {
+
                 if (renderableIndexes.ContainsKey(rDef.defName))
                 {
                     continue;

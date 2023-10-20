@@ -11,6 +11,7 @@ namespace RVCRestructured
 {
     public class RVRRestrictionComp : CompProperties
     {
+        #region lists
         //Defs restricted to this race
         public List<ResearchProjectDef> restrictedResearchDefs = new List<ResearchProjectDef>();
 
@@ -49,8 +50,6 @@ namespace RVCRestructured
 
         public List<TraitDef> allowedTraits = new List<TraitDef>();
 
-        public List<BodyTypeDef> allowedBodyTypes = new List<BodyTypeDef>();
-
         public List<XenotypeDef> xenoTypeWhitelist = new List<XenotypeDef>();
 
         //Mod items
@@ -77,7 +76,7 @@ namespace RVCRestructured
 
         public List<string> modAllowedThoughts = new List<string>();
 
-        public List<string> modAllowedBodyTypes = new List<string>();
+ 
 
         public List<string> modAllowedBuildings = new List<string>();
 
@@ -90,6 +89,7 @@ namespace RVCRestructured
 
         public bool canUseAnyApparel = true;
 
+        #endregion
         /// <summary>
         /// Do some tasks on load, such as getting the modContent lists
         /// </summary>
@@ -187,15 +187,6 @@ namespace RVCRestructured
             #endregion
             #region ---Allowing Content---
 
-            foreach (string mod in modAllowedBodyTypes)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Add everything considered to be food
-                allowedBodyTypes.AddRange(DefDatabase<BodyTypeDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
-            }
 
 
             //Do food allowances
@@ -264,6 +255,15 @@ namespace RVCRestructured
         public RVRRestrictionComp()
         {
             this.compClass=typeof(RestrictionComp);
+        }
+
+        private bool resolved=false;
+        public override void ResolveReferences(ThingDef parentDef)
+        {
+            if (resolved) return;
+            resolved = true;
+            OnLoad();
+            base.ResolveReferences(parentDef);
         }
     }
 

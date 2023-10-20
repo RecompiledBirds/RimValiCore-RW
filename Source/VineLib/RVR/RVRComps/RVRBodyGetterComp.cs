@@ -16,8 +16,24 @@ namespace RVCRestructured
             this.compClass = typeof(RVRBodyGetter);
         }
         public List<BodyTypeDef> allowedBodyTypes = new List<BodyTypeDef>();
-
-
+        public List<string> modAllowedBodyTypes = new List<string>();
+        private bool resolved;
+        public override void ResolveReferences(ThingDef parentDef)
+        {
+            if (resolved) return;
+            resolved = true;
+            foreach (string mod in modAllowedBodyTypes)
+            {
+                //Try to find the mod.
+                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
+                //If we can't find it, skip
+                if (pack == null) continue;
+                //Add everything considered to be food
+                allowedBodyTypes.AddRange(DefDatabase<BodyTypeDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
+            }
+            base.ResolveReferences(parentDef);
+        }
+        
     }
 
     public class RVRBodyGetter : ThingComp
@@ -40,7 +56,7 @@ namespace RVCRestructured
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            GenBody();
+            //GenBody();
         }
     }
 }

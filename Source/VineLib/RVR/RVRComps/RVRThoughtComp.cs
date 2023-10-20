@@ -50,7 +50,7 @@ namespace RVCRestructured
         {
             get
             {
-                return Props as RVRThoughtComp;
+                return props as RVRThoughtComp;
             }
         }
     }
