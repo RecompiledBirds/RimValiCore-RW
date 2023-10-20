@@ -105,7 +105,19 @@ namespace RVCRestructured.Defs
                         position= east.position + recursizePos;
                         break;
                     case 3:
-                        position= west.position + recursizePos;
+                        if (west == null)
+                        {
+                            west = new BodyPartGraphicPos()
+                            {
+                                position = -east.position,
+                                size = east.size
+                            };
+                            if (!flipLayerEastWest)
+                                west.position.y = east.position.y;
+                            if (!flipYPos)
+                                west.position.z = east.position.z;
+                        }
+                        position = west.position + recursizePos;
                         break;
                     default:
                         position= Vector3.zero;
