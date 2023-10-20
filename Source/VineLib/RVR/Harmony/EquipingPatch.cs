@@ -14,7 +14,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
             bool restricted = RestrictionsChecker.IsRestricted(def);
             RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
-            if (comp!=null) return !restricted;
+            if (comp==null) return !restricted;
 
             bool inAllowedDefs = comp.Props.allowedEquipment.Contains(def) || comp.Props.restrictedEquipment.Contains(def);
 

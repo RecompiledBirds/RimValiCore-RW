@@ -5,7 +5,7 @@ using UnityEngine;
 using Verse;
 using Random = System.Random;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
     public class RVRCP : CompProperties
     {
