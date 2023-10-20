@@ -125,9 +125,10 @@ namespace RVCRestructured
             set
             {
                 selectedPawn = value;
-
-                if (SelectedPawn.def is RaceDef && SelectedPawn.GetComp<RVRComp>() is RVRComp comp)
+                RVRComp comp = SelectedPawn.TryGetComp<RVRComp>();
+                if ( comp!=null)
                 {
+                    
                     colorSets = comp.Colors;
                 }
                 else

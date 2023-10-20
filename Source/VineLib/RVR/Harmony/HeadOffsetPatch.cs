@@ -11,11 +11,11 @@ namespace RVCRestructured.Source.RVR.Harmony
         public static void Postfix(ref Vector3 __result, PawnRenderer __instance)
         {
             Pawn pawn = __instance.graphics.pawn;
-
-            if (!(pawn.def is RaceDef rDef))
+            GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
+            if (comp==null)
                 return;
 
-            RenderableDef renderableDef = rDef.RaceGraphics.renderableDefs.Find(x => x.bodyPart == BodyPartDefOf.Head.defName);
+            RenderableDef renderableDef = comp.Props.renderableDefs.Find(x => x.bodyPart == BodyPartDefOf.Head.defName);
 
             if (renderableDef == null)
                 return;

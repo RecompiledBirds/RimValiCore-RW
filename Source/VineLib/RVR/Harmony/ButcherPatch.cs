@@ -12,9 +12,10 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static void AddButcheredThought(Pawn butcher, Pawn dead, bool isButcher = true)
         {
-            if (butcher.def is RaceDef raceDef)
+            RVRButcherComp comp = butcher.TryGetComp<RVRButcherComp>();
+            if (comp!=null)
             {
-                butcher.needs.mood.thoughts.memories.TryGainMemory(raceDef.ButcherThoughtGetter.GetThought(dead.def,isButcher), null);
+                butcher.needs.mood.thoughts.memories.TryGainMemory(comp.Props.GetThought(dead.def,isButcher), null);
                 return;
             }
             if (isButcher)

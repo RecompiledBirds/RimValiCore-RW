@@ -6,7 +6,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static void CanUseBed(ref bool __result, Pawn p, ThingDef bedDef)
         {
-            __result &= !RestrictionsChecker.IsRestricted(bedDef) || ((p.def as RaceDef)?.RaceRestrictions.restrictedBeds.Contains(bedDef) ?? false);
+            __result &= !RestrictionsChecker.IsRestricted(bedDef) || (p.TryGetComp<RestrictionComp>()?.Props.restrictedBeds.Contains(bedDef) ?? false);
         }
     }
 }

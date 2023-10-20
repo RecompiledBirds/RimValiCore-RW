@@ -7,9 +7,9 @@ namespace RVCRestructured.RVR
     {
         public static void Constructable(Thing t, Pawn pawn, WorkTypeDef workType, bool forced, ref bool __result)
         {
-            RaceDef raceDef = pawn.def as RaceDef;
+            RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
             bool restricted = RestrictionsChecker.IsRestricted(t.def);
-            bool allowedToUse = raceDef?.RaceRestrictions.allowedBuildings.Contains(t.def) ?? false;
+            bool allowedToUse = comp?.Props.allowedBuildings.Contains(t.def) ?? false;
             bool final = !restricted || allowedToUse;
             if (!final)
                 JobFailReason.Is(pawn.def.label + " " + "CannotBuildRVR".Translate(pawn.def.label.Named("RACE")));

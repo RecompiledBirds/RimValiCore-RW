@@ -25,14 +25,14 @@ namespace RVCRestructured.RVR.HarmonyPatches
             
             if (!ingester.RaceProps.Humanlike)
                 return;
-
-            if (!(ingester.def is RaceDef rDef))
+            CannibalismComp comp = ingester.TryGetComp<CannibalismComp>();
+            if (comp==null)
                 return;
 
             List<FoodUtility.ThoughtFromIngesting> backupCopy = __result;
             List<FoodUtility.ThoughtFromIngesting> finalResult = new List<FoodUtility.ThoughtFromIngesting>();
-            RaceDef ingesterRace = ingester.def as RaceDef;
-            CannibalismThoughtsGetter thoughtGetter = ingesterRace.CannibalismThoughtsGetter;
+            
+            RVRCannibalismComp thoughtGetter = comp.Props;
             bool cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
             try
             {

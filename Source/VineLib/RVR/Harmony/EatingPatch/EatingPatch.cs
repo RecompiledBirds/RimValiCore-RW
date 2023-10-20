@@ -23,7 +23,8 @@ namespace RVCRestructured
         {
             bool restricted = RestrictionsChecker.IsRestricted(t);
             ThingDef def = GetDef(__instance);
-            if (!(def is RaceDef raceDef))
+            RVRRestrictionComp comp = def.GetCompProperties<RVRRestrictionComp>();
+            if (comp!=null)
             {
                 __result &= !restricted;
                 if (restricted)
@@ -33,9 +34,9 @@ namespace RVCRestructured
                 return;
             }
 
-            bool isInAllowedlists = raceDef.RaceRestrictions.allowedFoodDefs.Contains(t) || raceDef.RaceRestrictions.restrictedFoodDefs.Contains(t);
+            bool isInAllowedlists =comp.allowedFoodDefs.Contains(t) || comp.restrictedFoodDefs.Contains(t);
 
-            bool canEatAnyFood = raceDef.RaceRestrictions.canEatAnyFood;
+            bool canEatAnyFood =comp.canEatAnyFood;
 
             bool allowed = (restricted && isInAllowedlists) || (canEatAnyFood || isInAllowedlists);
 

@@ -10,7 +10,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             if (def == null)
                 return;
 
-            __result &= !RestrictionsChecker.IsRestricted(def) || ((pawn.def as RaceDef)?.RaceRestrictions.restrictedResearchDefs.Contains(def) ?? false);
+            __result &= !RestrictionsChecker.IsRestricted(def) || (pawn.TryGetComp<RestrictionComp>()?.Props.restrictedResearchDefs.Contains(def) ?? false);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.RVR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,13 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
-    public class CannibalismThoughtsGetter
+    public class RVRCannibalismComp : CompProperties
     {
         public bool caresAboutUndefinedRaces = true;
-       public List<CannibalismThoughts> thoughts = new List<CannibalismThoughts>();
-        public ThoughtDef GetThoughtsForEatenRace(ThingDef race, bool cannibal, bool cooked=false)
+        public List<CannibalismThoughts> thoughts = new List<CannibalismThoughts>();
+        public ThoughtDef GetThoughtsForEatenRace(ThingDef race, bool cannibal, bool cooked = false)
         {
             for (int i = 0; i < thoughts.Count; i++)
             {
@@ -56,5 +57,16 @@ namespace RVCRestructured.RVR
         public ThoughtDef cookedCannibalThought;
 
         public ThingDef race;
+    }
+
+    public class CannibalismComp : ThingComp
+    {
+        public RVRCannibalismComp Props
+        {
+            get
+            {
+                return props as RVRCannibalismComp;
+            }
+        }
     }
 }

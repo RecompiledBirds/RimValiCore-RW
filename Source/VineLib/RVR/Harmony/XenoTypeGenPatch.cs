@@ -13,36 +13,34 @@ namespace RVCRestructured.Source.RVR.Harmony
 {
     public static class XenoTypeGenPatch
     {
-        public static void Postfix(PawnGenerationRequest request,ref XenotypeDef __result)
+        public static void Postfix(PawnGenerationRequest request, ref XenotypeDef __result)
         {
             bool restricted = __result != null && RestrictionsChecker.IsRestricted(__result);
-            ThingDef thing = request.KindDef!=null? request.KindDef.race ?? (request.KindDef.RaceProps != null ? EatingPatch.GetDef(request.KindDef.RaceProps) : null) : null;
+            ThingDef thing = request.KindDef != null ? request.KindDef.race ?? (request.KindDef.RaceProps != null ? EatingPatch.GetDef(request.KindDef.RaceProps) : null) : null;
             if (thing == null) return;
-           
-            bool isRace = thing is RaceDef ;
-            if(!isRace)
+            RVRRestrictionComp comp = thing.GetCompProperties<RVRRestrictionComp>();
+
+            if (comp==null)
             {
-                if(restricted)
+                if (restricted)
                 {
-                    while(__result==null|| RestrictionsChecker.IsRestricted(__result))
-                        __result = PawnGenerator.XenotypesAvailableFor(request.KindDef).RandomElementByWeight(x=>x.Value).Key;
-                    
+                    while (__result == null || RestrictionsChecker.IsRestricted(__result))
+                        __result = PawnGenerator.XenotypesAvailableFor(request.KindDef).RandomElementByWeight(x => x.Value).Key;
+
                 }
                 return;
             }
-            RaceDef race  = thing as RaceDef ;
-
-            if (restricted && !(!race.RaceRestrictions.restrictedXenoTypes.NullOrEmpty() && __result != null && race.RaceRestrictions.restrictedXenoTypes.Contains(__result)) || (!race.RaceRestrictions.xenoTypeWhitelist.NullOrEmpty() && __result != null && race.RaceRestrictions.xenoTypeWhitelist.Contains(__result)))
+            if ((restricted && !(!comp.restrictedXenoTypes.NullOrEmpty() && __result != null &&comp.restrictedXenoTypes.Contains(__result))) && comp.xenoTypeWhitelist.NullOrEmpty())
             {
 
                 //try again
-                while (__result == null || RestrictionsChecker.IsRestricted(__result) && !race.RaceRestrictions.restrictedXenoTypes.Contains(__result))
+                while (__result == null || RestrictionsChecker.IsRestricted(__result) && !comp.restrictedXenoTypes.Contains(__result))
                     __result = PawnGenerator.XenotypesAvailableFor(request.KindDef).RandomElementByWeight(x => x.Value).Key;
                 return;
             }
-            if (!race.RaceRestrictions.xenoTypeWhitelist.NullOrEmpty()&&!race.RaceRestrictions.xenoTypeWhitelist.Contains(__result))
+            if (!comp.xenoTypeWhitelist.NullOrEmpty() && comp.xenoTypeWhitelist.Contains(__result))
             {
-                __result = race.RaceRestrictions.xenoTypeWhitelist.RandomElement();
+                __result =comp.xenoTypeWhitelist.RandomElement();
             }
         }
     }

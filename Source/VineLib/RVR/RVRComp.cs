@@ -82,14 +82,6 @@ namespace RVCRestructured.RVR
         }
 
 
-        private RaceDef raceDef
-        {
-            get
-            {
-                return this.parent.def as RaceDef;
-            }
-        }
-
         public override void PostExposeData()
         {
             Scribe_Collections.Look(ref sets, "sets", LookMode.Value, LookMode.Deep, ref lKeys, ref lSets);
@@ -127,18 +119,19 @@ namespace RVCRestructured.RVR
         {
             Pawn pawn = this.parent as Pawn;
 
-            if (!(pawn.def is RaceDef raceDef))
+            GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
+            if (comp == null)
                 return;
 
-            if (defList.NullOrEmpty() && !raceDef.RaceGraphics.renderableDefs.NullOrEmpty())
+            if (defList.NullOrEmpty() && comp.Props.renderableDefs.NullOrEmpty())
             {
                 defList = new List<IRenderable>();
-                foreach(RenderableDef def in raceDef.RaceGraphics.renderableDefs)
+                foreach(RenderableDef def in comp.Props.renderableDefs)
                 {
                     defList.Add(def);
                 }
             }
-            foreach (RenderableDef rDef in raceDef.RaceGraphics.renderableDefs)
+            foreach (RenderableDef rDef in comp.Props.renderableDefs)
             {
                 if (renderableIndexes.ContainsKey(rDef.defName))
                 {
@@ -167,7 +160,7 @@ namespace RVCRestructured.RVR
                     masks.Add(rDef.linkTexWith.defName, index);
                 }
             }
-            foreach (RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
+            foreach (RaceColors colors in comp.Props.colorGenerators)
             {
                 if (sets.ContainsKey(colors.name))
                     continue;

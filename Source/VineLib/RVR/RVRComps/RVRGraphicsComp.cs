@@ -1,12 +1,20 @@
 ﻿using RVCRestructured.Defs;
+using RVCRestructured.RVR;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
-    public class RaceGraphics
+    public class RVRGraphicsComp : CompProperties
     {
+        public bool hasUniqueHeadApparel = false;
+        public bool throwApparelError = false;
+        public bool useEmptyApparelIfNoDefault = true;
         public bool hasHair = false;
         public List<RaceColors> colorGenerators = new List<RaceColors>();
         public List<RenderableDef> renderableDefs = new List<RenderableDef>();
@@ -20,7 +28,7 @@ namespace RVCRestructured.RVR
         public Vector2 headSize;
         public Vector2 bodySize = new Vector2(1f, 1f);
 
-        public Dictionary<string, RaceColors> cachedColors = new Dictionary<string, RaceColors>();
+        public  Dictionary<string, RaceColors> cachedColors = new Dictionary<string, RaceColors>();
         public RaceColors this[string name]
         {
             get
@@ -63,6 +71,22 @@ namespace RVCRestructured.RVR
                 };
                 colorGenerators.Add(debugColors);
                 return debugColors;
+            }
+        }
+
+        public RVRGraphicsComp()
+        {
+            compClass = typeof(GraphicsComp);
+        }
+    }
+
+    public class GraphicsComp : ThingComp
+    {
+        public RVRGraphicsComp Props
+        {
+            get
+            {
+                return props as RVRGraphicsComp;
             }
         }
     }

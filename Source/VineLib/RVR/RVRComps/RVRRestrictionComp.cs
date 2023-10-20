@@ -1,12 +1,15 @@
 ﻿using RimWorld;
-using RVCRestructured.RVR.HarmonyPatches;
+using RVCRestructured.RVR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
-    public class RaceRestrictions
+    public class RVRRestrictionComp : CompProperties
     {
         //Defs restricted to this race
         public List<ResearchProjectDef> restrictedResearchDefs = new List<ResearchProjectDef>();
@@ -142,13 +145,13 @@ namespace RVCRestructured.RVR
             //Do building restrictions
             foreach (string mod in modRestrictedBuildings)
             {
-                
+
                 //Try to find the mod.
                 ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Add everything considered to be a building
-                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefs.Where(x => x.modContentPack == pack && x.building!=null&&x.BuildableByPlayer&&x.blueprintDef!=null));
+                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefs.Where(x => x.modContentPack == pack && x.building != null && x.BuildableByPlayer && x.blueprintDef != null));
             }
 
             //Do research restrictions
@@ -256,6 +259,22 @@ namespace RVCRestructured.RVR
 
 
 
+        }
+
+        public RVRRestrictionComp()
+        {
+            this.compClass=typeof(RestrictionComp);
+        }
+    }
+
+    public class RestrictionComp : ThingComp
+    {
+        public RVRRestrictionComp Props
+        {
+            get
+            {
+                return props as RVRRestrictionComp;
+            }
         }
     }
 }

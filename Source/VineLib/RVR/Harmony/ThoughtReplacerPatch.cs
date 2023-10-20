@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using System.Security.Cryptography;
 using Verse;
 
 namespace RVCRestructured.RVR.HarmonyPatches
@@ -8,30 +9,27 @@ namespace RVCRestructured.RVR.HarmonyPatches
         public static void ReplacePatch(ref ThoughtDef def, MemoryThoughtHandler __instance)
         {
             Pawn pawn = __instance.pawn;
-            if (pawn.def is RaceDef rDef)
-            {
-                rDef.ThoughtReplacer.Replace(ref def);
-            }
+            ThoughtComp comp = pawn.TryGetComp<ThoughtComp>();
+            if (comp == null) return;
+            comp.Props.Replace(ref def);
         }
 
         public static bool ReplacePatchCreateMemoryPrefix(Thought_Memory newThought, MemoryThoughtHandler __instance)
         {
             Pawn pawn = __instance.pawn;
-            if(pawn.def is RaceDef raceDef)
-            {
-                raceDef.ThoughtReplacer.Replace(ref newThought.def);
-                newThought = ThoughtMaker.MakeThought(newThought.def, newThought.CurStageIndex);
-            }
+            ThoughtComp comp = pawn.TryGetComp<ThoughtComp>();
+            if (comp == null) return true;
+            comp.Props.Replace(ref newThought.def);
+            newThought = ThoughtMaker.MakeThought(newThought.def, newThought.CurStageIndex);
             return true;
         }
 
         public static void ReplacePatchSIT(ref ThoughtDef def, SituationalThoughtHandler __instance)
         {
             Pawn pawn = __instance.pawn;
-            if (pawn.def is RaceDef rDef)
-            {
-                rDef.ThoughtReplacer.Replace(ref def);
-            }
+            ThoughtComp comp = pawn.TryGetComp<ThoughtComp>();
+            if (comp == null) return;
+            comp.Props.Replace(ref def);
         }
     }
 }
