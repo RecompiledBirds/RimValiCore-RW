@@ -118,7 +118,7 @@ namespace RVCRestructured
 
         public void GenGraphics()
         {
-            Pawn pawn = this.parent as Pawn;
+            Pawn pawn = parent as Pawn;
 
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
             if (comp == null)
@@ -135,36 +135,7 @@ namespace RVCRestructured
                     defList.Add(def);
                 }
             }
-            foreach (RenderableDef rDef in comp.Props.renderableDefs)
-            {
-
-                if (renderableIndexes.ContainsKey(rDef.defName))
-                {
-                    continue;
-                }
-                Random rand = new Random();
-                int index = rand.Next(rDef.textures.Count);
-
-                renderableIndexes[rDef.defName] = index;
-                int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
-                index = rand.Next(maskIndex);
-                masks.Add(rDef.defName, index);
-                if (rDef.linkTexWith != null)
-                {
-                    if (renderableIndexes.ContainsKey(rDef.defName))
-                    {
-                        renderableIndexes.Add(rDef.defName, renderableIndexes[rDef.linkTexWith.defName]);
-                        masks.Add(rDef.defName, masks[rDef.linkTexWith.defName]);
-                        continue;
-                    }
-
-
-
-                    renderableIndexes.Add(rDef.linkTexWith.defName, index);
-
-                    masks.Add(rDef.linkTexWith.defName, index);
-                }
-            }
+            
             foreach (RaceColors colors in comp.Props.colorGenerators)
             {
                 if (sets.ContainsKey(colors.name))
@@ -174,6 +145,42 @@ namespace RVCRestructured
                 Color c2 = colors.GeneratorToUse(pawn).colorTwo.NewRandomizedColor();
                 Color c3 = colors.GeneratorToUse(pawn).colorThree.NewRandomizedColor();
                 sets.Add(colors.name, new TriColorSet(c1, c2, c3, true));
+            }
+
+            foreach (RenderableDef rDef in comp.Props.renderableDefs)
+            {
+                GenerateRenderableDef(rDef, pawn);
+            }
+        }
+
+        private void GenerateRenderableDef(RenderableDef rDef, Pawn pawn)
+        {
+            if (renderableIndexes.ContainsKey(rDef.defName))
+            {
+                return;
+            }
+            
+            bool hasLink = rDef.linkTexWith != null;
+            if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith.defName)) {
+                string linkString = rDef.linkTexWith.defName;
+                renderableIndexes[rDef.defName] = renderableIndexes[linkString];
+                masks[rDef.defName] = renderableIndexes[linkString];
+                return;
+            }
+
+            Random rand = new Random();
+            int index = rand.Next(rDef.textures.Count);
+            renderableIndexes[rDef.defName] = index;
+            int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
+            index = rand.Next(maskIndex);
+            masks.Add(rDef.defName, index);
+
+            if (hasLink)
+            {
+                string linkString = rDef.linkTexWith.defName;
+                renderableIndexes[linkString] = renderableIndexes[rDef.defName];
+                masks[linkString] = renderableIndexes[rDef.defName];
+                return;
             }
         }
     }

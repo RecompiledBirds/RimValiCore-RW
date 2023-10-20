@@ -281,7 +281,14 @@ namespace RVCRestructured.Defs
 
         public List<string> alternateMaskPaths = new List<string>();
         public List<string> alternateFemaleMaskPaths = new List<string>();
+        public List<string> alternateMaleMaskPaths = new List<string>();
 
+        public List<string> MaskPaths(Pawn pawn)
+        {
+            if(alternateFemaleMaskPaths.Count>0&&pawn.gender==Gender.Female)return alternateFemaleMaskPaths;
+            if (alternateMaleMaskPaths.Count > 0 && pawn.gender == Gender.Male) return alternateMaleMaskPaths;
+            return alternateMaskPaths;
+        }
 
         /// <summary>
         /// Can the texture be applied to a pawn?
@@ -300,7 +307,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public bool HasAlternateMasks(Pawn pawn)
         {
-            return (alternateFemaleMaskPaths.Count > 0 && pawn.gender == Gender.Female) || alternateMaskPaths.Count > 0;
+            return MaskPaths(pawn).Count>0;
         }
 
         /// <summary>
@@ -310,7 +317,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public List<string> GetMasks(Pawn pawn)
         {
-            return HasAlternateMasks(pawn) ? pawn.gender == Gender.Female ? alternateFemaleMaskPaths : alternateMaskPaths : new List<string>();
+            return MaskPaths(pawn);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace RVCRestructured
             bool restricted = RestrictionsChecker.IsRestricted(t);
             ThingDef def = GetDef(__instance);
             RVRRestrictionComp comp = def.GetCompProperties<RVRRestrictionComp>();
-            if (comp!=null)
+            if (comp==null)
             {
                 __result &= !restricted;
                 if (restricted)
