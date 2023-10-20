@@ -86,54 +86,84 @@ namespace RVCRestructured.Defs
 
             return GetBodyPartGraphicPosFromIntRot(rot.AsInt,set);
         }
-
+        private Dictionary<int, Vector3> posCache = new Dictionary<int, Vector3>();
+        private Vector3 GetPosRecursively(int rot)
+        {
+            if (!posCache.ContainsKey(rot))
+            {
+                Vector3 position;
+                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot) : Vector3.zero);
+                switch (rot)
+                {
+                    case 0:
+                        position= north.position + recursizePos;
+                        break;
+                    case 2:
+                        position= south.position + recursizePos;
+                        break;
+                    case 1:
+                        position= east.position + recursizePos;
+                        break;
+                    case 3:
+                        position= west.position + recursizePos;
+                        break;
+                    default:
+                        position= Vector3.zero;
+                        break;
+                }
+                posCache[rot] = position;
+            }
+            return posCache[rot];
+        }
+        private Dictionary<int, BodyPartGraphicPos> partCache = new Dictionary<int, BodyPartGraphicPos>();
         private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot)
         {
-            switch (rot)
+            if (!partCache.ContainsKey(rot))
             {
-                case 0:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                Vector3 pos = GetPosRecursively(rot);
+                BodyPartGraphicPos newPos;
+                switch (rot)
+                {
+                    case 0:
+
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = north.position + linkPosWith.north.position,
-                            size=north.size
+                            position = pos,
+                            size = north.size
                         };
-                    }
-                    return north;
-                case 2:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                        break;
+
+                    case 2:
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = south.position + linkPosWith.south.position,
+                            position = pos,
                             size = south.size
                         };
-                    }
-                    return south;
-                case 1:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                        break;
+
+                    case 1:
+
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = east.position + linkPosWith.east.position,
+                            position = pos,
                             size = east.size
                         };
-                    }
-                    return east;
-                case 3:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                        break;
+                    case 3:
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = west.position + linkPosWith.west.position,
+                            position = pos,
                             size = west.size
                         };
-                    }
-                    return west;
-                default:
-                    return null;
+                        break;
+
+                    default:
+                        newPos = null;
+                        break;
+                }
+                partCache[rot] = newPos;
             }
+            return partCache[rot];
         }
 
         private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot,PawnGraphicSet set)

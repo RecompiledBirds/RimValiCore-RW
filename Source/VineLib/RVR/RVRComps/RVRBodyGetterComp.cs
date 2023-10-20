@@ -56,7 +56,7 @@ namespace RVCRestructured
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
-            //GenBody();
+            GenBody();
         }
     }
 }
