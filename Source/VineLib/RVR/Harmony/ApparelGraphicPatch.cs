@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,20 @@ namespace RVCRestructured.RVR.Harmony
     {
         public static void Postfix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec)
         {
+            BodyTypeDef typeDef = bodyType;
             Pawn pawn = apparel.Wearer;
             string path;
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if(shapeshifterComp != null && shapeshifterComp.CurrentForm!=pawn.def&& shapeshifterComp.MimickedBodyType!=null)
+            {
+                typeDef = shapeshifterComp.MimickedBodyType;
+            }
             if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
                 return;
 
             Graphic graphic;
-            string altPath = $"{apparel.WornGraphicPath}_{bodyType.defName}";
+            string altPath = $"{apparel.WornGraphicPath}_{typeDef.defName}";
             if (ContentFinder<Texture2D>.Get($"{altPath}_north", false))
             {
                 path = altPath;
@@ -43,7 +50,7 @@ namespace RVCRestructured.RVR.Harmony
             else
             {
                 if (comp!=null && comp.Props.throwApparelError)
-                    RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {bodyType.defName}, no bodytype, or thin bodytype. Returning an empty texture...");
+                    RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {typeDef.defName}, no bodytype, or thin bodytype. Returning an empty texture...");
 
                 path = "RVC/Empty";
             }

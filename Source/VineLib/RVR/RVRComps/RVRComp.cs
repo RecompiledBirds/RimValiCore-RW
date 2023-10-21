@@ -139,8 +139,14 @@ namespace RVCRestructured
             if (shapeshifterComp != null)
             {
                 RVRGraphicsComp shifterGraphics = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
-                if (shapeshifterComp.CurrentForm != pawn.def && shifterGraphics != null)
-                    props = shifterGraphics;
+                if (shapeshifterComp.CurrentForm != pawn.def)
+                {
+
+                    if (shifterGraphics != null)
+                        props = shifterGraphics;
+                    else
+                        return;
+                }
             }
             GenFromComp(props, pawn);
         }

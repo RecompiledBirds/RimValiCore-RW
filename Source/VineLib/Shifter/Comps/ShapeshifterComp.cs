@@ -15,6 +15,22 @@ namespace RVCRestructured.Shifter
     {
         private XenotypeDef baseXenoTypeDef;
         private ThingDef currentForm;
+        private BodyTypeDef mimickedBody;
+        private HeadTypeDef mimickedHead;
+
+        public BodyTypeDef MimickedBodyType
+        {
+            get
+            {
+                return mimickedBody;
+            }
+        }
+
+        public HeadTypeDef MimickedHead
+        {
+            get { return mimickedHead; }
+        }
+
         public ThingDef CurrentForm
         {
             get
@@ -32,18 +48,20 @@ namespace RVCRestructured.Shifter
             base.PostSpawnSetup(respawningAfterLoad);
             if (baseXenoTypeDef == null) return;
             Pawn pawn = parent as Pawn;
-            baseXenoTypeDef = pawn.genes.Xenotype;
-           
+            baseXenoTypeDef = pawn.genes.Xenotype;           
         }
 
         public void SetForm(Pawn pawn)
         {
+            mimickedBody = pawn.story.bodyType;
+            mimickedHead = pawn.story.headType;
             Pawn parentPawn = parent as Pawn;
             if (baseXenoTypeDef == null)
             {
                 baseXenoTypeDef = parentPawn.genes.Xenotype;
 
             }
+            RevertGenes();
             SetForm(pawn.def);
             parentPawn.genes.SetXenotype(pawn.genes.Xenotype);
             SetGenes(pawn.genes.Xenotype,baseXenoTypeDef);
@@ -58,29 +76,38 @@ namespace RVCRestructured.Shifter
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             if (comp == null) return;
             RVRGraphicsComp targetGraphics=def.GetCompProperties<RVRGraphicsComp>();
+            comp.RenderableDefs.Clear();
             if (targetGraphics != null) {
-                comp.RenderableDefs.Clear();
+              
                 comp.GenAllDefs(targetGraphics,pawn);
                 comp.GenColors(targetGraphics,pawn);
-                return;
             }
-            
+            comp.InformGraphicsDirty();
+            pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+
+
         }
 
-        public void RevertForm()
+        public void RevertGenes()
         {
-            SetForm(parent.def);
             Pawn parentPawn = parent as Pawn;
             XenotypeDef def = parentPawn.genes.Xenotype;
             parentPawn.genes.SetXenotype(baseXenoTypeDef);
             SetGenes(baseXenoTypeDef, def);
         }
 
+        public void RevertForm()
+        {
+            mimickedBody = null;
+            mimickedHead = null;
+            RevertGenes();
+            SetForm(parent.def);
+           
+        }
+
         public void SetGenes(XenotypeDef xenotype, XenotypeDef from)
         {
             Pawn parentPawn = parent as Pawn;
-            Log.Message(xenotype.defName);
-            Log.Message(from.defName);
             foreach (GeneDef def in xenotype.AllGenes)
             {
                 parentPawn.genes.AddGene(def, !xenotype.inheritable);
@@ -95,6 +122,8 @@ namespace RVCRestructured.Shifter
 
         public override void PostExposeData()
         {
+            Scribe_Defs.Look(ref mimickedHead, nameof(mimickedHead));
+            Scribe_Defs.Look(ref mimickedBody, nameof(mimickedBody));
             Scribe_Defs.Look(ref currentForm, nameof(currentForm));
             Scribe_Defs.Look(ref baseXenoTypeDef,nameof(baseXenoTypeDef));
             base.PostExposeData();
