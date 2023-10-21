@@ -35,7 +35,7 @@ namespace RVCRestructured.Shifter
                 yield break;
                
             }
-            if (comp.CurrentForm == pawn.def)
+            if (comp.IsParentDef())
             {
                 foreach (StatDrawEntry entry in __result)
                 {
@@ -49,7 +49,7 @@ namespace RVCRestructured.Shifter
             {
                 if (entry.LabelCap == "Race".Translate().CapitalizeFirst())
                 {
-                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), comp.CurrentForm.LabelCap, comp.CurrentForm.description, 2100, null, null, false);
+                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), comp.label().CapitalizeFirst(), comp.CurrentForm.description, 2100, null, null, false);
                     continue;
                 }
                 yield return entry;
@@ -70,7 +70,7 @@ namespace RVCRestructured.Shifter
                 yield break;
 
             }
-            if (comp.CurrentForm == __instance.def)
+            if (comp.IsParentDef())
             {
                 foreach (StatDrawEntry entry in __result)
                 {
@@ -85,7 +85,7 @@ namespace RVCRestructured.Shifter
                 if (entry.LabelCap == "Race".Translate().CapitalizeFirst())
                 {
                     string reportText = __instance.genes.UniqueXenotype ? "UniqueXenotypeDesc".Translate().ToString() : comp.CurrentForm.description;
-                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), comp.CurrentForm.LabelCap + " (" + __instance.genes.XenotypeLabel + ")", reportText, 2100, null, __instance.genes.UniqueXenotype ? null : Gen.YieldSingle(new Dialog_InfoCard.Hyperlink(__instance.genes.Xenotype, -1)), false);
+                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), comp.label().CapitalizeFirst() + " (" + __instance.genes.XenotypeLabel + ")", reportText, 2100, null, __instance.genes.UniqueXenotype ? null : Gen.YieldSingle(new Dialog_InfoCard.Hyperlink(__instance.genes.Xenotype, -1)), false);
                     
                     continue;
                 }
@@ -108,7 +108,7 @@ namespace RVCRestructured.Shifter
                 yield break;
 
             }
-            if (comp.CurrentForm == pawn.def)
+            if (comp.IsParentDef())
             {
                 foreach (StatDrawEntry entry in __result)
                 {
@@ -121,8 +121,8 @@ namespace RVCRestructured.Shifter
             {
                 if (entry.LabelCap == "Stat_Source_Label".Translate().CapitalizeFirst())
                 {
-                    TaggedString t = comp.CurrentForm.modContentPack.IsOfficialMod ? "Stat_Source_OfficialExpansionReport".Translate() : "Stat_Source_ModReport".Translate();
-                    yield return new StatDrawEntry(StatCategoryDefOf.Source, "Stat_Source_Label".Translate(), comp.CurrentForm.modContentPack.Name, t + ": " + comp.CurrentForm.modContentPack.Name, 90000, null, null, false);
+                    TaggedString t = comp.ContentPack.IsOfficialMod ? "Stat_Source_OfficialExpansionReport".Translate() : "Stat_Source_ModReport".Translate();
+                    yield return new StatDrawEntry(StatCategoryDefOf.Source, "Stat_Source_Label".Translate(), comp.ContentPack.Name, t + ": " + comp.ContentPack.Name, 90000, null, null, false);
                     continue;
                 }
                 yield return entry;
@@ -144,7 +144,7 @@ namespace RVCRestructured.Shifter
                 yield break;
 
             }
-            if (comp.CurrentForm == pawn.def)
+            if (comp.IsParentDef())
             {
                 foreach (StatDrawEntry entry in __result)
                 {
@@ -157,8 +157,8 @@ namespace RVCRestructured.Shifter
             {
                 if (entry.LabelCap == "Stat_Source_Label".Translate().CapitalizeFirst())
                 {
-                    TaggedString t = comp.CurrentForm.modContentPack.IsOfficialMod ? "Stat_Source_OfficialExpansionReport".Translate() : "Stat_Source_ModReport".Translate();
-                    yield return new StatDrawEntry(StatCategoryDefOf.Source, "Stat_Source_Label".Translate(), comp.CurrentForm.modContentPack.Name, t + ": " + comp.CurrentForm.modContentPack.Name, 90000, null, null, false);
+                    TaggedString t = comp.ContentPack.IsOfficialMod ? "Stat_Source_OfficialExpansionReport".Translate() : "Stat_Source_ModReport".Translate();
+                    yield return new StatDrawEntry(StatCategoryDefOf.Source, "Stat_Source_Label".Translate(), comp.ContentPack.Name, t + ": " + comp.ContentPack.Name, 90000, null, null, false);
                     continue;
                 }
                 yield return entry;

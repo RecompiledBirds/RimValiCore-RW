@@ -60,7 +60,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 skinThree = comp[set][2];
             }
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-            if (shapeshifterComp != null && shapeshifterComp.CurrentForm!=pawn.def)
+            if (shapeshifterComp != null && !shapeshifterComp.IsParentDef())
             {
                 __instance.bodyTattooGraphic = empty;
                 __instance.faceTattooGraphic = empty;
@@ -175,7 +175,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         private static string HeadTexShifted(ShapeshifterComp shapeshifterComp)
         {
-            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
             if (comp == null)
             {
                return shapeshifterComp.MimickedHead.graphicPath;
@@ -187,7 +187,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         public static Graphic HeadGraphicShifted(ShapeshifterComp shapeshifterComp, Color skinTwo, Color skinThree,bool desiccated=false)
         {
-            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
             Pawn pawn = shapeshifterComp.parent as Pawn;
             if (comp == null)
             {
@@ -197,7 +197,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
         }
         public static Graphic BodyGraphicShifted(ShapeshifterComp shapeshifterComp, Color skinTwo, Color skinThree)
         {
-            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
             Pawn pawn = shapeshifterComp.parent as Pawn;
             if (comp == null)
             {
@@ -207,13 +207,13 @@ namespace RVCRestructured.RVR.HarmonyPatches
         }
         private static bool UsesCustomHead(ShapeshifterComp shapeshifterComp)
         {
-            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
             return comp != null;
         }
 
         private static bool ShiftedHasHair(ShapeshifterComp shapeshifterComp)
         {
-            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
             if (comp == null)
             {
                 return true;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RVCRestructured.Shifter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -14,7 +15,17 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
             bool restricted = RestrictionsChecker.IsRestricted(def);
             RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
-            if (comp==null) return !restricted;
+            RVRRestrictionComp restrictions = null;
+
+            if (comp != null) restrictions = comp.Props;
+
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if (shapeshifterComp != null)
+            {
+                restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
+            }
+
+            if (restrictions == null) return !restricted;
 
             bool inAllowedDefs = comp.Props.allowedEquipment.Contains(def) || comp.Props.restrictedEquipment.Contains(def);
 

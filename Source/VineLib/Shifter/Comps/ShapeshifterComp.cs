@@ -18,6 +18,15 @@ namespace RVCRestructured.Shifter
         private BodyTypeDef mimickedBody;
         private HeadTypeDef mimickedHead;
 
+        public XenotypeDef BaseXenoType
+        {
+            get
+            {
+
+                return baseXenoTypeDef;
+            }
+        }
+
         public BodyTypeDef MimickedBodyType
         {
             get
@@ -31,7 +40,7 @@ namespace RVCRestructured.Shifter
             get { return mimickedHead; }
         }
 
-        public ThingDef CurrentForm
+        public virtual ThingDef CurrentForm
         {
             get
             {
@@ -41,6 +50,33 @@ namespace RVCRestructured.Shifter
                 }
                 return currentForm;
             }
+        }
+
+        public virtual ModContentPack ContentPack
+        {
+            get
+            {
+                return CurrentForm.modContentPack;
+            }
+        }
+
+        public virtual bool IsParentDef()
+        {
+            return IsDef(parent.def);
+        }
+        public virtual bool IsDef(ThingDef def)
+        {
+            return def == CurrentForm;
+        }
+
+        public virtual string label()
+        {
+            return CurrentForm.label;
+        }
+
+        public virtual T GetCompProperties<T>() where T : CompProperties
+        {
+            return CurrentForm.GetCompProperties<T>();
         }
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
@@ -133,7 +169,7 @@ namespace RVCRestructured.Shifter
         {
             float result = 0;
             Pawn pawn = parent as Pawn;
-            if (CurrentForm == pawn.def) return result;
+            if (IsParentDef()) return result;
             result -= pawn.def.statBases.GetStatOffsetFromList(stat);
             result += CurrentForm.statBases.GetStatOffsetFromList(stat);
             return result;

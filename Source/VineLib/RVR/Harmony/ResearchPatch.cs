@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using RVCRestructured.Shifter;
+using Verse;
 
 namespace RVCRestructured.RVR.HarmonyPatches
 {
@@ -9,8 +10,27 @@ namespace RVCRestructured.RVR.HarmonyPatches
             ResearchProjectDef def = Find.ResearchManager.currentProj;
             if (def == null)
                 return;
-
-            __result &= !RestrictionsChecker.IsRestricted(def) || (pawn.TryGetComp<RestrictionComp>()?.Props.restrictedResearchDefs.Contains(def) ?? false);
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
+            RVRRestrictionComp restrictions=null;
+            if (comp == null)
+            {
+                if (shapeshifterComp != null)
+                {
+                    restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
+                    __result &= !RestrictionsChecker.IsRestricted(def) || (restrictions?.restrictedResearchDefs.Contains(def) ?? false);
+                    return;
+                }
+                __result &= !RestrictionsChecker.IsRestricted(def);
+                return;
+            }
+            if (shapeshifterComp != null)
+            {
+                restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
+                __result &= !RestrictionsChecker.IsRestricted(def) || (restrictions?.restrictedResearchDefs.Contains(def) ?? false);
+                return;
+            }
+            __result &= !RestrictionsChecker.IsRestricted(def) || (restrictions?.restrictedResearchDefs.Contains(def) ?? false);
         }
     }
 }

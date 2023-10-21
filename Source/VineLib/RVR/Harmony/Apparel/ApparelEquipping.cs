@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using RVCRestructured.Shifter;
+using Verse;
 
 namespace RVCRestructured.RVR.HarmonyPatches
 {
@@ -7,10 +8,19 @@ namespace RVCRestructured.RVR.HarmonyPatches
         public static bool ApparelAllowedForRace(this ThingDef def, Pawn pawn)
         {
             RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
-            
+            RVRRestrictionComp restrictions = null;
+
+            if (comp != null) restrictions = comp.Props;
+
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if (shapeshifterComp != null)
+            {
+                restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
+            }
             bool restricted = RestrictionsChecker.IsRestricted(def);
-            bool canOnlyWearApprovedApparel =!( comp == null || comp.Props.canUseAnyApparel);
-            bool inAllowedDefs = (comp==null || comp.Props.allowedApparel.Contains(def)) ||(comp==null||comp.Props.restrictedApparel.Contains(def));
+            bool noComp = restrictions == null;
+            bool canOnlyWearApprovedApparel =!(noComp || restrictions.canUseAnyApparel);
+            bool inAllowedDefs = (noComp || restrictions.allowedApparel.Contains(def)) ||(noComp ||restrictions.restrictedApparel.Contains(def));
             return (restricted && inAllowedDefs) || (canOnlyWearApprovedApparel && inAllowedDefs) || !restricted && !canOnlyWearApprovedApparel;
         }
 

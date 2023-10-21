@@ -19,7 +19,7 @@ namespace RVCRestructured.RVR.Harmony
             string path;
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-            if(shapeshifterComp != null && shapeshifterComp.CurrentForm!=pawn.def&& shapeshifterComp.MimickedBodyType!=null)
+            if(shapeshifterComp != null && !shapeshifterComp.IsParentDef()&& shapeshifterComp.MimickedBodyType!=null)
             {
                 typeDef = shapeshifterComp.MimickedBodyType;
             }

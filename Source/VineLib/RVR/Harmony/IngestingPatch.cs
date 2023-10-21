@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +29,16 @@ namespace RVCRestructured.RVR.HarmonyPatches
             CannibalismComp comp = ingester.TryGetComp<CannibalismComp>();
             if (comp==null)
                 return;
-
+            RVRCannibalismComp thoughtGetter = comp.Props;
+            ShapeshifterComp shapeshifterComp = ingester.TryGetComp<ShapeshifterComp>();
+            if (shapeshifterComp != null)
+            {
+                thoughtGetter = shapeshifterComp.GetCompProperties<RVRCannibalismComp>();
+            }
+            if (thoughtGetter == null) return;
             List<FoodUtility.ThoughtFromIngesting> backupCopy = __result;
             List<FoodUtility.ThoughtFromIngesting> finalResult = new List<FoodUtility.ThoughtFromIngesting>();
             
-            RVRCannibalismComp thoughtGetter = comp.Props;
             bool cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
             try
             {

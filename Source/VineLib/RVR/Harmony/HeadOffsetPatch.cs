@@ -34,7 +34,7 @@ namespace RVCRestructured.Source.RVR.Harmony
 
         public static Vector3 ShiftedHeadOffset(ShapeshifterComp shapeshifterComp, Vector3 __result,Rot4 rotation)
         {
-            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
             Pawn pawn = (Pawn)shapeshifterComp.parent;
             if (comp == null)
             {

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace RVCRestructured.RVR.HarmonyPatches {
             if (!victim.RaceProps.Humanlike)
                 return true;
             OrganComp comp = victim.TryGetComp<OrganComp>();
+            
             if (comp==null)
                 victim.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.MyOrganHarvested, null);
             else
