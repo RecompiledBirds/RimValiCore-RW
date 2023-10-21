@@ -1,4 +1,5 @@
-﻿using RVCRestructured.Defs;
+﻿using RimWorld;
+using RVCRestructured.Defs;
 using RVCRestructured.RVR;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,16 @@ namespace RVCRestructured.Shifter
         {
             Scribe_Defs.Look(ref currentForm, nameof(currentForm));
             base.PostExposeData();
+        }
+
+        public virtual float OffsetStat(StatDef stat)
+        {
+            float result = 0;
+            Pawn pawn = parent as Pawn;
+            if (CurrentForm == pawn.def) return result;
+            result -= pawn.def.statBases.GetStatOffsetFromList(stat);
+            result += CurrentForm.statBases.GetStatOffsetFromList(stat);
+            return result;
         }
     }
 }

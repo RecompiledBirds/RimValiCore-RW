@@ -19,18 +19,10 @@ namespace RVCRestructured.Shifter.Patches
             if (!(req.Thing is Pawn pawn)) return;
             ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
             if(comp==null) return;
-            __result += OffsetStat(comp, ___stat);
+            __result += comp.OffsetStat(___stat);
         }
 
-        public static float OffsetStat(ShapeshifterComp comp, StatDef stat)
-        {
-            float result = 0;
-            Pawn pawn = comp.parent as Pawn;
-            if (comp.CurrentForm == pawn.def) return result;
-            result -= pawn.def.statBases.GetStatOffsetFromList(stat);
-            result += comp.CurrentForm.statBases.GetStatOffsetFromList(stat);
-            return result;
-        }
+        
 
     }
 }
