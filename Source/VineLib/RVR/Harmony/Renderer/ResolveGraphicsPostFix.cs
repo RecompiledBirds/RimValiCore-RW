@@ -82,7 +82,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
                     __instance.desiccatedHeadStumpGraphic = empty;
                     __instance.headStumpGraphic = empty;
                 }
-                __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
+                __instance.nakedGraphic = BodyGraphicShifted(shapeshifterComp,skinTwo,skinThree);
 
                 if (!ShiftedHasHair(shapeshifterComp))
                 {
@@ -195,7 +195,16 @@ namespace RVCRestructured.RVR.HarmonyPatches
             }
             return RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(HeadTexShifted(shapeshifterComp), Vector2.one, pawn.story.SkinColor, skinTwo, skinThree);
         }
-
+        public static Graphic BodyGraphicShifted(ShapeshifterComp shapeshifterComp, Color skinTwo, Color skinThree)
+        {
+            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+            Pawn pawn = shapeshifterComp.parent as Pawn;
+            if (comp == null)
+            {
+                return GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
+            }
+            return comp.bodyTex!=null? RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(comp.bodyTex, Vector2.one, pawn.story.SkinColor, skinTwo, skinThree) : GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
+        }
         private static bool UsesCustomHead(ShapeshifterComp shapeshifterComp)
         {
             RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
