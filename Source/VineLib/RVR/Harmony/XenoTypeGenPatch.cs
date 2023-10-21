@@ -38,7 +38,7 @@ namespace RVCRestructured.Source.RVR.Harmony
                     __result = PawnGenerator.XenotypesAvailableFor(request.KindDef).RandomElementByWeight(x => x.Value).Key;
                 return;
             }
-            if (!comp.xenoTypeWhitelist.NullOrEmpty() && comp.xenoTypeWhitelist.Contains(__result))
+            if (!comp.xenoTypeWhitelist.NullOrEmpty() && !comp.xenoTypeWhitelist.Contains(__result))
             {
                 __result =comp.xenoTypeWhitelist.RandomElement();
             }

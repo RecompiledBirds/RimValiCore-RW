@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RVCRestructured.RVR;
+using RVCRestructured.Shifter;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,8 +48,13 @@ namespace RVCRestructured.Defs
         public bool CanDisplay(Pawn pawn, bool portrait = false)
         {
             IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
-            bool bodyIsHiding = bodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == bodyPart.ToLower() || x.Label.ToLower() == bodyPart.ToLower());
-            return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || showsInBed) && bodyIsHiding);
+            ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
+            if (comp != null)
+            {
+                RVCLog.Log("test");
+            }
+            bool bodyIsHiding =(( bodyPart == null || pawn.TryGetComp<ShapeshifterComp>() == null) || bodyParts.Any(x => x.def.defName.ToLower() == bodyPart.ToLower() || x.Label.ToLower() == bodyPart.ToLower()));
+            return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || showsInBed) && !bodyIsHiding);
         }
         public BodyPartGraphicPos GetPos(Rot4 rot)
         {

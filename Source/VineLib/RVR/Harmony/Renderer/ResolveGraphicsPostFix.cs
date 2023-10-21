@@ -16,6 +16,12 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             comp.GenGraphics();
+            if (comp.ShouldResetGraphics)
+            {
+                __instance.SetAllGraphicsDirty();
+                __instance.ClearCache();
+                PortraitsCache.SetDirty(pawn);
+            }
             Color skinOne = pawn.story.SkinColor;
             Color skinTwo = pawn.story.SkinColor;
             Color skinThree = pawn.story.SkinColor;
@@ -44,8 +50,13 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 __instance.hairGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
             }
             __instance.headGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(graphicsComp.Props.headTex, graphicsComp.Props.headSize, skinOne, skinTwo, skinThree);
-            __instance.SetApparelGraphicsDirty();
-            PortraitsCache.SetDirty(pawn);
+
+            if (comp.ShouldResetGraphics)
+            {
+                __instance.SetAllGraphicsDirty();
+                __instance.ClearCache();
+                PortraitsCache.SetDirty(pawn);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RVCRestructured.Defs;
+using RVCRestructured.Shifter;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -17,10 +18,16 @@ namespace RVCRestructured
     }
     public class RVRComp : ThingComp
     {
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+        }
+
         private List<IRenderable> defList = new List<IRenderable>();
         private List<Renderable> defListRenderable = new List<Renderable>();
         private List<RenderableDef> defListRenderableDefs = new List<RenderableDef>();
-
+        private bool generated= false;
         public List<IRenderable> RenderableDefs
         {
             get
@@ -118,23 +125,37 @@ namespace RVCRestructured
 
         public void GenGraphics()
         {
+            if (generated) return;
+            generated = true;
             Pawn pawn = parent as Pawn;
 
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
             if (comp == null)
                 return;
 
-            if (defList.NullOrEmpty() && !comp.Props.renderableDefs.NullOrEmpty())
+            RVRGraphicsComp props = comp.Props;
+
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if (shapeshifterComp != null)
             {
-                
-                defList = new List<IRenderable>();
-                foreach(RenderableDef def in comp.Props.renderableDefs)
-                {
-                    defList.Add(def);
-                }
+                RVRGraphicsComp shifterGraphics = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
+                if (shapeshifterComp.CurrentForm != pawn.def && shifterGraphics != null)
+                    props = shifterGraphics;
             }
-            
-            foreach (RaceColors colors in comp.Props.colorGenerators)
+            GenFromComp(props, pawn);
+        }
+
+        public void GenFromComp(RVRGraphicsComp comp, Pawn pawn)
+        {
+            GenColors(comp, pawn);
+
+            GenAllDefs(comp, pawn);
+            InformGraphicsDirty();
+        }
+
+        public void GenColors(RVRGraphicsComp comp, Pawn pawn)
+        {
+            foreach (RaceColors colors in comp.colorGenerators)
             {
                 if (sets.ContainsKey(colors.name))
                     continue;
@@ -144,11 +165,43 @@ namespace RVCRestructured
                 Color c3 = colors.GeneratorToUse(pawn).colorThree.NewRandomizedColor();
                 sets.Add(colors.name, new TriColorSet(c1, c2, c3, true));
             }
+        }
+        public void GenAllDefs(RVRGraphicsComp comp, Pawn pawn)
+        {
+            defList.Clear();
+            if (defList.NullOrEmpty() && !comp.renderableDefs.NullOrEmpty())
+            {
 
-            foreach (RenderableDef rDef in comp.Props.renderableDefs)
+                defList = new List<IRenderable>();
+                foreach (RenderableDef def in comp.renderableDefs)
+                {
+                    defList.Add(def);
+                }
+            }
+            foreach (RenderableDef rDef in comp.renderableDefs)
             {
                 GenerateRenderableDef(rDef, pawn);
             }
+            InformGraphicsDirty();
+        }
+
+        private bool graphicsDirty;
+
+        public bool ShouldResetGraphics
+        {
+            get
+            {
+                if (graphicsDirty)
+                {
+                    graphicsDirty = false;
+                    return true;
+                }
+                return false;
+            }
+        }
+        public void InformGraphicsDirty()
+        {
+            graphicsDirty=true;
         }
 
         private void GenerateRenderableDef(RenderableDef rDef, Pawn pawn)
