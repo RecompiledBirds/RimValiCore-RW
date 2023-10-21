@@ -82,7 +82,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
                     __instance.desiccatedHeadStumpGraphic = empty;
                     __instance.headStumpGraphic = empty;
                 }
-                __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>(pawn.story.bodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
+                __instance.nakedGraphic = GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
 
                 if (!ShiftedHasHair(shapeshifterComp))
                 {
@@ -200,17 +200,6 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
             RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
             return comp != null;
-        }
-
-        private static string BodyTexShifted(ShapeshifterComp shapeshifterComp)
-        {
-            RVRGraphicsComp comp = shapeshifterComp.CurrentForm.GetCompProperties<RVRGraphicsComp>();
-            if (comp == null)
-            {
-                return shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath;
-            }
-            return comp.bodyTex ?? shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath;
-
         }
 
         private static bool ShiftedHasHair(ShapeshifterComp shapeshifterComp)
