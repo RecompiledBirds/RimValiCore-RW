@@ -130,8 +130,6 @@ namespace RVCRestructured
                 defList = new List<IRenderable>();
                 foreach(RenderableDef def in comp.Props.renderableDefs)
                 {
-                    Log.Message(def.defName);
-
                     defList.Add(def);
                 }
             }

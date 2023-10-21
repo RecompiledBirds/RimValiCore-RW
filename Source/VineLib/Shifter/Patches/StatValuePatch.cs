@@ -1,48 +1,36 @@
-﻿using RimWorld;
+﻿using HarmonyLib;
+using RimWorld;
+using RVCRestructured.RVR.HarmonyPatches;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 using Verse;
 
 namespace RVCRestructured.Shifter.Patches
 {
     public static class StatValuePatch
     {
-        public static bool PrefixGetStatValue(this Thing thing, StatDef stat, bool applyPostProcess, int cacheStaleAfterTicks,ref float __result)
+        public static void Postfix(StatRequest req, StatDef ___stat, bool applyPostProcess, ref float __result)
         {
-            ShapeshifterComp shapeshifter = thing.TryGetComp<ShapeshifterComp>();
-            if (shapeshifter!=null && shapeshifter.CurrentForm != thing.def)
-            {
-                __result = stat.Worker.GetValue(ThingMaker.MakeThing(shapeshifter.CurrentForm,thing.Stuff), applyPostProcess, cacheStaleAfterTicks);
-                return false;
-            }
-            return true;
+            if (!(req.Thing is Pawn pawn)) return;
+            ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
+            if(comp==null) return;
+            __result += OffsetStat(comp, ___stat);
         }
 
-        public static bool PrefixGetStatValueForPawn(this Thing thing, StatDef stat, Pawn pawn, bool applyPostProcess,ref  float __result)
+        public static float OffsetStat(ShapeshifterComp comp, StatDef stat)
         {
-            ShapeshifterComp shapeshifter = pawn.TryGetComp<ShapeshifterComp>();
-            if (shapeshifter != null && shapeshifter.CurrentForm != pawn.def)
-            {
-                __result = stat.Worker.GetValue(thing, ThingMaker.MakeThing(shapeshifter.CurrentForm, thing.Stuff) as Pawn, applyPostProcess);
-                return false;
-            }
-            return true;
+            float result = 0;
+            Pawn pawn = comp.parent as Pawn;
+            if (comp.CurrentForm == pawn.def) return result;
+            result -= pawn.def.statBases.GetStatOffsetFromList(stat);
+            result += comp.CurrentForm.statBases.GetStatOffsetFromList(stat);
+            return result;
         }
 
-        public static bool PrefixGetStatValueAbstract(this AbilityDef def, StatDef stat, Pawn forPawn,ref float __result)
-        {
-            if (forPawn == null)
-                return true;
-            ShapeshifterComp shapeshifter = forPawn.TryGetComp<ShapeshifterComp>();
-            if (shapeshifter != null && shapeshifter.CurrentForm != forPawn.def)
-            {
-                __result = stat.Worker.GetValueAbstract(def, ThingMaker.MakeThing(shapeshifter.CurrentForm) as Pawn);
-                return false;
-            }
-            return true;
-        }
     }
 }

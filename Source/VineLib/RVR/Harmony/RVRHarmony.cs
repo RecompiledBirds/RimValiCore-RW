@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
 using RVCRestructured.RVR.Harmony;
+using RVCRestructured.Shifter.Patches;
 using RVCRestructured.Source.RVR.Harmony;
 using System.Linq.Expressions;
 using UnityEngine;
@@ -49,7 +50,9 @@ namespace RVCRestructured.RVR.HarmonyPatches
             if(VineMod.VineSettings.RaceBlender)
                 harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"),transpiler: new HarmonyMethod(typeof(PawnBlender),nameof(PawnBlender.Transpiler)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)),postfix:new HarmonyMethod(typeof(XenoTypeGenPatch),nameof(XenoTypeGenPatch.Postfix)));
-            RVCLog.Log("RVR Patches completed.");
+
+
+           RVCLog.Log("RVR Patches completed.");
         }
     }
 }
