@@ -15,7 +15,7 @@ namespace RVCRestructured.RVR
             if(shapeshifterComp!= null)
             {
                 restrictions=shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
-                label = shapeshifterComp.label();
+                label = shapeshifterComp.Label();
             }
             bool restricted = RestrictionsChecker.IsRestricted(t.def);
             bool allowedToUse =restrictions?.allowedBuildings.Contains(t.def) ?? false;

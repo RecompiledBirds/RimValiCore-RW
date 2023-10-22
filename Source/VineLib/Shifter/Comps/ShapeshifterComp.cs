@@ -14,6 +14,31 @@ namespace RVCRestructured.Shifter
 {
     public class ShapeshifterComp : ThingComp
     {
+        private static Dictionary<Type, bool> shouldNotcopy = new Dictionary<Type, bool>();
+
+        /// <summary>
+        /// Can we copy this propery?
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <returns></returns>
+        public static bool CanCopyComp(CompProperties properties)
+        {
+            Type type = properties.GetType();
+            return shouldNotcopy.ContainsKey(type)&&shouldNotcopy[type];
+        }
+
+        /// <summary>
+        /// Informs Vine any CompProperties that match the same type as this should not be copied.
+        /// </summary>
+        /// <param name="properties"></param>
+        public static void FlagShouldNotCopyComp(CompProperties properties)
+        {
+            Type propType=properties.GetType();
+            if (shouldNotcopy.ContainsKey(propType))return;
+            shouldNotcopy.Add(propType, true);
+        }
+
+
         private XenotypeDef baseXenoTypeDef;
         private ThingDef currentForm;
         private BodyTypeDef mimickedBody;
@@ -39,7 +64,7 @@ namespace RVCRestructured.Shifter
             }
         }
 
-        public BodyTypeDef MimickedBodyType
+        public virtual BodyTypeDef MimickedBodyType
         {
             get
             {
@@ -47,7 +72,7 @@ namespace RVCRestructured.Shifter
             }
         }
 
-        public HeadTypeDef MimickedHead
+        public virtual HeadTypeDef MimickedHead
         {
             get { return mimickedHead; }
         }
@@ -81,14 +106,18 @@ namespace RVCRestructured.Shifter
             return def == CurrentForm;
         }
 
-        public virtual string label()
+        public virtual string Label()
         {
             return CurrentForm.label;
         }
 
 
-       
 
+        /// <summary>
+        /// Pull comp properties directly from the CurrentDef. This is useful in a lot of Vine's internal functions.
+        /// </summary>
+        /// <typeparam name="T">Type of CompProperties to retrieve</typeparam>
+        /// <returns></returns>
         public virtual T GetCompProperties<T>() where T : CompProperties
         {
             return CurrentForm.GetCompProperties<T>();
@@ -194,6 +223,9 @@ namespace RVCRestructured.Shifter
             }
         }
 
+        /// <summary>
+        /// Loads comps from the current form
+        /// </summary>
         public void LoadCompsFromForm()
         {
             if (IsParentDef()) return;
@@ -237,10 +269,11 @@ namespace RVCRestructured.Shifter
             comps.Clear();
         }
 
-        public void LoadComps(ThingDef def)
+        private void LoadComps(ThingDef def)
         {
             foreach (CompProperties properties in def.comps)
             {
+                if (!CanCopyComp(properties)) continue;
                 ThingComp thingComp = null;
                 try
                 {
