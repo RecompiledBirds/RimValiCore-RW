@@ -59,6 +59,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 skinTwo = comp[set][1];
                 skinThree = comp[set][2];
             }
+            #region shapeshifter
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
             if (shapeshifterComp != null && !shapeshifterComp.IsParentDef())
             {
@@ -114,6 +115,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 
                 return false;
             }
+            #endregion
             #region unshifted
 
             __instance.bodyTattooGraphic = empty;
