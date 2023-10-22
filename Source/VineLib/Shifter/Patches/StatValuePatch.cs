@@ -45,11 +45,12 @@ namespace RVCRestructured.Shifter
                 yield break;
 
             }
+            bool healthUnstable = comp.FormUnstable();
             foreach (StatDrawEntry entry in __result)
             {
                 if (entry.LabelCap == "Race".Translate().CapitalizeFirst())
                 {
-                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), comp.label().CapitalizeFirst(), comp.CurrentForm.description, 2100, null, null, false);
+                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), $"{comp.label().CapitalizeFirst()}{(healthUnstable ? "?" : "")}", comp.CurrentForm.description, 2100, null, null, false);
                     continue;
                 }
                 yield return entry;
@@ -80,12 +81,13 @@ namespace RVCRestructured.Shifter
                 yield break;
 
             }
+            bool healthUnstable = comp.FormUnstable();
             foreach (StatDrawEntry entry in __result)
             {
                 if (entry.LabelCap == "Race".Translate().CapitalizeFirst())
                 {
                     string reportText = __instance.genes.UniqueXenotype ? "UniqueXenotypeDesc".Translate().ToString() : comp.CurrentForm.description;
-                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), comp.label().CapitalizeFirst() + " (" + __instance.genes.XenotypeLabel + ")", reportText, 2100, null, __instance.genes.UniqueXenotype ? null : Gen.YieldSingle(new Dialog_InfoCard.Hyperlink(__instance.genes.Xenotype, -1)), false);
+                    yield return new StatDrawEntry(StatCategoryDefOf.BasicsPawn, "Race".Translate(), $"{comp.label().CapitalizeFirst()}" + " (" + __instance.genes.XenotypeLabel + ")"+$"{(healthUnstable ? "?" : "")}", reportText, 2100, null, __instance.genes.UniqueXenotype ? null : Gen.YieldSingle(new Dialog_InfoCard.Hyperlink(__instance.genes.Xenotype, -1)), false);
                     
                     continue;
                 }

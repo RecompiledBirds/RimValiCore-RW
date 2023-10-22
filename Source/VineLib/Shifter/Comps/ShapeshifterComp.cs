@@ -124,6 +124,12 @@ namespace RVCRestructured.Shifter
 
         }
 
+        public virtual bool FormUnstable()
+        {
+            Pawn p = parent as Pawn;
+            return HealthUtility.IsMissingSightBodyPart(p) || HealthUtility.TicksUntilDeathDueToBloodLoss(p) < 60000 || p.Downed || p.Dead;
+        }
+
         public void RevertGenes()
         {
             Pawn parentPawn = parent as Pawn;
@@ -155,6 +161,20 @@ namespace RVCRestructured.Shifter
                 parentPawn.genes.RemoveGene(parentPawn.genes.GetGene(def));
             }
         }
+
+        public virtual IEnumerable<BodyPartRecord> GetBodyPartRecords(HediffSet hediffSet, BodyPartHeight height, BodyPartDepth depth, BodyPartTagDef tag, BodyPartRecord partParent)
+        {
+            List<BodyPartRecord> body = CurrentForm.race.body.AllParts;
+            foreach (BodyPartRecord entry in body)
+            {
+                if (hediffSet.PartIsMissing(entry)) continue;
+                if ((height == BodyPartHeight.Undefined || entry.height == height) && (depth == BodyPartDepth.Undefined || entry.depth == depth) && (tag == null || entry.def.tags.Contains(tag)) && (partParent == null || entry.parent == partParent))
+                {
+                    yield return entry;
+                }
+            }
+        }
+
 
         public override void PostExposeData()
         {
