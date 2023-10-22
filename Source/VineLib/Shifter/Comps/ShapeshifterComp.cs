@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine.UI;
 using Verse;
 
 namespace RVCRestructured.Shifter
@@ -24,6 +25,17 @@ namespace RVCRestructured.Shifter
             {
 
                 return baseXenoTypeDef;
+            }
+        }
+
+     
+        private List<ThingComp> comps = new List<ThingComp>();
+
+        public List<ThingComp> Comps
+        {
+            get
+            {
+                return comps;
             }
         }
 
@@ -74,10 +86,15 @@ namespace RVCRestructured.Shifter
             return CurrentForm.label;
         }
 
+
+       
+
         public virtual T GetCompProperties<T>() where T : CompProperties
         {
             return CurrentForm.GetCompProperties<T>();
         }
+
+     
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
@@ -112,6 +129,7 @@ namespace RVCRestructured.Shifter
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             if (comp == null) return;
             RVRGraphicsComp targetGraphics=def.GetCompProperties<RVRGraphicsComp>();
+            LoadCompsFromForm();
             comp.RenderableDefs.Clear();
             if (targetGraphics != null) {
               
@@ -119,6 +137,7 @@ namespace RVCRestructured.Shifter
                 comp.GenColors(targetGraphics,pawn);
             }
             comp.InformGraphicsDirty();
+            
             pawn.Drawer.renderer.graphics.ResolveAllGraphics();
 
 
@@ -175,14 +194,88 @@ namespace RVCRestructured.Shifter
             }
         }
 
+        public void LoadCompsFromForm()
+        {
+            if (IsParentDef()) return;
+            if(IsDef(CurrentForm)) return;
+            ClearComps();
+            LoadComps(CurrentForm);
+            AddCompsToParent();
+        }
+
+
+        private Dictionary<string, bool> addedComp = new Dictionary<string, bool>();
+
+        private void AddCompsToParent()
+        {
+            foreach(ThingComp comp in comps)
+            {
+
+                bool contained = parent.AllComps.Contains(comp);
+                if(!contained)
+                    parent.AllComps.Add(comp);
+                addedComp.Add(comp.GetType().FullName, contained);
+            }
+        }
+        
+        private void ClearComps()
+        {
+            foreach (ThingComp comp in comps)
+            {
+                string name = comp.GetType().FullName;
+                bool hasKey=addedComp.ContainsKey(name);
+                bool added =hasKey && addedComp[name];
+                if (added)
+                {
+                    parent.AllComps.Remove(comp);
+                }
+                if (hasKey)
+                {
+                    addedComp.Remove(name);
+                }
+            }
+            comps.Clear();
+        }
+
+        public void LoadComps(ThingDef def)
+        {
+            foreach (CompProperties properties in def.comps)
+            {
+                ThingComp thingComp = null;
+                try
+                {
+                    thingComp = (ThingComp)Activator.CreateInstance(properties.compClass);
+                    thingComp.parent = this.parent;
+                    comps.Add(thingComp);
+                    thingComp.Initialize(properties);
+                }
+                catch (Exception arg)
+                {
+                    Log.Error("Could not instantiate or initialize a ThingComp: " + arg);
+                    comps.Remove(thingComp);
+                }
+            }
+        }
 
         public override void PostExposeData()
         {
+
             Scribe_Defs.Look(ref mimickedHead, nameof(mimickedHead));
             Scribe_Defs.Look(ref mimickedBody, nameof(mimickedBody));
             Scribe_Defs.Look(ref currentForm, nameof(currentForm));
             Scribe_Defs.Look(ref baseXenoTypeDef,nameof(baseXenoTypeDef));
             base.PostExposeData();
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                LoadCompsFromForm();
+            }
+            if (!comps.NullOrEmpty())
+            {
+                foreach(ThingComp comp in comps)
+                {
+                    comp.PostExposeData();
+                }
+            }
         }
 
         public virtual float OffsetStat(StatDef stat)
