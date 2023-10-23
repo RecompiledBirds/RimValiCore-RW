@@ -14,17 +14,19 @@ namespace RVCRestructured.RVR.Harmony
     {
         public static void Postfix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec)
         {
+            if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
+                return;
             BodyTypeDef typeDef = bodyType;
             Pawn pawn = apparel.Wearer;
             string path;
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-            if(shapeshifterComp != null && !shapeshifterComp.IsParentDef()&& shapeshifterComp.MimickedBodyType!=null)
+            if(shapeshifterComp != null && shapeshifterComp.MimickedBodyType!=null)
             {
                 typeDef = shapeshifterComp.MimickedBodyType;
             }
-            if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
-                return;
+            
+            
 
             Graphic graphic;
             string altPath = $"{apparel.WornGraphicPath}_{typeDef.defName}";
@@ -64,7 +66,6 @@ namespace RVCRestructured.RVR.Harmony
             graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.DrawSize, apparel.DrawColor);
 
             rec = new ApparelGraphicRecord(graphic, apparel);
-            
         }
     }
 }

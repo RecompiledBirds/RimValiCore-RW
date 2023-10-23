@@ -40,6 +40,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             
             GraphicsComp graphicsComp = pawn.TryGetComp<GraphicsComp>();
             if (graphicsComp == null) return true;
+            __instance.swaddledBabyGraphic = GetEmpty;
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             comp.GenGraphics();
             __instance.ClearCache();
