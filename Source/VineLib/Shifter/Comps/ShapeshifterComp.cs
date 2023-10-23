@@ -205,7 +205,6 @@ namespace RVCRestructured.Shifter
             foreach(GeneDef def in from.AllGenes)
             {
                 if (!parentPawn.genes.HasGene(def)) continue;
-                Log.Message(def.defName);
                 parentPawn.genes.RemoveGene(parentPawn.genes.GetGene(def));
             }
         }
@@ -311,6 +310,11 @@ namespace RVCRestructured.Shifter
             }
         }
 
+        /// <summary>
+        /// Allows a shapesifter to override the stat and change it to something else. This is connected to the GetValueUnfinalized patch.
+        /// </summary>
+        /// <param name="stat"></param>
+        /// <returns></returns>
         public virtual float OffsetStat(StatDef stat)
         {
             float result = 0;

@@ -7,9 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using static RimWorld.IdeoFoundation_Deity;
 
-namespace RVCRestructured
+namespace RVCRestructured.Shifter
 {
     public static class GetNotMissingPartsPatch
     {
