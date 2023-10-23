@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured
+namespace RVCRestructured.Shifter
 {
     public static class RacePropsPatch
     {
@@ -14,7 +14,7 @@ namespace RVCRestructured
         {
             ShapeshifterComp comp = __instance.TryGetComp<ShapeshifterComp>();
             if (comp == null) return true;
-            __result = comp.CurrentForm.race;
+            __result = comp.RaceProperties;
             return false;
 
         }

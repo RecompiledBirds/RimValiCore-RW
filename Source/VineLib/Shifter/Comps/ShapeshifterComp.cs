@@ -53,6 +53,14 @@ namespace RVCRestructured.Shifter
             }
         }
 
+        public virtual RaceProperties RaceProperties
+        {
+            get
+            {
+                return CurrentForm.race;
+            }
+        }
+
      
         private List<ThingComp> comps = new List<ThingComp>();
 
@@ -133,7 +141,7 @@ namespace RVCRestructured.Shifter
             baseXenoTypeDef = pawn.genes.Xenotype;           
         }
 
-        public void SetForm(Pawn pawn)
+        public virtual void SetForm(Pawn pawn)
         {
             mimickedBody = pawn.story.bodyType;
             mimickedHead = pawn.story.headType;
@@ -149,7 +157,7 @@ namespace RVCRestructured.Shifter
             SetGenes(pawn.genes.Xenotype,baseXenoTypeDef);
         }
 
-        public void SetForm(ThingDef def)
+        public virtual void SetForm(ThingDef def)
         {
             currentForm = def;
             Pawn pawn = parent as Pawn;
