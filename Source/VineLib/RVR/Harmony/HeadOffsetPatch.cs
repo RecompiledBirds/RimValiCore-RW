@@ -38,7 +38,7 @@ namespace RVCRestructured.Source.RVR.Harmony
             Pawn pawn = (Pawn)shapeshifterComp.parent;
             if (comp == null)
             {
-                Vector2 vector = shapeshifterComp.MimickedBodyType.headOffset * Mathf.Sqrt(pawn.ageTracker.CurLifeStage.bodySizeFactor);
+                Vector2 vector = shapeshifterComp.MimickedBodyType!=null? shapeshifterComp.MimickedBodyType.headOffset * Mathf.Sqrt(pawn.ageTracker.CurLifeStage.bodySizeFactor):Vector2.zero;
                 switch (rotation.AsInt)
                 {
                     case 0:

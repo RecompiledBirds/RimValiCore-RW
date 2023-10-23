@@ -15,7 +15,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
             get
             {
-                if(empty == null)
+                if (empty == null)
                 {
                     empty = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("RVC/Empty");
                 }
@@ -34,8 +34,10 @@ namespace RVCRestructured.RVR.HarmonyPatches
         }
         public static bool ResolveGraphicsPatch(PawnGraphicSet __instance)
         {
-            if(!__instance.pawn.RaceProps.Humanlike)return true;
             Pawn pawn = __instance.pawn;
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if (!pawn.RaceProps.Humanlike && shapeshifterComp == null) return true;
+            
             GraphicsComp graphicsComp = pawn.TryGetComp<GraphicsComp>();
             if (graphicsComp == null) return true;
             RVRComp comp = pawn.TryGetComp<RVRComp>();
@@ -43,7 +45,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             __instance.ClearCache();
             if (comp.ShouldResetGraphics)
             {
-                __instance.SetAllGraphicsDirty();;
+                __instance.SetAllGraphicsDirty(); ;
                 PortraitsCache.SetDirty(pawn);
             }
             __instance.CalculateHairMats();
@@ -60,79 +62,36 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 skinThree = comp[set][2];
             }
             #region shapeshifter
-            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+
+            if (shapeshifterComp!=null && !shapeshifterComp.CurrentForm.race.Humanlike)
+            {
+                ShapeShifterGraphicsResolver.ResolveNonHuman(shapeshifterComp, pawn, __instance, GetEmpty);
+                return false;
+            }
+
             if (shapeshifterComp != null && !shapeshifterComp.IsParentDef())
             {
-                __instance.bodyTattooGraphic = empty;
-                __instance.faceTattooGraphic = empty;
-                __instance.furCoveredGraphic = empty;
-
-                __instance.desiccatedHeadGraphic = HeadGraphicShifted(shapeshifterComp, skinTwo, skinThree,true);
-                __instance.dessicatedGraphic = empty;
-                
-
-                __instance.headGraphic = HeadGraphicShifted(shapeshifterComp, skinTwo, skinThree);
-                if (UsesCustomHead(shapeshifterComp))
-                {
-                    Color color = pawn.story.SkinColorOverriden ? (PawnGraphicSet.RottingColorDefault * pawn.story.SkinColor) : PawnGraphicSet.RottingColorDefault;
-                    __instance.desiccatedHeadStumpGraphic = HeadTypeDefOf.Stump.GetGraphic(color, false, pawn.story.SkinColorOverriden);
-                    __instance.headStumpGraphic = HeadTypeDefOf.Stump.GetGraphic(pawn.story.SkinColor, false, pawn.story.SkinColorOverriden);
-                }
-                else
-                {
-                    __instance.desiccatedHeadStumpGraphic = empty;
-                    __instance.headStumpGraphic = empty;
-                }
-                __instance.nakedGraphic = BodyGraphicShifted(shapeshifterComp,skinTwo,skinThree);
-
-                if (!ShiftedHasHair(shapeshifterComp))
-                {
-                    __instance.beardGraphic = empty;
-                    __instance.hairGraphic = empty;
-                }
-                else
-                {
-                    Color hairColor = pawn.story.HairColor;
-                    if (pawn.story.hairDef != null)
-                    {
-                        __instance.hairGraphic = pawn.story.hairDef.noGraphic ? null : GraphicDatabase.Get<Graphic_Multi>(pawn.story.hairDef.texPath, ShaderDatabase.Transparent, Vector2.one, hairColor);
-                    }
-                    Pawn_StyleTracker style = pawn.style; ;
-                    if (style != null && style.beardDef != null && !style.beardDef.noGraphic)
-                    {
-                        __instance.beardGraphic = GraphicDatabase.Get<Graphic_Multi>(style.beardDef.texPath, ShaderDatabase.Transparent, Vector2.one, hairColor);
-                    }
-                }
-                
-                __instance.ResolveApparelGraphics();
-                if (comp.ShouldResetGraphics)
-                {
-                    __instance.SetAllGraphicsDirty();
-                    __instance.ClearCache();
-                    PortraitsCache.SetDirty(pawn);
-                }
-
-                
+                ShapeShifterGraphicsResolver.ResolveHumanLike(shapeshifterComp, comp, __instance, pawn, skinTwo, skinThree,GetEmpty);
                 return false;
             }
             #endregion
             #region unshifted
 
-            __instance.bodyTattooGraphic = empty;
-            __instance.faceTattooGraphic = empty;
-            __instance.furCoveredGraphic = empty;
+            __instance.bodyTattooGraphic = GetEmpty;
+            __instance.faceTattooGraphic = GetEmpty;
+            __instance.furCoveredGraphic = GetEmpty;
 
-            __instance.desiccatedHeadGraphic = empty;
-            __instance.dessicatedGraphic = empty;
-            __instance.desiccatedHeadStumpGraphic = empty;
+            __instance.desiccatedHeadGraphic = GetEmpty;
+            __instance.dessicatedGraphic = GetEmpty;
+            __instance.desiccatedHeadStumpGraphic = GetEmpty;
 
-            __instance.headStumpGraphic = empty;
+            __instance.headStumpGraphic = GetEmpty;
 
             __instance.nakedGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(graphicsComp.Props.bodyTex, graphicsComp.Props.bodySize, skinOne, skinTwo, skinThree);
             if (!graphicsComp.Props.hasHair)
             {
-                __instance.beardGraphic = empty;
-                __instance.hairGraphic = empty;
+                __instance.beardGraphic = GetEmpty;
+                __instance.hairGraphic = GetEmpty;
             }
             __instance.headGraphic = RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(graphicsComp.Props.headTex, graphicsComp.Props.headSize, skinOne, skinTwo, skinThree);
 
@@ -175,52 +134,9 @@ namespace RVCRestructured.RVR.HarmonyPatches
             #endregion
         }
 
-        private static string HeadTexShifted(ShapeshifterComp shapeshifterComp)
-        {
-            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
-            if (comp == null)
-            {
-               return shapeshifterComp.MimickedHead.graphicPath;
-            }
-            return comp.headTex ?? shapeshifterComp.MimickedHead.graphicPath;
-
-        }
 
 
-        public static Graphic HeadGraphicShifted(ShapeshifterComp shapeshifterComp, Color skinTwo, Color skinThree,bool desiccated=false)
-        {
-            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
-            Pawn pawn = shapeshifterComp.parent as Pawn;
-            if (comp == null)
-            {
-                return shapeshifterComp.MimickedHead.GetGraphic(pawn.story.SkinColor,desiccated, pawn.story.SkinColorOverriden);
-            }
-            return RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(HeadTexShifted(shapeshifterComp), Vector2.one, pawn.story.SkinColor, skinTwo, skinThree);
-        }
-        public static Graphic BodyGraphicShifted(ShapeshifterComp shapeshifterComp, Color skinTwo, Color skinThree)
-        {
-            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
-            Pawn pawn = shapeshifterComp.parent as Pawn;
-            if (comp == null)
-            {
-                return GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
-            }
-            return comp.bodyTex!=null? RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(comp.bodyTex, Vector2.one, pawn.story.SkinColor, skinTwo, skinThree) : GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
-        }
-        private static bool UsesCustomHead(ShapeshifterComp shapeshifterComp)
-        {
-            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
-            return comp != null;
-        }
 
-        private static bool ShiftedHasHair(ShapeshifterComp shapeshifterComp)
-        {
-            RVRGraphicsComp comp = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
-            if (comp == null)
-            {
-                return true;
-            }
-            return comp.hasHair;
-        }
+
     }
 }

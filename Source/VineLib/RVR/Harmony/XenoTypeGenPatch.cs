@@ -16,7 +16,7 @@ namespace RVCRestructured.Source.RVR.Harmony
         public static void Postfix(PawnGenerationRequest request, ref XenotypeDef __result)
         {
             bool restricted = __result != null && RestrictionsChecker.IsRestricted(__result);
-            ThingDef thing = request.KindDef != null ? request.KindDef.race ?? (request.KindDef.RaceProps != null ? EatingPatch.GetDef(request.KindDef.RaceProps) : null) : null;
+            ThingDef thing = request.KindDef != null ? request.KindDef.race ?? (request.KindDef.RaceProps != null ? Utils.GetDef(request.KindDef.RaceProps) : null) : null;
             if (thing == null) return;
             RVRRestrictionComp comp = thing.GetCompProperties<RVRRestrictionComp>();
 

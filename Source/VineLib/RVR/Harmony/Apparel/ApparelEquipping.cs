@@ -15,6 +15,10 @@ namespace RVCRestructured.RVR.HarmonyPatches
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
             if (shapeshifterComp != null)
             {
+                if (!shapeshifterComp.CurrentForm.race.Humanlike)
+                {
+                    return false;
+                }
                 restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
             }
             bool restricted = RestrictionsChecker.IsRestricted(def);

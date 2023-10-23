@@ -53,15 +53,20 @@ namespace RVCRestructured.Shifter
             }
         }
 
+        private RaceProperties raceProperties = null;
         public virtual RaceProperties RaceProperties
         {
             get
             {
-                return CurrentForm.race;
+                if (raceProperties == null)
+                {
+                    raceProperties = CurrentForm.race;
+                    FieldInfo field = typeof(RaceProperties).GetField("intelligence", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                    field.SetValue(raceProperties, Intelligence.Humanlike);
+                }
+                return raceProperties;
             }
         }
-
-     
         private List<ThingComp> comps = new List<ThingComp>();
 
         public List<ThingComp> Comps
@@ -143,8 +148,11 @@ namespace RVCRestructured.Shifter
 
         public virtual void SetForm(Pawn pawn)
         {
-            mimickedBody = pawn.story.bodyType;
-            mimickedHead = pawn.story.headType;
+            if (pawn.story != null)
+            {
+                mimickedBody = pawn.story.bodyType;
+                mimickedHead = pawn.story.headType;
+            }
             Pawn parentPawn = parent as Pawn;
             if (baseXenoTypeDef == null)
             {
@@ -153,31 +161,34 @@ namespace RVCRestructured.Shifter
             }
             RevertGenes();
             SetForm(pawn.def);
-            parentPawn.genes.SetXenotype(pawn.genes.Xenotype);
-            SetGenes(pawn.genes.Xenotype,baseXenoTypeDef);
+            XenotypeDef def = pawn.genes!=null && pawn.genes.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner;
+            parentPawn.genes.SetXenotype(def);
+            SetGenes(def,baseXenoTypeDef);
         }
 
         public virtual void SetForm(ThingDef def)
         {
             currentForm = def;
             Pawn pawn = parent as Pawn;
-            Log.Message($"{pawn.Name.ToStringShort} became {currentForm}");
             
+            
+            Log.Message($"{pawn.Name.ToStringShort} became {currentForm}");
+
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             if (comp == null) return;
-            RVRGraphicsComp targetGraphics=def.GetCompProperties<RVRGraphicsComp>();
+            RVRGraphicsComp targetGraphics = def.GetCompProperties<RVRGraphicsComp>();
             LoadCompsFromForm();
             comp.RenderableDefs.Clear();
-            if (targetGraphics != null) {
-              
-                comp.GenAllDefs(targetGraphics,pawn);
-                comp.GenColors(targetGraphics,pawn);
+            if (targetGraphics != null)
+            {
+
+                comp.GenAllDefs(targetGraphics, pawn);
+                comp.GenColors(targetGraphics, pawn);
             }
+          
             comp.InformGraphicsDirty();
-            
+
             pawn.Drawer.renderer.graphics.ResolveAllGraphics();
-
-
         }
 
         public virtual bool FormUnstable()

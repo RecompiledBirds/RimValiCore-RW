@@ -20,6 +20,8 @@ namespace RVCRestructured.Shifter
             harmony.Patch(AccessTools.Method(typeof(Def), nameof(Def.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.SourcePostFix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Def.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.PawnPostfix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn), "get_RaceProps"), prefix: new HarmonyMethod(typeof(RacePropsPatch), nameof(RacePropsPatch.RacePropsPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "get_CurLifeStageIndex"), postfix: new HarmonyMethod(typeof(LifeStagesPatch), nameof(LifeStagesPatch.PostfixLifeStageIndex)));
+            harmony.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "get_CurKindLifeStage"), prefix: new HarmonyMethod(typeof(LifeStagesPatch), nameof(LifeStagesPatch.PrefixCurKindLifeStage)));
             RVCLog.Log("Ran shifter patches.");
 
         }
