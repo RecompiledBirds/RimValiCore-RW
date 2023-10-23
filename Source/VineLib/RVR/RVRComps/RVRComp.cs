@@ -123,6 +123,23 @@ namespace RVCRestructured
             }
         }
 
+        public void ClearAllGraphics()
+        {
+            generated=false;
+            masks = new Dictionary<string, int>();
+            renderableIndexes= new Dictionary<string, int>();
+            sets = new Dictionary<string, TriColorSet>();
+            defList = new List<IRenderable>();
+            defListRenderable = new List<Renderable>();
+            defListRenderableDefs = new List<RenderableDef>();
+        }
+
+        public void CleanAndGenGraphics()
+        {
+            ClearAllGraphics();
+            GenGraphics();
+        }
+
         public void GenGraphics()
         {
             if (generated) return;
