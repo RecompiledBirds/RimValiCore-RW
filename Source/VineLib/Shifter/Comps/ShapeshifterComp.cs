@@ -143,7 +143,8 @@ namespace RVCRestructured.Shifter
             base.PostSpawnSetup(respawningAfterLoad);
             if (baseXenoTypeDef == null) return;
             Pawn pawn = parent as Pawn;
-            baseXenoTypeDef = pawn.genes.Xenotype;           
+            if(ModLister.BiotechInstalled)
+                baseXenoTypeDef = pawn.genes.Xenotype;           
         }
 
         public virtual void SetForm(Pawn pawn)
@@ -159,11 +160,16 @@ namespace RVCRestructured.Shifter
                 baseXenoTypeDef = parentPawn.genes.Xenotype;
 
             }
-            RevertGenes();
+            if(ModLister.BiotechInstalled)
+                RevertGenes();
             SetForm(pawn.def);
-            XenotypeDef def = pawn.genes!=null && pawn.genes.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner;
-            parentPawn.genes.SetXenotype(def);
-            SetGenes(def,baseXenoTypeDef);
+
+            if (ModLister.BiotechInstalled)
+            {
+                XenotypeDef def = pawn.genes != null && pawn.genes.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner;
+                parentPawn.genes.SetXenotype(def);
+                SetGenes(def, baseXenoTypeDef);
+            }
         }
 
         public virtual void SetForm(ThingDef def)
