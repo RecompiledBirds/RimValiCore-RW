@@ -69,7 +69,7 @@ namespace RVCRestructured.Graphics
 
         public bool Equals(RVG_MaterialRequest other)
         {
-            return other.shader == shader && other.mainTex == mainTex && other.color == color && other.colorTwo == colorTwo && other.maskTex == maskTex && other.renderQueue == renderQueue && other.shaderParameters == shaderParameters;
+            return other.shader == shader && other.mainTex == mainTex && other.color == color && other.colorTwo == colorTwo && colorThree==other.colorThree && other.maskTex == maskTex && other.renderQueue == renderQueue && other.shaderParameters == shaderParameters;
         }
 
         public static bool operator ==(RVG_MaterialRequest lhs, RVG_MaterialRequest rhs)
