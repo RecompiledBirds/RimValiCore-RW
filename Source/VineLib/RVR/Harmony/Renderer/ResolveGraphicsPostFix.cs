@@ -46,7 +46,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             __instance.ClearCache();
             if (comp.ShouldResetGraphics)
             {
-                __instance.SetAllGraphicsDirty(); ;
+                __instance.SetAllGraphicsDirty();
                 PortraitsCache.SetDirty(pawn);
             }
             __instance.CalculateHairMats();

@@ -1,4 +1,6 @@
-﻿namespace RVCRestructured
+﻿using System.Collections.Generic;
+
+namespace RVCRestructured
 {
     public enum RVCLogType
     {

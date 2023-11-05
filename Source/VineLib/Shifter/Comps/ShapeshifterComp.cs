@@ -81,13 +81,25 @@ namespace RVCRestructured.Shifter
         {
             get
             {
+                if(mimickedBody == null)
+                {
+                    Pawn p = parent as Pawn;
+                    mimickedBody = p.story.bodyType;
+                }
                 return mimickedBody;
             }
         }
 
         public virtual HeadTypeDef MimickedHead
         {
-            get { return mimickedHead; }
+
+            get {
+                if (mimickedHead == null)
+                {
+                    Pawn p = parent as Pawn;
+                    mimickedHead = p.story.headType;
+                }
+                return mimickedHead; }
         }
 
         public virtual ThingDef CurrentForm
