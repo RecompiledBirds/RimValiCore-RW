@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using RVCRestructured.Windows;
-using System.Text;
-using System.Threading.Tasks;
 using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RVCRestructured.RVR;
 
 namespace RVCRestructured
 {
@@ -296,6 +293,8 @@ namespace RVCRestructured
             Color[] colors = kvp.Value.colors;
             colors[index] = color;
             kvp.Value.colors = colors;
+
+            SelectedPawn.TryGetComp<RVRComp>()?.InformGraphicsDirty();
             SelectedPawn.Drawer.renderer.graphics.ResolveAllGraphics();
         }
 
