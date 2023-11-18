@@ -23,7 +23,6 @@ namespace RVCRestructured.Shifter
             }
             Pawn pawn = (Pawn)typeof(Pawn_AgeTracker).GetField("pawn", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
             if (pawn == null) return;
-            if (!pawn.Spawned) return;
             ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
             if (comp == null) return;
             if (isCELoaded)
