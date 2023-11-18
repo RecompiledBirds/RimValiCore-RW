@@ -21,7 +21,7 @@ namespace RVCRestructured
         {
             get
             {
-                return $"{Application.dataPath}/../RimValiCore";
+                return $"{Content.RootDir}/../../RimValiCore";
             }
         }
 
