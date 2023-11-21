@@ -79,7 +79,7 @@ namespace RVCRestructured
             RectInfoBox.width = RectColoringPart.width - RectPawnBig.width - RectColorSelectOuter.width - 20f;
 
             //replace saved colors with black if missing at this point to prevent errors
-            RVCSettings.savedColors = RVCSettings.savedColors ?? new List<Color>() { Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black };
+            VineSettings.savedColors = VineSettings.savedColors ?? new List<Color>() { Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black };
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace RVCRestructured
                         if (Widgets.ButtonInvisible(rectColorColor))
                         {
                             int k = i; //save the current i to k so that the value of i isn't overridden during the for loop
-                            Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { RVCSettings.savedColors = newSavedColors.ToList(); RimValiCore.settings.Write(); }, kvp.Value.colors[k], RVCSettings.savedColors.ToArray()));
+                            Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { VineSettings.savedColors = newSavedColors.ToList(); RimValiCore.settings.Write(); }, kvp.Value.colors[k], VineSettings.savedColors.ToArray()));
                         }
                         TooltipHandler.TipRegion(rectColorColor, $"RVC_EditColor".Translate());
                     }

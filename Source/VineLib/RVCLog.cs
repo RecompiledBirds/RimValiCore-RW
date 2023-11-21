@@ -13,7 +13,7 @@ namespace RVCRestructured
     {
         public static void Log(object o, RVCLogType type = RVCLogType.Message, bool condition = true, bool debugOnly = false)
         {
-            if (debugOnly && !RVCSettings.debugMode)
+            if (debugOnly && !VineSettings.debugMode)
                 return;
             //Used for some conditional logging.
             if (!condition)
