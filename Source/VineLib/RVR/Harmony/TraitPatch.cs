@@ -11,9 +11,11 @@ namespace RVCRestructured.RVR.HarmonyPatches
             Pawn pawn = Traverse.Create(__instance).Field("pawn").GetValue<Pawn>();
             bool restricted = RestrictionsChecker.IsRestricted(trait.def);
 
-            if(pawn.def is RaceDef raceDef)
+            RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
+            if (comp!=null)
             {
-                bool isAllowed = raceDef.RaceRestrictions.allowedTraits.Contains(trait.def) || raceDef.RaceRestrictions.restrictedTraits.Contains(trait.def);
+                
+                bool isAllowed =(comp.Props.allowedTraits.Contains(trait.def) || comp.Props.restrictedTraits.Contains(trait.def));
                 return (!restricted || isAllowed);
             }
 

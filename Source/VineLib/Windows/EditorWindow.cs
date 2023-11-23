@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using RVCRestructured.Windows;
-using System.Text;
-using System.Threading.Tasks;
 using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.Sound;
-using RVCRestructured.RVR;
 
 namespace RVCRestructured
 {
@@ -82,7 +79,7 @@ namespace RVCRestructured
             RectInfoBox.width = RectColoringPart.width - RectPawnBig.width - RectColorSelectOuter.width - 20f;
 
             //replace saved colors with black if missing at this point to prevent errors
-            RVCSettings.savedColors = RVCSettings.savedColors ?? new List<Color>() { Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black };
+            VineSettings.savedColors = VineSettings.savedColors ?? new List<Color>() { Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black, Color.black };
         }
 
         /// <summary>
@@ -125,9 +122,10 @@ namespace RVCRestructured
             set
             {
                 selectedPawn = value;
-
-                if (SelectedPawn.def is RaceDef && SelectedPawn.GetComp<RVRComp>() is RVRComp comp)
+                RVRComp comp = SelectedPawn.TryGetComp<RVRComp>();
+                if ( comp!=null)
                 {
+                    
                     colorSets = comp.Colors;
                 }
                 else
@@ -221,7 +219,7 @@ namespace RVCRestructured
                         if (Widgets.ButtonInvisible(rectColorColor))
                         {
                             int k = i; //save the current i to k so that the value of i isn't overridden during the for loop
-                            Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { RVCSettings.savedColors = newSavedColors.ToList(); RimValiCore.settings.Write(); }, kvp.Value.colors[k], RVCSettings.savedColors.ToArray()));
+                            Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { VineSettings.savedColors = newSavedColors.ToList(); RimValiCore.settings.Write(); }, kvp.Value.colors[k], VineSettings.savedColors.ToArray()));
                         }
                         TooltipHandler.TipRegion(rectColorColor, $"RVC_EditColor".Translate());
                     }
@@ -295,6 +293,8 @@ namespace RVCRestructured
             Color[] colors = kvp.Value.colors;
             colors[index] = color;
             kvp.Value.colors = colors;
+
+            SelectedPawn.TryGetComp<RVRComp>()?.InformGraphicsDirty();
             SelectedPawn.Drawer.renderer.graphics.ResolveAllGraphics();
         }
 

@@ -1,13 +1,17 @@
 ﻿using RimWorld;
-using RVCRestructured.RVR.HarmonyPatches;
+using RVCRestructured.RVR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
-    public class RaceRestrictions
+    public class RVRRestrictionComp : CompProperties
     {
+        #region lists
         //Defs restricted to this race
         public List<ResearchProjectDef> restrictedResearchDefs = new List<ResearchProjectDef>();
 
@@ -46,8 +50,6 @@ namespace RVCRestructured.RVR
 
         public List<TraitDef> allowedTraits = new List<TraitDef>();
 
-        public List<BodyTypeDef> allowedBodyTypes = new List<BodyTypeDef>();
-
         public List<XenotypeDef> xenoTypeWhitelist = new List<XenotypeDef>();
 
         //Mod items
@@ -74,7 +76,7 @@ namespace RVCRestructured.RVR
 
         public List<string> modAllowedThoughts = new List<string>();
 
-        public List<string> modAllowedBodyTypes = new List<string>();
+ 
 
         public List<string> modAllowedBuildings = new List<string>();
 
@@ -87,6 +89,7 @@ namespace RVCRestructured.RVR
 
         public bool canUseAnyApparel = true;
 
+        #endregion
         /// <summary>
         /// Do some tasks on load, such as getting the modContent lists
         /// </summary>
@@ -142,13 +145,13 @@ namespace RVCRestructured.RVR
             //Do building restrictions
             foreach (string mod in modRestrictedBuildings)
             {
-                
+
                 //Try to find the mod.
                 ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
                 //If we can't find it, skip
                 if (pack == null) continue;
                 //Add everything considered to be a building
-                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefs.Where(x => x.modContentPack == pack && x.building!=null&&x.BuildableByPlayer&&x.blueprintDef!=null));
+                restrictedBuildings.AddRange(DefDatabase<ThingDef>.AllDefs.Where(x => x.modContentPack == pack && x.building != null && x.BuildableByPlayer && x.blueprintDef != null));
             }
 
             //Do research restrictions
@@ -184,15 +187,6 @@ namespace RVCRestructured.RVR
             #endregion
             #region ---Allowing Content---
 
-            foreach (string mod in modAllowedBodyTypes)
-            {
-                //Try to find the mod.
-                ModContentPack pack = LoadedModManager.RunningModsListForReading.Find(x => x.Name == mod || x.PackageId.ToLower() == mod.ToLower());
-                //If we can't find it, skip
-                if (pack == null) continue;
-                //Add everything considered to be food
-                allowedBodyTypes.AddRange(DefDatabase<BodyTypeDef>.AllDefsListForReading.Where(x => x.modContentPack == pack));
-            }
 
 
             //Do food allowances
@@ -256,6 +250,31 @@ namespace RVCRestructured.RVR
 
 
 
+        }
+
+        public RVRRestrictionComp()
+        {
+            this.compClass=typeof(RestrictionComp);
+        }
+
+        private bool resolved=false;
+        public override void ResolveReferences(ThingDef parentDef)
+        {
+            if (resolved) return;
+            resolved = true;
+            OnLoad();
+            base.ResolveReferences(parentDef);
+        }
+    }
+
+    public class RestrictionComp : ThingComp
+    {
+        public RVRRestrictionComp Props
+        {
+            get
+            {
+                return props as RVRRestrictionComp;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,28 +14,33 @@ namespace RVCRestructured.RVR.HarmonyPatches {
         {
             if (!victim.RaceProps.Humanlike)
                 return true;
-
-            if (!(victim.def is RaceDef rDef))
+            OrganComp comp = victim.TryGetComp<OrganComp>();
+            
+            if (comp==null)
                 victim.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.MyOrganHarvested, null);
             else
             {
-                ThoughtDef thought = rDef.OrganHarvestThoughtGetter.GetHarvestedSelfThought();
+                ThoughtDef thought = comp.Props.GetHarvestedSelfThought();
                 if(thought != null)
                     victim.needs.mood.thoughts.memories.TryGainMemory(thought, null);
 
             }
             foreach (Pawn pawn in victim.Map.mapPawns.AllPawnsSpawned)
             {
+                if (!pawn.IsColonist) continue;
                 if (pawn.needs.mood == null)
                     continue;
 
                 if (pawn == victim)
                     continue;
-
-                if (!(pawn.def is RaceDef raceDef))
+                OrganComp secondComp=pawn.TryGetComp<OrganComp>();
+                if (secondComp == null)
+                {
+                    victim.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.KnowColonistOrganHarvested, null);
                     continue;
+                }
 
-                ThoughtDef thought = raceDef.OrganHarvestThoughtGetter.GetHarvestedThought(victim.def, victim.IsColonist);
+                ThoughtDef thought = secondComp.Props.GetHarvestedThought(victim.def, victim.IsColonist);
                 if (thought != null)
                     pawn.needs.mood.thoughts.memories.TryGainMemory(thought, null);
 

@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.RVR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,10 +7,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
-    public class OrganHarvestThoughtGetter
+    public class OrganThought
     {
+        public ThingDef race;
+        public ThoughtDef guest;
+        public ThoughtDef colonist;
+    }
+    public class RVROrganHarvestComp : CompProperties
+    {
+        public RVROrganHarvestComp() { 
+            compClass=typeof(OrganComp);
+        }
+
         public List<OrganThought> harvestThoughts = new List<OrganThought>();
         public bool careAboutUndefinedRaces = true;
 
@@ -58,10 +69,14 @@ namespace RVCRestructured.RVR
         }
     }
 
-    public class OrganThought
+    public class OrganComp : ThingComp
     {
-        public ThingDef race;
-        public ThoughtDef guest;
-        public ThoughtDef colonist;
+        public RVROrganHarvestComp Props
+        {
+            get
+            {
+                return props as RVROrganHarvestComp;
+            }
+        }
     }
 }

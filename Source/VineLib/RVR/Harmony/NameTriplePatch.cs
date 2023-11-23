@@ -7,11 +7,11 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static bool Patch(ref Name __result, Pawn pawn, NameStyle style = NameStyle.Full, string forcedLastName = null)
         {
-            if (!(pawn.def is RaceDef rimValiRaceDef))
+            if (pawn.TryGetComp<RVRComp>()==null)
             {
                 return true;
             }
-            string nameString = NameGenerator.GenerateName(rimValiRaceDef.race.GetNameGenerator(pawn.gender));
+            string nameString = NameGenerator.GenerateName(pawn.def.race.GetNameGenerator(pawn.gender));
             NameTriple name = NameTriple.FromString(nameString);
             string nick = (SteamUtility.SteamPersonaName != "???" ? SteamUtility.SteamPersonaName : name.Nick ?? name.First);
             bool trySteamName = pawn.def.defName == "RimVali" && UnityEngine.Random.Range(1, 100) == 30;

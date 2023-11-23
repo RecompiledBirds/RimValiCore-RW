@@ -26,12 +26,12 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
 
             int pawnCount = Find.CurrentMap.mapPawns.AllPawnsSpawnedCount;
-            float texSizeDivider = pawnCount / 2048;
+            float texSizeDivider = pawnCount/1024;
             int textureSize = texSize;
             if (texSizeDivider > 1)
             {
-                textureSize /= (int)(texSizeDivider);
-                return textureSize > 2048 ? textureSize : 2048;
+                textureSize *= (int)(texSizeDivider);
+                return textureSize > 4096 ? textureSize : 4096;
             }
             return texSize;
         }

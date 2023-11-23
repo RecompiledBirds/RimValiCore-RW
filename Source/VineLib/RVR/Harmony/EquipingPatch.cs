@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RVCRestructured.Shifter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,12 +11,23 @@ namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class EquipingPatch
     {
-        public static bool EquipmentAllowedForRace(this ThingDef def, ThingDef race)
+        public static bool EquipmentAllowedForRace(this ThingDef def, Pawn pawn)
         {
             bool restricted = RestrictionsChecker.IsRestricted(def);
-            if (!(race is RaceDef raceDef)) return !restricted;
+            RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
+            RVRRestrictionComp restrictions = null;
 
-            bool inAllowedDefs = raceDef.RaceRestrictions.allowedEquipment.Contains(def) || raceDef.RaceRestrictions.restrictedEquipment.Contains(def);
+            if (comp != null) restrictions = comp.Props;
+
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if (shapeshifterComp != null)
+            {
+                restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
+            }
+
+            if (restrictions == null) return !restricted;
+
+            bool inAllowedDefs = comp.Props.allowedEquipment.Contains(def) || comp.Props.restrictedEquipment.Contains(def);
 
             return (restricted && inAllowedDefs) || !restricted;
         }
@@ -24,7 +36,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
         {
             if (thing.def.IsApparel) return;
 
-            bool allowed = EquipmentAllowedForRace(thing.def,pawn.def);
+            bool allowed = EquipmentAllowedForRace(thing.def,pawn);
 
             __result &= allowed;
 

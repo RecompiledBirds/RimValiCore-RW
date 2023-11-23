@@ -11,13 +11,19 @@ namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class NamePatch
     {
+        public static Name GenName(ref NameTriple name, Pawn pawn)
+        {
+            string nameString = NameGenerator.GenerateName(pawn.def.race.GetNameGenerator(pawn.gender));
+            name = NameTriple.FromString(nameString);
+            return name;
+        }
         public static bool Prefix(ref Name __result, Pawn pawn, NameStyle style = NameStyle.Full, string forcedLastName = null)
         {
-            if (!(pawn.def is RaceDef raceDef)) return true;
+            if (pawn.TryGetComp<RVRComp>()==null) return true;
 
-
-            string nameString = NameGenerator.GenerateName(raceDef.race.GetNameGenerator(pawn.gender));
-            NameTriple name = NameTriple.FromString(nameString);
+            NameTriple name = null;
+            GenName(ref name, pawn);
+           
 
             if (Rand.Chance(0.01f))
             {

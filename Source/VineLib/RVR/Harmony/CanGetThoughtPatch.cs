@@ -8,13 +8,14 @@ namespace RVCRestructured.RVR.HarmonyPatches
         public static void CanGetPatch(Pawn pawn, ThoughtDef def, bool checkIfNullified, ref bool __result)
         {
             bool restricted = RestrictionsChecker.IsRestricted(def);
-            if(!(pawn.def is RaceDef rDef))
+            RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
+            if(comp==null)
             {
                 __result = __result && !restricted;
                 return;
             }
-            bool inAllowedDefs = (rDef.RaceRestrictions.restrictedThoughtDefs.Contains(def) || rDef.RaceRestrictions.allowThoughtDefs.Contains(def));
-            bool allowed = (!restricted || inAllowedDefs) && !rDef.RaceRestrictions.disabledThoughts.Contains(def);
+            bool inAllowedDefs = (comp.Props.restrictedThoughtDefs.Contains(def) || comp.Props.allowThoughtDefs.Contains(def));
+            bool allowed = (!restricted || inAllowedDefs) && !comp.Props.disabledThoughts.Contains(def);
             __result = __result && allowed;
         }
     }
