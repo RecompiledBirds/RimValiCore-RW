@@ -34,12 +34,14 @@ namespace RVCRestructured
             dir = modContentPack.RootDir;
         }
 
+        //Todo: Translation Strings
         public override void DoSettingsWindowContents(Rect inRect)
         {
             Listing_Standard listing_Standard = new Listing_Standard();
             listing_Standard.Begin(inRect);
             listing_Standard.CheckboxLabeled("Enable VGUI editor: ",ref settings.VGUIEnabled);
             listing_Standard.CheckboxLabeled("Race blending enabled: ", ref settings.RaceBlender);
+            listing_Standard.CheckboxLabeled("Debug Mode enabled: ", ref VineSettings.debugMode);
             listing_Standard.End();
             base.DoSettingsWindowContents(inRect);
         }
