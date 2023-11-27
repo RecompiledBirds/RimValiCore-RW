@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,22 @@ namespace RVCRestructured.RVR.Harmony
     {
         public static void Postfix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec)
         {
-            Pawn pawn = apparel.Wearer;
-            string path;
-
             if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
                 return;
+            BodyTypeDef typeDef = bodyType;
+            Pawn pawn = apparel.Wearer;
+            string path;
+            GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if(shapeshifterComp != null && shapeshifterComp.MimickedBodyType!=null)
+            {
+                typeDef = shapeshifterComp.MimickedBodyType;
+            }
+            
+            
 
             Graphic graphic;
-            string altPath = $"{apparel.WornGraphicPath}_{bodyType.defName}";
+            string altPath = $"{apparel.WornGraphicPath}_{typeDef.defName}";
             if (ContentFinder<Texture2D>.Get($"{altPath}_north", false))
             {
                 path = altPath;
@@ -31,7 +40,8 @@ namespace RVCRestructured.RVR.Harmony
             }
             else if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
             {
-                if(!(pawn.def is RaceDef race) || !race.useEmptyApparelIfNoDefault) 
+                
+                if(comp==null || comp.Props.useEmptyApparelIfNoDefault) 
                     path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
                 else
                     path = "RVC/Empty";
@@ -41,8 +51,8 @@ namespace RVCRestructured.RVR.Harmony
             //empty texture, avoids errors..
             else
             {
-                if (pawn.def is RaceDef race && race.throwApparelError)
-                    RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {bodyType.defName}, no bodytype, or thin bodytype. Returning an empty texture...");
+                if (comp!=null && comp.Props.throwApparelError)
+                    RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {typeDef.defName}, no bodytype, or thin bodytype. Returning an empty texture...");
 
                 path = "RVC/Empty";
             }
@@ -56,7 +66,6 @@ namespace RVCRestructured.RVR.Harmony
             graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.DrawSize, apparel.DrawColor);
 
             rec = new ApparelGraphicRecord(graphic, apparel);
-            
         }
     }
 }

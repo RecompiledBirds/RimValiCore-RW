@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.Shifter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,14 +26,19 @@ namespace RVCRestructured.RVR.HarmonyPatches
             
             if (!ingester.RaceProps.Humanlike)
                 return;
-
-            if (!(ingester.def is RaceDef rDef))
+            CannibalismComp comp = ingester.TryGetComp<CannibalismComp>();
+            if (comp==null)
                 return;
-
+            RVRCannibalismComp thoughtGetter = comp.Props;
+            ShapeshifterComp shapeshifterComp = ingester.TryGetComp<ShapeshifterComp>();
+            if (shapeshifterComp != null)
+            {
+                thoughtGetter = shapeshifterComp.GetCompProperties<RVRCannibalismComp>();
+            }
+            if (thoughtGetter == null) return;
             List<FoodUtility.ThoughtFromIngesting> backupCopy = __result;
             List<FoodUtility.ThoughtFromIngesting> finalResult = new List<FoodUtility.ThoughtFromIngesting>();
-            RaceDef ingesterRace = ingester.def as RaceDef;
-            CannibalismThoughtsGetter thoughtGetter = ingesterRace.CannibalismThoughtsGetter;
+            
             bool cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
             try
             {

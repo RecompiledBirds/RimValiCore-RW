@@ -5,7 +5,6 @@ using RVCRestructured.Source.RVR.Harmony;
 using System.Linq.Expressions;
 using UnityEngine;
 using Verse;
-using static RVCRestructured.RVR.HarmonyPatches.CanGetThoughtPatch;
 
 namespace RVCRestructured.RVR.HarmonyPatches
 {
@@ -17,7 +16,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             RVCLog.Log("Staring RVR patches.");
             HarmonyLib.Harmony harmony = new HarmonyLib.Harmony("RecompiledBirds.RVC.RVR");
             harmony.Patch(AccessTools.Method(typeof(PawnRenderer), "RenderPawnInternal", new[] { typeof(Vector3), typeof(float), typeof(bool), typeof(Rot4), typeof(RotDrawMode), typeof(PawnRenderFlags) }), postfix: new HarmonyMethod(typeof(PawnRendererPatch), nameof(PawnRendererPatch.RenderingPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(PawnGraphicSet), "ResolveAllGraphics"), postfix: new HarmonyMethod(typeof(ResolveGraphicsPostFix), nameof(ResolveGraphicsPostFix.ResolveGraphicsPatch)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGraphicSet), "ResolveAllGraphics"), prefix: new HarmonyMethod(typeof(ResolveGraphicsPostFix), nameof(ResolveGraphicsPostFix.ResolveGraphicsPatch)));
             harmony.Patch(AccessTools.Constructor(typeof(PawnTextureAtlas)), transpiler: new HarmonyMethod(typeof(RenderTextureTranspiler), nameof(RenderTextureTranspiler.Transpile)));
             harmony.Patch(AccessTools.Method(typeof(RaceProperties), "CanEverEat", new[] { typeof(ThingDef) }), postfix: new HarmonyMethod(typeof(EatingPatch), nameof(EatingPatch.EdiblePatch)));
             harmony.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "CanUsePair"), postfix: new HarmonyMethod(typeof(ApparelGenPatch), nameof(ApparelGenPatch.CanUsePairPatch)));
@@ -40,16 +39,18 @@ namespace RVCRestructured.RVR.HarmonyPatches
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "GiveThoughtsForPawnOrganHarvested"), prefix: new HarmonyMethod(typeof(OrganPatch),nameof(OrganPatch.OrganHarvestPrefix)));
             harmony.Patch(AccessTools.Method(typeof(Corpse), "ButcherProducts"),prefix:new HarmonyMethod(typeof(ButcherPatch),nameof(ButcherPatch.ButcherPrefix)));
             harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"),postfix:new HarmonyMethod(typeof(FactionStartRelations),nameof(FactionStartRelations.Postfix)));
-            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"),transpiler:new HarmonyMethod(typeof(PawnBlender),nameof(PawnBlender.Transpiler)));
+
             harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"),postfix:new HarmonyMethod(typeof(FactionStartRelations),nameof(FactionStartRelations.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "GenerateBodyType"), postfix: new HarmonyMethod(typeof(BodyTypeGenPatch),nameof(BodyTypeGenPatch.Posfix)));
-            harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)),postfix: new HarmonyMethod(typeof(ApparelGraphicPatch),nameof(ApparelGraphicPatch.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)), postfix: new HarmonyMethod(typeof(ApparelGraphicPatch),nameof(ApparelGraphicPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnRenderer),"BaseHeadOffsetAt"), postfix: new HarmonyMethod(typeof(HeadOffsetPatch), nameof(HeadOffsetPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
             if(VineMod.VineSettings.RaceBlender)
                 harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"),transpiler: new HarmonyMethod(typeof(PawnBlender),nameof(PawnBlender.Transpiler)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)),postfix:new HarmonyMethod(typeof(XenoTypeGenPatch),nameof(XenoTypeGenPatch.Postfix)));
-            RVCLog.Log("RVR Patches completed.");
+
+
+           RVCLog.Log("RVR Patches completed.");
         }
     }
 }

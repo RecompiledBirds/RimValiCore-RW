@@ -1,11 +1,13 @@
 ﻿using RVCRestructured.Defs;
+using RVCRestructured.Shifter;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using UnityEngine;
 using Verse;
 using Random = System.Random;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
     public class RVRCP : CompProperties
     {
@@ -16,10 +18,16 @@ namespace RVCRestructured.RVR
     }
     public class RVRComp : ThingComp
     {
+
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+        }
+
         private List<IRenderable> defList = new List<IRenderable>();
         private List<Renderable> defListRenderable = new List<Renderable>();
         private List<RenderableDef> defListRenderableDefs = new List<RenderableDef>();
-
+        private bool generated= false;
         public List<IRenderable> RenderableDefs
         {
             get
@@ -82,14 +90,6 @@ namespace RVCRestructured.RVR
         }
 
 
-        private RaceDef raceDef
-        {
-            get
-            {
-                return this.parent.def as RaceDef;
-            }
-        }
-
         public override void PostExposeData()
         {
             Scribe_Collections.Look(ref sets, "sets", LookMode.Value, LookMode.Deep, ref lKeys, ref lSets);
@@ -123,51 +123,62 @@ namespace RVCRestructured.RVR
             }
         }
 
+        public void ClearAllGraphics()
+        {
+            generated=false;
+            masks = new Dictionary<string, int>();
+            renderableIndexes= new Dictionary<string, int>();
+            sets = new Dictionary<string, TriColorSet>();
+            defList = new List<IRenderable>();
+            defListRenderable = new List<Renderable>();
+            defListRenderableDefs = new List<RenderableDef>();
+        }
+
+        public void CleanAndGenGraphics()
+        {
+            ClearAllGraphics();
+            GenGraphics();
+        }
+
         public void GenGraphics()
         {
-            Pawn pawn = this.parent as Pawn;
+            if (generated) return;
+            generated = true;
+            Pawn pawn = parent as Pawn;
 
-            if (!(pawn.def is RaceDef raceDef))
+            GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
+            if (comp == null)
                 return;
 
-            if (defList.NullOrEmpty() && !raceDef.RaceGraphics.renderableDefs.NullOrEmpty())
+            RVRGraphicsComp props = comp.Props;
+
+            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            if (shapeshifterComp != null)
             {
-                defList = new List<IRenderable>();
-                foreach(RenderableDef def in raceDef.RaceGraphics.renderableDefs)
+                RVRGraphicsComp shifterGraphics = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
+                if (!shapeshifterComp.IsParentDef())
                 {
-                    defList.Add(def);
+
+                    if (shifterGraphics != null)
+                        props = shifterGraphics;
+                    else
+                        return;
                 }
             }
-            foreach (RenderableDef rDef in raceDef.RaceGraphics.renderableDefs)
-            {
-                if (renderableIndexes.ContainsKey(rDef.defName))
-                {
-                    continue;
-                }
-                Random rand = new Random();
-                int index = rand.Next(rDef.textures.Count);
+            GenFromComp(props, pawn);
+        }
 
-                renderableIndexes[rDef.defName] = index;
-                int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
-                index = rand.Next(maskIndex);
-                masks.Add(rDef.defName, index);
-                if (rDef.linkTexWith != null)
-                {
-                    if (renderableIndexes.ContainsKey(rDef.defName))
-                    {
-                        renderableIndexes.Add(rDef.defName, renderableIndexes[rDef.linkTexWith.defName]);
-                        masks.Add(rDef.defName, masks[rDef.linkTexWith.defName]);
-                        continue;
-                    }
+        public void GenFromComp(RVRGraphicsComp comp, Pawn pawn)
+        {
+            GenColors(comp, pawn);
 
+            GenAllDefs(comp, pawn);
+            InformGraphicsDirty();
+        }
 
-
-                    renderableIndexes.Add(rDef.linkTexWith.defName, index);
-
-                    masks.Add(rDef.linkTexWith.defName, index);
-                }
-            }
-            foreach (RaceColors colors in this.raceDef.RaceGraphics.colorGenerators)
+        public void GenColors(RVRGraphicsComp comp, Pawn pawn)
+        {
+            foreach (RaceColors colors in comp.colorGenerators)
             {
                 if (sets.ContainsKey(colors.name))
                     continue;
@@ -176,6 +187,76 @@ namespace RVCRestructured.RVR
                 Color c2 = colors.GeneratorToUse(pawn).colorTwo.NewRandomizedColor();
                 Color c3 = colors.GeneratorToUse(pawn).colorThree.NewRandomizedColor();
                 sets.Add(colors.name, new TriColorSet(c1, c2, c3, true));
+            }
+        }
+        public void GenAllDefs(RVRGraphicsComp comp, Pawn pawn)
+        {
+            defList.Clear();
+            if (defList.NullOrEmpty() && !comp.renderableDefs.NullOrEmpty())
+            {
+
+                defList = new List<IRenderable>();
+                foreach (RenderableDef def in comp.renderableDefs)
+                {
+                    defList.Add(def);
+                }
+            }
+            foreach (RenderableDef rDef in comp.renderableDefs)
+            {
+                GenerateRenderableDef(rDef, pawn);
+            }
+            InformGraphicsDirty();
+        }
+
+        private bool graphicsDirty;
+
+        public bool ShouldResetGraphics
+        {
+            get
+            {
+                if (graphicsDirty)
+                {
+                    graphicsDirty = false;
+                    return true;
+                }
+                return false;
+            }
+        }
+        public void InformGraphicsDirty()
+        {
+            graphicsDirty=true;
+        }
+
+        private void GenerateRenderableDef(RenderableDef rDef, Pawn pawn)
+        {
+            if (renderableIndexes.ContainsKey(rDef.defName))
+            {
+                return;
+            }
+            Log.Message($"Generating {rDef.defName}");
+            bool hasLink = rDef.linkTexWith != null;
+            if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith.defName) && !renderableIndexes.ContainsKey(rDef.defName)) {
+                string linkString = rDef.linkTexWith.defName;
+                Log.Message($"Discovered link with {linkString}");
+                renderableIndexes[rDef.defName] = renderableIndexes[linkString];
+                masks[rDef.defName] = masks[linkString];
+                Log.Message($"My mask is: {masks[rDef.defName]}");
+                return;
+            }
+            if (renderableIndexes.ContainsKey(rDef.defName)) return;
+            Random rand = new Random();
+            int index = rand.Next(rDef.textures.Count);
+            renderableIndexes[rDef.defName] = index;
+            int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
+            index = rand.Next(maskIndex);
+            masks.Add(rDef.defName, index);
+
+            if (hasLink)
+            {
+                string linkString = rDef.linkTexWith.defName;
+                renderableIndexes[linkString] = renderableIndexes[rDef.defName];
+                masks[linkString] = renderableIndexes[rDef.defName];
+                return;
             }
         }
     }

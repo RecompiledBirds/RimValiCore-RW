@@ -1,6 +1,6 @@
 ﻿using Verse;
 
-namespace RVCRestructured.RVR
+namespace RVCRestructured
 {
     public class RaceColors
     {

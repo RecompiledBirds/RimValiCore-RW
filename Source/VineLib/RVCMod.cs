@@ -7,15 +7,13 @@ namespace RVCRestructured
 {
     public class RVCSettings : ModSettings
     {
-        public static List<Color> savedColors = new List<Color>() { Color.black};
-        public static bool debugMode = false;
 
         public override void ExposeData()
         {
-            Scribe_Collections.Look(ref savedColors, "savedColors");
             base.ExposeData();
         }
     }
+
     public class RimValiCore : Mod
     {
         public static RVCSettings settings;
@@ -23,7 +21,7 @@ namespace RVCRestructured
         {
             get
             {
-                return $"{Application.dataPath}/../RimValiCore";
+                return $"{Content.RootDir}/../../RimValiCore";
             }
         }
 

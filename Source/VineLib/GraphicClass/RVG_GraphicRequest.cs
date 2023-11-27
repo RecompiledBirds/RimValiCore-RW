@@ -61,7 +61,7 @@ namespace RVCRestructured.Graphics
 
         public bool Equals(RVG_GraphicRequest other)
         {
-            return graphicClass == other.graphicClass && path == other.path && (shader == other.shader && drawSize == other.drawSize) && (color == other.color && colorTwo == other.colorTwo && (graphicData == other.graphicData && renderQueue == other.renderQueue)) && shaderParameters == other.shaderParameters;
+            return graphicClass == other.graphicClass && path == other.path && (shader == other.shader && drawSize == other.drawSize) && (colorThree == other.colorThree && color == other.color && colorTwo == other.colorTwo && (graphicData == other.graphicData && renderQueue == other.renderQueue)) && shaderParameters == other.shaderParameters;
         }
 
         public static bool operator ==(RVG_GraphicRequest lhs, RVG_GraphicRequest rhs)

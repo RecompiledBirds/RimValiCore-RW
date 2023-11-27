@@ -10,7 +10,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static void CanUsePairPatch(ThingStuffPair pair, Pawn pawn, ref bool __result)
         {
-            __result &= pair.thing.ApparelAllowedForRace(pawn.def);
+
+            __result &= pair.thing.ApparelAllowedForRace(pawn);
         }
     }
 }

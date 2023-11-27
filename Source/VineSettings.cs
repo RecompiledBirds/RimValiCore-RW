@@ -16,10 +16,11 @@ namespace RVCRestructured
         public static List<Color> savedColors = new List<Color>() { Color.black };
         public static bool debugMode = false;
 
-
         public VineSettings() { }
         public override void ExposeData()
         {
+            Scribe_Collections.Look(ref savedColors, "savedColors");
+
             Scribe_Values.Look(ref VGUIEnabled, nameof(VGUIEnabled));
             Scribe_Values.Look(ref RaceBlender, nameof(RaceBlender));
             Scribe_Values.Look(ref debugMode, nameof(debugMode));

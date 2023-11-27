@@ -45,12 +45,10 @@ namespace RVCRestructured.RVR
             
             
             
-            if (!(pawn.def is RaceDef rDef))
-                return;
             
            
             RVRComp comp = pawn.TryGetComp<RVRComp>();
-            
+            if (comp == null) return;
 
             foreach (IRenderable renderableDef in comp.RenderableDefs)
             {

@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RVCRestructured.RVR;
+using RVCRestructured.Shifter;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -47,8 +48,13 @@ namespace RVCRestructured.Defs
         public bool CanDisplay(Pawn pawn, bool portrait = false)
         {
             IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
-            bool bodyIsHiding = bodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == bodyPart.ToLower() || x.Label.ToLower() == bodyPart.ToLower());
-            return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || showsInBed) && bodyIsHiding);
+            ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
+            if (comp != null)
+            {
+                RVCLog.Log("test");
+            }
+            bool bodyIsHiding =(( bodyPart == null || pawn.TryGetComp<ShapeshifterComp>() == null) || bodyParts.Any(x => x.def.defName.ToLower() == bodyPart.ToLower() || x.Label.ToLower() == bodyPart.ToLower()));
+            return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || showsInBed) && !bodyIsHiding);
         }
         public BodyPartGraphicPos GetPos(Rot4 rot)
         {
@@ -86,54 +92,96 @@ namespace RVCRestructured.Defs
 
             return GetBodyPartGraphicPosFromIntRot(rot.AsInt,set);
         }
-
+        private Dictionary<int, Vector3> posCache = new Dictionary<int, Vector3>();
+        private Vector3 GetPosRecursively(int rot)
+        {
+            if (!posCache.ContainsKey(rot))
+            {
+                Vector3 position;
+                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot) : Vector3.zero);
+                switch (rot)
+                {
+                    case 0:
+                        position= north.position + recursizePos;
+                        break;
+                    case 2:
+                        position= south.position + recursizePos;
+                        break;
+                    case 1:
+                        position= east.position + recursizePos;
+                        break;
+                    case 3:
+                        if (west == null)
+                        {
+                            west = new BodyPartGraphicPos()
+                            {
+                                position = -east.position,
+                                size = east.size
+                            };
+                            if (!flipLayerEastWest)
+                                west.position.y = east.position.y;
+                            if (!flipYPos)
+                                west.position.z = east.position.z;
+                        }
+                        position = west.position + recursizePos;
+                        break;
+                    default:
+                        position= Vector3.zero;
+                        break;
+                }
+                posCache[rot] = position;
+            }
+            return posCache[rot];
+        }
+        private Dictionary<int, BodyPartGraphicPos> partCache = new Dictionary<int, BodyPartGraphicPos>();
         private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot)
         {
-            switch (rot)
+            if (!partCache.ContainsKey(rot))
             {
-                case 0:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                Vector3 pos = GetPosRecursively(rot);
+                BodyPartGraphicPos newPos;
+                switch (rot)
+                {
+                    case 0:
+
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = north.position + linkPosWith.north.position,
-                            size=north.size
+                            position = pos,
+                            size = north.size
                         };
-                    }
-                    return north;
-                case 2:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                        break;
+
+                    case 2:
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = south.position + linkPosWith.south.position,
+                            position = pos,
                             size = south.size
                         };
-                    }
-                    return south;
-                case 1:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                        break;
+
+                    case 1:
+
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = east.position + linkPosWith.east.position,
+                            position = pos,
                             size = east.size
                         };
-                    }
-                    return east;
-                case 3:
-                    if (linkPosWith != null)
-                    {
-                        return new BodyPartGraphicPos()
+                        break;
+                    case 3:
+                        newPos = new BodyPartGraphicPos()
                         {
-                            position = west.position + linkPosWith.west.position,
+                            position = pos,
                             size = west.size
                         };
-                    }
-                    return west;
-                default:
-                    return null;
+                        break;
+
+                    default:
+                        newPos = null;
+                        break;
+                }
+                partCache[rot] = newPos;
             }
+            return partCache[rot];
         }
 
         private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot,PawnGraphicSet set)
@@ -239,7 +287,14 @@ namespace RVCRestructured.Defs
 
         public List<string> alternateMaskPaths = new List<string>();
         public List<string> alternateFemaleMaskPaths = new List<string>();
+        public List<string> alternateMaleMaskPaths = new List<string>();
 
+        public List<string> MaskPaths(Pawn pawn)
+        {
+            if(alternateFemaleMaskPaths.Count>0&&pawn.gender==Gender.Female)return alternateFemaleMaskPaths;
+            if (alternateMaleMaskPaths.Count > 0 && pawn.gender == Gender.Male) return alternateMaleMaskPaths;
+            return alternateMaskPaths;
+        }
 
         /// <summary>
         /// Can the texture be applied to a pawn?
@@ -258,7 +313,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public bool HasAlternateMasks(Pawn pawn)
         {
-            return (alternateFemaleMaskPaths.Count > 0 && pawn.gender == Gender.Female) || alternateMaskPaths.Count > 0;
+            return MaskPaths(pawn).Count>0;
         }
 
         /// <summary>
@@ -268,7 +323,7 @@ namespace RVCRestructured.Defs
         /// <returns></returns>
         public List<string> GetMasks(Pawn pawn)
         {
-            return HasAlternateMasks(pawn) ? pawn.gender == Gender.Female ? alternateFemaleMaskPaths : alternateMaskPaths : new List<string>();
+            return MaskPaths(pawn);
         }
     }
 }

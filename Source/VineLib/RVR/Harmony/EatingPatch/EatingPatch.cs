@@ -9,21 +9,13 @@ namespace RVCRestructured
 {
     public static class EatingPatch
     {
-        private static Dictionary<RaceProperties,ThingDef> cache = new Dictionary<RaceProperties, ThingDef> ();
-
-        public static ThingDef GetDef(RaceProperties race)
-        {
-            if (!cache.ContainsKey(race))
-               cache.Add(race,DefDatabase<ThingDef>.AllDefs.First(x => x.race == race));
-            return cache[race];
-
-        }
-
+        
         public static void EdiblePatch(ref bool __result, RaceProperties __instance, ThingDef t)
         {
             bool restricted = RestrictionsChecker.IsRestricted(t);
-            ThingDef def = GetDef(__instance);
-            if (!(def is RaceDef raceDef))
+            ThingDef def = Utils.GetDef(__instance);
+            RVRRestrictionComp comp = def.GetCompProperties<RVRRestrictionComp>();
+            if (comp==null)
             {
                 __result &= !restricted;
                 if (restricted)
@@ -33,9 +25,9 @@ namespace RVCRestructured
                 return;
             }
 
-            bool isInAllowedlists = raceDef.RaceRestrictions.allowedFoodDefs.Contains(t) || raceDef.RaceRestrictions.restrictedFoodDefs.Contains(t);
+            bool isInAllowedlists =comp.allowedFoodDefs.Contains(t) || comp.restrictedFoodDefs.Contains(t);
 
-            bool canEatAnyFood = raceDef.RaceRestrictions.canEatAnyFood;
+            bool canEatAnyFood =comp.canEatAnyFood;
 
             bool allowed = (restricted && isInAllowedlists) || (canEatAnyFood || isInAllowedlists);
 
