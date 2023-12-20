@@ -40,6 +40,7 @@ namespace RVCRestructured
             listing_Standard.Begin(inRect);
             listing_Standard.CheckboxLabeled("Enable VGUI editor: ",ref settings.VGUIEnabled);
             listing_Standard.CheckboxLabeled("Race blending enabled: ", ref settings.RaceBlender);
+            listing_Standard.CheckboxLabeled("Debug mode: ",ref settings.debugMode);
             listing_Standard.End();
             base.DoSettingsWindowContents(inRect);
         }
