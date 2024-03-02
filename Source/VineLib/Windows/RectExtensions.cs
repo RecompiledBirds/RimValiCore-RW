@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ namespace RVCRestructured.Windows
 {
     public static class RectExtensions
     {
+        private const float WAVE_SPEED_MULT = 3f;
+
         /// <summary>
         ///     Creates a inner rect for a scroll rect, using the outer rect as base.
         ///     Decreases the inner rects width, if it is high enough for scroll bars to exist, by the width of scroll bars
@@ -158,5 +161,94 @@ namespace RVCRestructured.Windows
         /// <param name="rect">the rect to be flipped</param>
         /// <returns>A flipped rect</returns>
         public static Rect FlipHorizontal(this Rect rect) => new Rect(rect.x + rect.width, rect.y, rect.width * -1, rect.height);
+
+        /// <summary>
+        ///     Draws a number of colored <paramref name="bars"/> into a <paramref name="rect"/> with an width of <paramref name="outsideLineThickness"/> leaving a margin of <paramref name="insideBarMargin"/>
+        /// </summary>
+        /// <param name="rect">the rect the drawing will be done in</param>
+        /// <param name="outsideLineThickness">the thickness of a box drawn around the drawing</param>
+        /// <param name="insideBarMargin">the margin left from the box to the bars</param>
+        /// <param name="bars">the bars drawn inside the specified rectangle, drawing the first to last bar</param>
+        public static void DrawProjectedCurrentBar(this Rect rect, Color outsideLineColor, int outsideLineThickness, int insideBarMargin, params (float percentage, Color color, TipSignal tooltip, bool doWaveAnimation)[] bars)
+        {
+            Rect coloredBaseRect = rect.ContractedBy(insideBarMargin + outsideLineThickness);
+
+            GUI.color = outsideLineColor;
+            Widgets.DrawBox(rect, outsideLineThickness);
+            GUI.color = Color.white;
+
+            float prevBarPercentage = float.MaxValue;
+            Rect? nextBarRect = null;
+
+            for (int i = 0;  i < bars.Length; i++)
+            {
+                (float percentage, Color color, TipSignal tooltip, bool doWaveAnimation) bar = bars[i];
+
+                if (DoesBarHaveErrors(prevBarPercentage, bar)) continue;
+
+                //Ensure that the rectangle areas of the bars don't overlap so that the tip regions don't overlap
+                Rect barRect = GetRectForBar(coloredBaseRect, bars, ref nextBarRect, i);
+                Color barColor = GetWaveColor(bar);
+
+                Widgets.DrawBoxSolid(barRect, barColor);
+                TooltipHandler.TipRegion(barRect, bar.tooltip);
+
+                prevBarPercentage = Mathf.Min(prevBarPercentage, bar.percentage);
+            }
+        }
+
+        private static Rect GetRectForBar(Rect coloredBaseRect, (float percentage, Color color, TipSignal tooltip, bool doWaveAnimation)[] bars, ref Rect? nextBarRect, int currentBarIndex)
+        {
+            Rect barRect = nextBarRect ?? coloredBaseRect.LeftPart(bars[currentBarIndex].percentage).RoundedCeil();
+            if (bars.Length - 1 == currentBarIndex) return barRect;
+
+            nextBarRect = coloredBaseRect.LeftPart(bars[currentBarIndex + 1].percentage).RoundedCeil();
+            float xPos = Mathf.Max(nextBarRect.Value.xMax, coloredBaseRect.x);
+
+            barRect = new Rect(xPos, barRect.y, barRect.xMax - xPos, barRect.height);
+
+            return barRect;
+        }
+
+        /// <summary>
+        ///     Get the <see cref="Color"/> the inner <paramref name="bar"/> should have in respect to the wave animation
+        /// </summary>
+        /// <param name="bar">the bar the color is calculated for</param>
+        /// <returns>the <see cref="Color"/> the <paramref name="bar"/> should be displayed with</returns>
+        private static Color GetWaveColor((float percentage, Color color, TipSignal tooltip, bool doWaveAnimation) bar)
+        {
+            if (!bar.doWaveAnimation) return bar.color;
+
+            Color barColor = bar.color;
+
+            float waveLerp = (Mathf.Sin(Time.time * WAVE_SPEED_MULT) + 1) / 2;
+            Color waveColorAdjusted = Color.Lerp(barColor, Color.white, 0.5f); //bar color mixed with white at 50% ratio
+            barColor = Color.Lerp(barColor, waveColorAdjusted, waveLerp);
+
+            return barColor;
+        }
+
+        /// <summary>
+        ///     Checks if any given <paramref name="bar"/> has errors in respect to the <paramref name="prevBarPercentage"/>, logging them as long as <see cref="VineSettings.debugMode"/> is set to <c>true</c>
+        /// </summary>
+        /// <param name="prevBarPercentage">the percentage of the previous bar</param>
+        /// <param name="bar">the bar about to be drawn next</param>
+        /// <returns>if a <paramref name="bar"/> has errors in respect to the <paramref name="prevBarPercentage"/></returns>
+        private static bool DoesBarHaveErrors(float prevBarPercentage, (float percentage, Color color, TipSignal tooltip, bool doWaveAnimation) bar)
+        {
+            if (prevBarPercentage < bar.percentage)
+            {
+                RVCLog.Log($"Bar with tooltip: {bar.tooltip.ToStringSafe()} is specified larger than previous bar and will be skipped.", RVCLogType.Error, debugOnly: true);
+                return true;
+            }
+
+            if (bar.percentage < 0 || bar.percentage > 1)
+            {
+                RVCLog.Log($"Bar with tooltip: {bar.tooltip.ToStringSafe()} is larger than 1 or smaller than 0 (has barPercentage of: {bar.percentage}", RVCLogType.Error, debugOnly: true);
+                return true;
+            }
+
+            return false;
+        }
     }
 }
