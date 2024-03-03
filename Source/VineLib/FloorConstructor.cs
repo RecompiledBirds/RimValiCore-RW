@@ -186,11 +186,12 @@ namespace RimValiCore_RW.Source
                 string res = cS.Substring(cS.IndexOf("AddDesDropDown_") + "AddDesDropDown_".Length, (cS.IndexOf("[ENDDNAME]") - ("[ENDDNAME]".Length + 5)) - cS.IndexOf("AddDesDropDown_"));
                 if (DefDatabase<DesignatorDropdownGroupDef>.AllDefs.Any(cat => cat.defName == res))
                 {
-                    if (!toUpdateDropdownDesDefs.Contains(DefDatabase<DesignatorDropdownGroupDef>.AllDefs.Where(cat => cat.defName == res).ToList()[0]))
+                    DesignatorDropdownGroupDef designator = DefDatabase<DesignatorDropdownGroupDef>.AllDefs.Where(cat => cat.defName == res).First();
+                    if (designator!=null)
                     {
-                        toUpdateDropdownDesDefs.Add(DefDatabase<DesignatorDropdownGroupDef>.AllDefs.Where(cat => cat.defName == res).ToList()[0]);
+                        toUpdateDropdownDesDefs.Add(designator);
                     }
-                    output.designatorDropdown = DefDatabase<DesignatorDropdownGroupDef>.AllDefs.Where(cat => cat.defName == res).ToList()[0];
+                    output.designatorDropdown = designator;
                 }
             }
         }
@@ -203,11 +204,12 @@ namespace RimValiCore_RW.Source
                 string res = cS.Substring(cS.IndexOf("AddDesCat_") + "AddDesCat_".Length, (cS.IndexOf("[ENDDESNAME]") - ("[ENDDESNAME]".Length - 2)) - cS.IndexOf("AddDesCat_"));
                 if (DefDatabase<DesignationCategoryDef>.AllDefs.Any(cat => cat.defName == res))
                 {
-                    if (!toUpdateDesignationCatDefs.Contains(DefDatabase<DesignationCategoryDef>.AllDefs.Where(cat => cat.defName == res).ToList()[0]))
+                    DesignationCategoryDef designation = DefDatabase<DesignationCategoryDef>.AllDefs.Where(cat => cat.defName == res).First();
+                    if (designation!=null)
                     {
-                        toUpdateDesignationCatDefs.Add(DefDatabase<DesignationCategoryDef>.AllDefs.Where(cat => cat.defName == res).ToList()[0]);
+                        toUpdateDesignationCatDefs.Add(designation);
                     }
-                    output.designationCategory = DefDatabase<DesignationCategoryDef>.AllDefs.Where(cat => cat.defName == res).ToList()[0];
+                    output.designationCategory = designation;
                 }
             }
         }

@@ -161,27 +161,49 @@ namespace RVCRestructured.Shifter
 
         public virtual void SetForm(Pawn pawn)
         {
+            SetForm(pawn, null);
+        }
+
+        public virtual void SetForm(Pawn pawn, XenotypeDef xenotypeDef = null)
+        {
+            xenotypeDef = xenotypeDef ?? (pawn.genes?.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner);
+
             if (pawn.story != null)
             {
                 mimickedBody = pawn.story.bodyType;
                 mimickedHead = pawn.story.headType;
             }
-            Pawn parentPawn = parent as Pawn;
-            if (baseXenoTypeDef == null)
-            {
-                baseXenoTypeDef = parentPawn.genes.Xenotype;
 
-            }
-            if(ModLister.BiotechInstalled)
-                RevertGenes();
+            Pawn parentPawn = GetParentPawnAndSetBaseXenoType();
+
+            RevertGenes();
             SetForm(pawn.def);
 
-            if (ModLister.BiotechInstalled)
-            {
-                XenotypeDef def = pawn.genes != null && pawn.genes.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner;
-                parentPawn.genes.SetXenotype(def);
-                SetGenes(def, baseXenoTypeDef);
-            }
+            if (!ModLister.BiotechInstalled) return;
+
+            XenotypeDef def = xenotypeDef;
+            parentPawn.genes.SetXenotype(def);
+            SetGenes(def, baseXenoTypeDef);
+        }
+
+        public virtual void SetForm(ThingDef def, XenotypeDef xenotypeDef)
+        {
+            Pawn parentPawn = GetParentPawnAndSetBaseXenoType();
+
+            RevertGenes();
+            SetForm(def);
+
+            if (!ModLister.BiotechInstalled) return;
+
+            parentPawn.genes.SetXenotype(xenotypeDef);
+            SetGenes(xenotypeDef, baseXenoTypeDef);
+        }
+
+        private Pawn GetParentPawnAndSetBaseXenoType()
+        {
+            Pawn parentPawn = parent as Pawn;
+            baseXenoTypeDef = baseXenoTypeDef ?? parentPawn.genes.Xenotype;
+            return parentPawn;
         }
 
         public virtual void SetForm(ThingDef def)
@@ -217,6 +239,8 @@ namespace RVCRestructured.Shifter
 
         public void RevertGenes()
         {
+            if (!ModLister.BiotechInstalled) return;
+            
             Pawn parentPawn = parent as Pawn;
             XenotypeDef def = parentPawn.genes.Xenotype;
             parentPawn.genes.SetXenotype(baseXenoTypeDef);

@@ -7,6 +7,7 @@ using Verse;
 
 namespace RVCRestructured.RVR.HarmonyPatches
 {
+    [StaticConstructorOnStartup]
     public static class ResolveGraphicsPostFix
     {
         private static RVG_Graphic empty;
@@ -22,6 +23,9 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 return empty;
             }
         }
+
+        static ResolveGraphicsPostFix() { }
+
         private static Color SwaddleColor(PawnGraphicSet __instance)
         {
             Rand.PushState(__instance.pawn.thingIDNumber);
