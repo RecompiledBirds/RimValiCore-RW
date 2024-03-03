@@ -1,4 +1,5 @@
 ﻿using RVCRestructured.Defs;
+using RVCRestructured.RVR;
 using RVCRestructured.Shifter;
 using System.Collections.Generic;
 using System.Linq;
@@ -233,22 +234,18 @@ namespace RVCRestructured
             {
                 return;
             }
-            Log.Message($"Generating {rDef.defName}");
             bool hasLink = rDef.linkTexWith != null;
             if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith.defName) && !renderableIndexes.ContainsKey(rDef.defName)) {
                 string linkString = rDef.linkTexWith.defName;
-                Log.Message($"Discovered link with {linkString}");
                 renderableIndexes[rDef.defName] = renderableIndexes[linkString];
                 masks[rDef.defName] = masks[linkString];
-                Log.Message($"My mask is: {masks[rDef.defName]}");
                 return;
             }
             if (renderableIndexes.ContainsKey(rDef.defName)) return;
-            Random rand = new Random();
-            int index = rand.Next(rDef.textures.Count);
+            BaseTex tex= rDef.textures.RandomElement();
+            int index = rDef.textures.IndexOf(tex);
             renderableIndexes[rDef.defName] = index;
-            int maskIndex = rDef.textures[renderableIndexes[rDef.defName]].GetMasks(pawn).Count;
-            index = rand.Next(maskIndex);
+            index = tex.GetMasks(pawn).IndexOf(tex.GetMasks(pawn).RandomElement());
             masks.Add(rDef.defName, index);
 
             if (hasLink)
