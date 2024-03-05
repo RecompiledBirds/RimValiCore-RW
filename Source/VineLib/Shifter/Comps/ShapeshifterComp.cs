@@ -122,15 +122,29 @@ namespace RVCRestructured.Shifter
             }
         }
 
+        /// <summary>
+        /// Is the parent the same def as our parent?
+        /// </summary>
+        /// <returns></returns>
         public virtual bool IsParentDef()
         {
             return IsDef(parent.def);
         }
+
+        /// <summary>
+        /// Is the parent.def the given def?
+        /// </summary>
+        /// <param name="def"></param>
+        /// <returns></returns>
         public virtual bool IsDef(ThingDef def)
         {
             return def == CurrentForm;
         }
 
+        /// <summary>
+        /// Returns the label of the currently shifted race.
+        /// </summary>
+        /// <returns></returns>
         public virtual string Label()
         {
             return CurrentForm.label;
@@ -159,11 +173,20 @@ namespace RVCRestructured.Shifter
                 baseXenoTypeDef = pawn.genes.Xenotype;           
         }
 
+        /// <summary>
+        /// Sets the current def and xenotype to that of the given pawn
+        /// </summary>
+        /// <param name="pawn"></param>
         public virtual void SetForm(Pawn pawn)
         {
             SetForm(pawn, null);
         }
 
+        /// <summary>
+        /// Sets the form to the given pawns def, bodytype, headtype, and either the given xenotype, pawn's xenotype, or baseliner.
+        /// </summary>
+        /// <param name="pawn"></param>
+        /// <param name="xenotypeDef"></param>
         public virtual void SetForm(Pawn pawn, XenotypeDef xenotypeDef = null)
         {
             xenotypeDef = xenotypeDef ?? (pawn.genes?.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner);
