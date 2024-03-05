@@ -218,7 +218,7 @@ namespace RVCRestructured.Shifter
             Pawn pawn = parent as Pawn;
             
             
-            Log.Message($"{pawn.Name.ToStringShort} became {currentForm}");
+            RVCLog.MSG($"{pawn.Name.ToStringShort} became {currentForm}",debugOnly:true);
 
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             if (comp == null) return;
@@ -249,6 +249,7 @@ namespace RVCRestructured.Shifter
             
             Pawn parentPawn = parent as Pawn;
             XenotypeDef def = parentPawn.genes.Xenotype;
+            if (baseXenoTypeDef == null) { baseXenoTypeDef = XenotypeDefOf.Baseliner; }
             parentPawn.genes.SetXenotype(baseXenoTypeDef);
             SetGenes(baseXenoTypeDef, def);
         }
@@ -257,8 +258,8 @@ namespace RVCRestructured.Shifter
         {
             mimickedBody = null;
             mimickedHead = null;
-            RevertGenes();
             SetForm(parent.def);
+            RevertGenes();
            
         }
 
