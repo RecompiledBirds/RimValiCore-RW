@@ -186,6 +186,12 @@ namespace RVCRestructured.Shifter
             SetGenes(def, baseXenoTypeDef);
         }
 
+        public virtual void SetForm(ThingDef def, XenotypeDef xenotypeDef, BodyTypeDef bodyTypeDef)
+        {
+            mimickedBody = bodyTypeDef;
+            SetForm(def, xenotypeDef);
+        }
+
         public virtual void SetForm(ThingDef def, XenotypeDef xenotypeDef)
         {
             Pawn parentPawn = GetParentPawnAndSetBaseXenoType();

@@ -84,6 +84,7 @@ namespace RVCRestructured
                 __instance.SetAllGraphicsDirty();
                 __instance.ClearCache();
                 PortraitsCache.SetDirty(pawn);
+                
             }
         }
         public static Graphic HeadGraphicShifted(ShapeshifterComp shapeshifterComp, Color skinTwo, Color skinThree, bool desiccated = false)
