@@ -17,7 +17,7 @@ namespace RVCRestructured.Shifter
         private static Dictionary<Type, bool> shouldNotcopy = new Dictionary<Type, bool>();
 
         /// <summary>
-        /// Can we copy this propery?
+        /// Can we copy this property?
         /// </summary>
         /// <param name="properties"></param>
         /// <returns></returns>
