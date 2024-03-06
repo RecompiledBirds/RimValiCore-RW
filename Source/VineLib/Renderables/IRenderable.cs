@@ -18,7 +18,7 @@ namespace RVCRestructured
         TriColorSet ColorSet(RVRComp comp);
         TriColorSet ColorSet(Pawn pawn);
         BodyPartGraphicPos GetPos(Rot4 rotation);
-        BodyPartGraphicPos GetPos(Rot4 rotation,PawnGraphicSet set);
+        BodyPartGraphicPos GetPos(Rot4 rotation, PawnGraphicSet set, bool inBed,bool portrait=false);
 
     }
 }

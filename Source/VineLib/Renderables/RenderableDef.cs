@@ -14,7 +14,6 @@ namespace RVCRestructured.Defs
     public class RenderableDef : Def, IRenderable
     {
         public List<BaseTex> textures = new List<BaseTex>();
-        public bool hiddenInBed = false;
         public BodyPartGraphicPos east;
         public BodyPartGraphicPos west = null;
         public BodyPartGraphicPos south;
@@ -58,87 +57,98 @@ namespace RVCRestructured.Defs
         }
         public BodyPartGraphicPos GetPos(Rot4 rot)
         {
-            if (west == null)
-            {
-                west = new BodyPartGraphicPos()
-                {
-                    position = -east.position,
-                    size = east.size
-                };
-                if (!flipLayerEastWest)
-                    west.position.y = east.position.y;
-                if (!flipYPos)
-                    west.position.z = east.position.z;
-            }
+            GenerateWestIfNeeded();
 
             return GetBodyPartGraphicPosFromIntRot(rot.AsInt);
         }
 
 
-        public BodyPartGraphicPos GetPos(Rot4 rot,PawnGraphicSet set)
+        public BodyPartGraphicPos GetPos(Rot4 rot,PawnGraphicSet set, bool inBed= false,bool portrait=false)
+        {
+            GenerateWestIfNeeded();
+
+            return GetBodyPartGraphicPosFromIntRot(rot.AsInt, inBed, portrait);
+        }
+
+        private void GenerateWestIfNeeded()
         {
             if (west == null)
             {
                 west = new BodyPartGraphicPos()
                 {
                     position = -east.position,
-                    size = east.size
+                    size = east.size,
+                    offsetInBed = east.offsetInBed
                 };
                 if (!flipLayerEastWest)
                     west.position.y = east.position.y;
                 if (!flipYPos)
                     west.position.z = east.position.z;
             }
-
-            return GetBodyPartGraphicPosFromIntRot(rot.AsInt,set);
         }
-        private Dictionary<int, Vector3> posCache = new Dictionary<int, Vector3>();
-        private Vector3 GetPosRecursively(int rot)
+
+        private Dictionary<KeyValuePair<bool,int>, Vector3> posCache = new Dictionary<KeyValuePair<bool, int>, Vector3>();
+        private Vector3 GetPosRecursively(int rot, bool inBed, bool portrait = false)
         {
-            if (!posCache.ContainsKey(rot))
+            KeyValuePair<bool, int> pair;
+            if (portrait) pair = new KeyValuePair<bool, int>(false,2);
+            else pair = new KeyValuePair<bool, int>(inBed, rot);
+            if (!posCache.ContainsKey(pair))
             {
                 Vector3 position;
-                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot) : Vector3.zero);
+                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot,inBed,portrait) : Vector3.zero);
                 switch (rot)
                 {
                     case 0:
-                        position= north.position + recursizePos;
+                        position = north.position + recursizePos;
+                        if (inBed && !portrait)
+                        {
+                            position.x -= north.offsetInBed.x;
+                            position.z -= north.offsetInBed.y;
+                        }
                         break;
                     case 2:
-                        position= south.position + recursizePos;
+                        position = south.position + recursizePos;
+                        if (inBed && !portrait)
+                        {
+                            position.x -= south.offsetInBed.x;
+                            position.z -= south.offsetInBed.y;
+                        }
                         break;
                     case 1:
-                        position= east.position + recursizePos;
+                        position = east.position + recursizePos;
+                        if (inBed && !portrait)
+                        {
+                            position.x -= east.offsetInBed.x;
+                            position.z -= east.offsetInBed.y;
+                        }
                         break;
                     case 3:
-                        if (west == null)
-                        {
-                            west = new BodyPartGraphicPos()
-                            {
-                                position = -east.position,
-                                size = east.size
-                            };
-                            if (!flipLayerEastWest)
-                                west.position.y = east.position.y;
-                            if (!flipYPos)
-                                west.position.z = east.position.z;
-                        }
+                        GenerateWestIfNeeded();
                         position = west.position + recursizePos;
+                        if (inBed && !portrait)
+                        {
+                            position.x -= west.offsetInBed.x;
+                            position.z -= west.offsetInBed.y;
+                        }
                         break;
                     default:
                         position= Vector3.zero;
                         break;
                 }
-                posCache[rot] = position;
+                posCache[pair] = position;
             }
-            return posCache[rot];
+            return posCache[pair];
         }
-        private Dictionary<int, BodyPartGraphicPos> partCache = new Dictionary<int, BodyPartGraphicPos>();
-        private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot)
+        private Dictionary<KeyValuePair<bool, int>, BodyPartGraphicPos> partCache = new Dictionary<KeyValuePair<bool, int>, BodyPartGraphicPos>();
+        private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, bool inBed=false, bool portrait = false)
         {
-            if (!partCache.ContainsKey(rot))
+            KeyValuePair<bool, int> pair;
+            if (portrait) pair = new KeyValuePair<bool, int>(false, 2);
+            else pair = new KeyValuePair<bool, int>(inBed, rot);
+            if (!partCache.ContainsKey(pair))
             {
-                Vector3 pos = GetPosRecursively(rot);
+                Vector3 pos = GetPosRecursively(rot,inBed,portrait);
                 BodyPartGraphicPos newPos;
                 switch (rot)
                 {
@@ -147,7 +157,8 @@ namespace RVCRestructured.Defs
                         newPos = new BodyPartGraphicPos()
                         {
                             position = pos,
-                            size = north.size
+                            size = north.size,
+                            offsetInBed=north.offsetInBed
                         };
                         break;
 
@@ -155,7 +166,8 @@ namespace RVCRestructured.Defs
                         newPos = new BodyPartGraphicPos()
                         {
                             position = pos,
-                            size = south.size
+                            size = south.size,
+                            offsetInBed = south.offsetInBed
                         };
                         break;
 
@@ -164,14 +176,16 @@ namespace RVCRestructured.Defs
                         newPos = new BodyPartGraphicPos()
                         {
                             position = pos,
-                            size = east.size
+                            size = east.size,
+                            offsetInBed=east.offsetInBed
                         };
                         break;
                     case 3:
                         newPos = new BodyPartGraphicPos()
                         {
                             position = pos,
-                            size = west.size
+                            size = west.size,
+                            offsetInBed=west.offsetInBed
                         };
                         break;
 
@@ -179,14 +193,15 @@ namespace RVCRestructured.Defs
                         newPos = null;
                         break;
                 }
-                partCache[rot] = newPos;
+                partCache[pair] = newPos;
             }
-            return partCache[rot];
+            return partCache[pair];
         }
 
         private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot,PawnGraphicSet set)
         {
-            BodyPartGraphicPos pos = GetBodyPartGraphicPosFromIntRot(rot);
+            BodyPartGraphicPos pos = GetBodyPartGraphicPosFromIntRot(rot,set.pawn.InBed());
+
             if (!linkWithHeadPos) return pos;
             Vector3 offset = set.headGraphic.DrawOffset(new Rot4(rot));
             pos.position.x +=offset.x;
@@ -247,7 +262,7 @@ namespace RVCRestructured.Defs
     {
         public Vector3 position;
         public Vector2 size;
-
+        public Vector2 offsetInBed;
 
     }
 

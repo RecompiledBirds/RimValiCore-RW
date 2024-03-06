@@ -18,21 +18,22 @@ namespace RVCRestructured.RVR
             Rot4 rotation = portrait ? Rot4.South : bodyFacing;
             Quaternion quat = Quaternion.AngleAxis(angle, Vector3.up);
 
-
+            bool inBed = pawn.InBed();
+            bool bedHidesBody = inBed && !pawn.CurrentBed().def.building.bed_showSleeperBody;
             //genetic drawing
 
             if (pawn.genes!=null && !pawn.genes.GenesListForReading.NullOrEmpty())
             {
-                IEnumerable<Gene> defs = (IEnumerable<Gene>)pawn.genes.GenesListForReading.Where(x => x.def is GeneRenderableDef);
+                IEnumerable<Gene> defs = pawn.genes.GenesListForReading.Where(x => x.def is GeneRenderableDef);
 
                 foreach (Gene gene in defs)
                 {
                     GeneRenderableDef def = gene.def as GeneRenderableDef;
                     RenderableDef renderableDef = def.renderableDef;
-                    BodyPartGraphicPos pos = renderableDef.GetPos(rotation, __instance.graphics);
+                    BodyPartGraphicPos pos = renderableDef.GetPos(rotation, __instance.graphics,inBed,portrait);
                     Vector3 position = pos.position;
-
-                    if (pawn.InBed() && !pawn.CurrentBed().def.building.bed_showSleeperBody && !renderableDef.ShowsInBed())
+                    
+                    if (bedHidesBody && !renderableDef.ShowsInBed())
                         continue;
                     TriColorSet set = renderableDef.ColorSet(pawn);
 
@@ -52,11 +53,12 @@ namespace RVCRestructured.RVR
 
             foreach (IRenderable renderableDef in comp.RenderableDefs)
             {
+                
                 //Render the def
-                BodyPartGraphicPos pos = renderableDef.GetPos(rotation,__instance.graphics);
+                BodyPartGraphicPos pos = renderableDef.GetPos(rotation,__instance.graphics,inBed,portrait);
                 Vector3 position = pos.position;
 
-                if (pawn.InBed() && !pawn.CurrentBed().def.building.bed_showSleeperBody && !renderableDef.ShowsInBed())
+                if (bedHidesBody && !renderableDef.ShowsInBed())
                     continue;
                 TriColorSet set = renderableDef.ColorSet(comp);
 
