@@ -235,14 +235,15 @@ namespace RVCRestructured.Shifter
             return parentPawn;
         }
 
-        public virtual void SetForm(ThingDef def)
+        public virtual void SetForm(ThingDef def,BodyTypeDef bodyTypeDef =null, bool log = true, bool generating = false)
         {
             currentForm = def;
+
             Pawn pawn = parent as Pawn;
             
-            
-            RVCLog.MSG($"{pawn.Name.ToStringShort} became {currentForm}",debugOnly:true);
-
+            if(log)
+                RVCLog.MSG($"{pawn.Name.ToStringShort} became {currentForm}",debugOnly:true);
+            if(bodyTypeDef!=null)mimickedBody=bodyTypeDef;
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             if (comp == null) return;
             RVRGraphicsComp targetGraphics = def.GetCompProperties<RVRGraphicsComp>();
@@ -254,10 +255,10 @@ namespace RVCRestructured.Shifter
                 comp.GenAllDefs(targetGraphics, pawn);
                 comp.GenColors(targetGraphics, pawn);
             }
-          
+            
             comp.InformGraphicsDirty();
-
-            pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+            if(!generating)
+                pawn.Drawer.renderer.graphics.ResolveAllGraphics();
         }
 
         public virtual bool FormUnstable()

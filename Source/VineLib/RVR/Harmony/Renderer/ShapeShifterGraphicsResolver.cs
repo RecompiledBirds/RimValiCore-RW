@@ -35,7 +35,7 @@ namespace RVCRestructured
                 __instance.packGraphic = GraphicDatabase.Get<Graphic_Multi>(__instance.nakedGraphic.path + "Pack", ShaderDatabase.Cutout, __instance.nakedGraphic.drawSize, Color.white);
             }
         }
-        public static void ResolveHumanLike(ShapeshifterComp shapeshifterComp, RVRComp comp, PawnGraphicSet __instance,Pawn pawn, Color skinTwo, Color skinThree, RVG_Graphic empty)
+        public static void ResolveHumanLike(ShapeshifterComp shapeshifterComp, RVRComp comp, PawnGraphicSet __instance, Pawn pawn, Color skinTwo, Color skinThree, RVG_Graphic empty)
         {
             __instance.bodyTattooGraphic = empty;
             __instance.faceTattooGraphic = empty;
@@ -84,7 +84,7 @@ namespace RVCRestructured
                 __instance.SetAllGraphicsDirty();
                 __instance.ClearCache();
                 PortraitsCache.SetDirty(pawn);
-                
+
             }
         }
         public static Graphic HeadGraphicShifted(ShapeshifterComp shapeshifterComp, Color skinTwo, Color skinThree, bool desiccated = false)

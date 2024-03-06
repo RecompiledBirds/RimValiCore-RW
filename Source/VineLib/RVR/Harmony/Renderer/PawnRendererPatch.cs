@@ -19,7 +19,7 @@ namespace RVCRestructured.RVR
             Quaternion quat = Quaternion.AngleAxis(angle, Vector3.up);
 
             bool inBed = pawn.InBed();
-            bool bedHidesBody = inBed && !pawn.CurrentBed().def.building.bed_showSleeperBody;
+            bool bedHidesBody = inBed && !pawn.CurrentBed().def.building.bed_showSleeperBody && !portrait;
             //genetic drawing
 
             if (pawn.genes!=null && !pawn.genes.GenesListForReading.NullOrEmpty())

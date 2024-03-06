@@ -89,7 +89,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
          
             ThingDef def = request.KindDef.race;
             //saftey check for scenario pawns
-            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter))
+            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter)||!VineMod.VineSettings.RaceBlender)
                 return ThingMaker.MakeThing(def);
             
             if (!CanSwapRace(def))

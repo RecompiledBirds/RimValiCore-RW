@@ -21,12 +21,10 @@ namespace RVCRestructured.RVR.Harmony
             string path;
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-            if(shapeshifterComp != null && shapeshifterComp.MimickedBodyType!=null)
+            if(shapeshifterComp != null)
             {
                 typeDef = shapeshifterComp.MimickedBodyType;
             }
-            
-            
 
             Graphic graphic;
             string altPath = $"{apparel.WornGraphicPath}_{typeDef.defName}";
