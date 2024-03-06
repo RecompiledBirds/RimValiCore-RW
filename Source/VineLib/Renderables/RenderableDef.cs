@@ -48,10 +48,6 @@ namespace RVCRestructured.Defs
         {
             IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
             ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
-            if (comp != null)
-            {
-                RVCLog.Log("test");
-            }
             bool bodyIsHiding =(( bodyPart == null || pawn.TryGetComp<ShapeshifterComp>() == null) || bodyParts.Any(x => x.def.defName.ToLower() == bodyPart.ToLower() || x.Label.ToLower() == bodyPart.ToLower()));
             return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || showsInBed) && !bodyIsHiding);
         }
