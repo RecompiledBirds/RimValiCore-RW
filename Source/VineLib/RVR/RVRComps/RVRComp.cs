@@ -65,6 +65,57 @@ namespace RVCRestructured
             return null;
         }
 
+        public void SendRenderableDefToNextTexture(RenderableDef def)
+        {
+            if (!renderableIndexes.ContainsKey(def.defName)) return;
+            int index = renderableIndexes[def.defName];
+            index++;
+            if (def.textures.Count == index)
+            {
+                index = 0;
+            }
+            renderableIndexes[def.defName] = index;
+        }
+        public void SendRenderableDefToPreviousTexture(RenderableDef def)
+        {
+            if (!renderableIndexes.ContainsKey(def.defName)) return;
+            int index = renderableIndexes[def.defName];
+            index--;
+            if (index == -1)
+            {
+                index = def.textures.Count-1;
+            }
+            renderableIndexes[def.defName] = index;
+        }
+
+        public void SendRenderableDefToNextMask(RenderableDef def)
+        {
+            if (!renderableIndexes.ContainsKey(def.defName)) return;
+            if(!masks.ContainsKey(def.defName)) return;
+            int texIndex = renderableIndexes[def.defName];
+            int maskIndex = masks[def.defName];
+            maskIndex--;
+            List<string> maskList = def.textures[texIndex].GetMasks(parent as Pawn);
+            if (maskIndex == maskList.Count)
+            {
+                maskIndex = 0;
+            }
+            masks[def.defName] = maskIndex;
+        }
+        public void SendRenderableDefToPreviousMask(RenderableDef def)
+        {
+            if (!renderableIndexes.ContainsKey(def.defName)) return;
+            if (!masks.ContainsKey(def.defName)) return;
+            int texIndex = renderableIndexes[def.defName];
+            int maskIndex = masks[def.defName];
+            maskIndex--;
+            List<string> maskList = def.textures[texIndex].GetMasks(parent as Pawn);
+            if (maskIndex == -1)
+            {
+                maskIndex = maskList.Count-1;
+            }
+            masks[def.defName] = maskIndex;
+        }
         public string GetMaskPath(RenderableDef def, Pawn pawn)
         {
             if (masks.ContainsKey(def.defName) && !def.textures[renderableIndexes[def.defName]].GetMasks(pawn).NullOrEmpty())
@@ -193,6 +244,7 @@ namespace RVCRestructured
         public void GenAllDefs(RVRGraphicsComp comp, Pawn pawn)
         {
             defList.Clear();
+            if (comp.renderableDefs.NullOrEmpty()) return;
             if (defList.NullOrEmpty() && !comp.renderableDefs.NullOrEmpty())
             {
 
@@ -230,6 +282,7 @@ namespace RVCRestructured
 
         private void GenerateRenderableDef(RenderableDef rDef, Pawn pawn)
         {
+            if (renderableIndexes.EnumerableNullOrEmpty()) return;
             if (renderableIndexes.ContainsKey(rDef.defName))
             {
                 return;
