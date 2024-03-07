@@ -244,7 +244,6 @@ namespace RVCRestructured
         public void GenAllDefs(RVRGraphicsComp comp, Pawn pawn)
         {
             defList.Clear();
-            if (comp.renderableDefs.NullOrEmpty()) return;
             if (defList.NullOrEmpty() && !comp.renderableDefs.NullOrEmpty())
             {
 
@@ -282,7 +281,6 @@ namespace RVCRestructured
 
         private void GenerateRenderableDef(RenderableDef rDef, Pawn pawn)
         {
-            if (renderableIndexes.EnumerableNullOrEmpty()) return;
             if (renderableIndexes.ContainsKey(rDef.defName))
             {
                 return;
