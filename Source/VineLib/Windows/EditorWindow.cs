@@ -154,8 +154,7 @@ namespace RVCRestructured
         {
             Widgets.DrawHighlight(RectInfoBox);
             Widgets.DrawBox(RectInfoBox, 2);
-            Widgets.Label(RectInfoBox.ContractedBy(2f + 5f), $"{"RVC_Tutorial".Translate($"<color=green>{SelectedPawn.def.label}</color>")}" +
-                $"\n\n<color=orange>{"RVC_WarningColorEdit".Translate()}</color>");
+            Widgets.Label(RectInfoBox.ContractedBy(2f + 5f), $"{"RVC_Tutorial".Translate($"<color=green>{SelectedPawn.def.label}</color>")}");
         }
 
         /// <summary>
