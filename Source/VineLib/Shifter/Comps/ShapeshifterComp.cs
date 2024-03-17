@@ -413,7 +413,7 @@ namespace RVCRestructured.Shifter
             Pawn pawn = parent as Pawn;
             if (IsParentDef()) return result;
             result -= pawn.def.statBases.GetStatOffsetFromList(stat);
-            result += CurrentForm.statBases.GetStatOffsetFromList(stat);
+            result += CurrentForm.statBases.StatListContains(stat) ? CurrentForm.statBases.GetStatOffsetFromList(stat) : stat.defaultBaseValue;
             return result;
         }
     }
