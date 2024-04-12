@@ -38,13 +38,6 @@ namespace RVCRestructured.RVR.HarmonyPatches
                         yield return codes[a];
                     }
                 }
-                /*
-                if (codes[a].opcode == OpCodes.Call && codes[a].Calls(typeof(ThingMaker).GetMethod(nameof(ThingMaker.MakeThing))))
-                {
-                    yield return new CodeInstruction(OpCodes.Ldarg_0);
-                    yield return new CodeInstruction(OpCodes.Ldobj, typeof(PawnGenerationRequest));
-                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PawnBlender), "GetHumanoidRace", new Type[] { typeof(PawnGenerationRequest) }));
-                }*/
                 else
                 {
                     yield return codes[a];
