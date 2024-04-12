@@ -8,6 +8,51 @@
 			<children>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
 					<def>RVFFA_Body</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_Head</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_EarLL</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_EarRL</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_EarLU</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_EarRU</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_TailSkirt</def>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_Tail</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_EyeL</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_EyeR</def>
+					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="PawnRenderNodeProperties_Carried">

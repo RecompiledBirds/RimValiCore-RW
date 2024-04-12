@@ -11,27 +11,34 @@ using RVCRestructured.Defs;
 
 namespace RVCRestructured.RVR.HarmonyPatches
 {
-    public static class PawnBlender
+    public static class GenerationPatches
     {
-        public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        public static void GraphicsGenPostfix(ref Pawn __result)
         {
+            RVRComp comp = __result.TryGetComp<RVRComp>();
+            if (comp != null)
+            {
+                comp.GenGraphics();
+            }
+        }
+        public static IEnumerable<CodeInstruction> BlendTranspiler(IEnumerable<CodeInstruction> instructions)
+        {
+            bool found = false;
             List<CodeInstruction> codes = instructions.ToList();
             for (int a = 0; a < codes.Count; a++)
             {
                 //Look for where the pawn is created.
                 CodeInstruction code = codes[a];
                 CodeInstruction next = a<codes.Count-1? codes[a + 1]:null;
-                if (code.opcode == OpCodes.Ldarg_0)
+                if (code.opcode == OpCodes.Ldarg_0 && !found)
                 {
                     if(next!=null && next.opcode==OpCodes.Call && next.Calls(typeof(PawnGenerationRequest).GetMethod("get_KindDef"))){
                         yield return codes[a];
                         yield return new CodeInstruction(OpCodes.Ldobj, typeof(PawnGenerationRequest));
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PawnBlender), nameof(GetHumanoidRace), new Type[] { typeof(PawnGenerationRequest) }));
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(GenerationPatches), nameof(GetHumanoidRace), new Type[] { typeof(PawnGenerationRequest) }));
                         a += 4;
-                        for(int i =  0; i < 5; i++)
-                        {
-                            yield return new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(PawnBlender),nameof(test)));
-                        }
+                        found = true;
+
                     }
                     else
                     {
@@ -102,46 +109,38 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         public static Thing GetHumanoidRace(PawnGenerationRequest request)
         {
-
-            Log.Message("test");
-            RVCLog.MSG(request.KindDef == null);
             ThingDef def = request.KindDef.race;
             //saftey check for scenario pawns
-            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter) || !VineMod.VineSettings.RaceBlender || !CanSwapRace(def))
+            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter) || !VineMod.VineSettings.RaceBlender)
                 return CreateThing(def);
-            Log.Message("test2");
+            if (!CanSwapRace(def))
+            {
+                return CreateThing(def);
+            }
             if (SkipOnce)
             {
                 SkipOnce = false;
                 return CreateThing(def);
             }
-            Log.Message("test3");
             if (ShouldSwitch(request) && CanSwapPawnkind(request.KindDef))
             {
                 List<ThingDef> defs = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.race != null && x.race.Humanlike).ToList();
                 def = defs.RandomElement();
                 
             }
-            Log.Message("test4");
             if (ShouldSwitchPawnkindBased(request))
             {
                 RaceSwapDef randomSwapDef = ShuffleDefs.Where(x => x.targetRaces.Contains(def)).RandomElement();
                 def = randomSwapDef.replacementRaces.RandomElement();
             }
-            Log.Message("test5");
-            return CreateThing(def);
+          return CreateThing(def);
         }
 
         private static Thing CreateThing(ThingDef def)
         {
-            Log.Message("test6");
             Thing thing = ThingMaker.MakeThing(def);
-            Log.Message("test7");
-            RVRComp comp = thing.TryGetComp<RVRComp>();
-            Log.Message("test8");
-            comp?.GenGraphics();
-            Log.Message("test9");
             return thing;
         }
+
     }
 }

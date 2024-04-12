@@ -50,7 +50,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)), postfix: new HarmonyMethod(typeof(ApparelGraphicPatch), nameof(ApparelGraphicPatch.Postfix)));
                 harmony.Patch(AccessTools.Method(typeof(PawnRenderer), "BaseHeadOffsetAt"), postfix: new HarmonyMethod(typeof(HeadOffsetPatch), nameof(HeadOffsetPatch.Postfix)));
                // harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
-                harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), transpiler: new HarmonyMethod(typeof(PawnBlender), nameof(PawnBlender.Transpiler)));
+                harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), transpiler: new HarmonyMethod(typeof(GenerationPatches), nameof(GenerationPatches.BlendTranspiler)));
+                harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(GenerationPatches), nameof(GenerationPatches.GraphicsGenPostfix)));
                 harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)), postfix: new HarmonyMethod(typeof(XenoTypeGenPatch), nameof(XenoTypeGenPatch.Postfix)));
                 RVCLog.Log("Completed all RVR patches with no issues!");
             }catch(Exception e)
