@@ -35,8 +35,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
                     if(next!=null && next.opcode==OpCodes.Call && next.Calls(typeof(PawnGenerationRequest).GetMethod("get_KindDef"))){
                         yield return codes[a];
                         yield return new CodeInstruction(OpCodes.Ldobj, typeof(PawnGenerationRequest));
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(GenerationPatches), nameof(GetHumanoidRace), new Type[] { typeof(PawnGenerationRequest) }));
-                        a += 4;
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(GenerationPatches), nameof(CreatePawn), new Type[] { typeof(PawnGenerationRequest) }));
+                        a += 5;
                         found = true;
 
                     }
@@ -107,20 +107,20 @@ namespace RVCRestructured.RVR.HarmonyPatches
             return ExcludedDefs.NullOrEmpty() || !ExcludedDefs.Any(x => !x.excludedPawnKinds.NullOrEmpty() && x.excludedPawnKinds.Contains(def));
         }
 
-        public static Thing GetHumanoidRace(PawnGenerationRequest request)
+        public static Pawn CreatePawn(PawnGenerationRequest request)
         {
             ThingDef def = request.KindDef.race;
             //saftey check for scenario pawns
             if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter) || !VineMod.VineSettings.RaceBlender)
-                return CreateThing(def);
+                return CreatePawn(def);
             if (!CanSwapRace(def))
             {
-                return CreateThing(def);
+                return CreatePawn(def);
             }
             if (SkipOnce)
             {
                 SkipOnce = false;
-                return CreateThing(def);
+                return CreatePawn(def);
             }
             if (ShouldSwitch(request) && CanSwapPawnkind(request.KindDef))
             {
@@ -133,13 +133,12 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 RaceSwapDef randomSwapDef = ShuffleDefs.Where(x => x.targetRaces.Contains(def)).RandomElement();
                 def = randomSwapDef.replacementRaces.RandomElement();
             }
-          return CreateThing(def);
+          return CreatePawn(def);
         }
 
-        private static Thing CreateThing(ThingDef def)
+        private static Pawn CreatePawn(ThingDef def)
         {
-            Thing thing = ThingMaker.MakeThing(def);
-            return thing;
+           return (Pawn)ThingMaker.MakeThing(def,null);
         }
 
     }
