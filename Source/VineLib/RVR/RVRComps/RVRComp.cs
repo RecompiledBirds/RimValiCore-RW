@@ -22,6 +22,7 @@ namespace RVCRestructured
 
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
+           
             base.PostSpawnSetup(respawningAfterLoad);
         }
 
@@ -51,6 +52,8 @@ namespace RVCRestructured
             }
         }
 
+      
+
         private Dictionary<string, int> masks = new Dictionary<string, int>();
         private Dictionary<string, int> renderableIndexes = new Dictionary<string, int>();
         //used in loading
@@ -60,9 +63,7 @@ namespace RVCRestructured
 
         public string GetTexPath(RenderableDef def)
         {
-            if (renderableIndexes.ContainsKey(def.defName))
-                return def.textures[renderableIndexes[def.defName]].texPath;
-            return null;
+            return def.textures[renderableIndexes[def.defName]].texPath;
         }
 
         public void SendRenderableDefToNextTexture(RenderableDef def)
@@ -201,7 +202,6 @@ namespace RVCRestructured
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
             if (comp == null)
                 return;
-
             RVRGraphicsComp props = comp.Props;
 
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();

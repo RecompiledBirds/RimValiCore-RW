@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Verse;
 using Verse.AI;
-
+/*
 namespace RVCRestructured.Shifter
 {
     public  static class PawnChanger
@@ -41,7 +41,7 @@ namespace RVCRestructured.Shifter
                 pawn.Name = PawnBioAndNameGenerator.GeneratePawnName(pawn);
                 NameTriple name = null;
                 NamePatch.GenName(ref name, pawn);
-                PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo(pawn, oldDef.label, pawn.kindDef.defaultFactionType);
+                PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo(pawn,Faction.OfPlayer.def,new PawnGenerationRequest() { Faction=Faction.OfPlayer});
                 pawn.Name = name;
             }
             RebuildComps(pawn);
@@ -113,3 +113,4 @@ namespace RVCRestructured.Shifter
         }
     }
 }
+*/

@@ -4,7 +4,7 @@ using RVCRestructured.Graphics;
 using RVCRestructured.Shifter;
 using UnityEngine;
 using Verse;
-
+/*
 namespace RVCRestructured.RVR.HarmonyPatches
 {
     [StaticConstructorOnStartup]
@@ -26,7 +26,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         static ResolveGraphicsPostFix() { }
 
-        private static Color SwaddleColor(PawnGraphicSet __instance)
+        private static Color SwaddleColor(PawnRenderTree __instance)
         {
             Rand.PushState(__instance.pawn.thingIDNumber);
             float num = Rand.Range(0.6f, 0.89f);
@@ -36,7 +36,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
             Rand.PopState();
             return new Color(num + num2, num + num3, num + num4);
         }
-        public static bool ResolveGraphicsPatch(PawnGraphicSet __instance)
+        public static bool ResolveGraphicsPatch(PawnRenderTree __instance)
         {
             Pawn pawn = __instance.pawn;
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
@@ -102,9 +102,10 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
             if (ModsConfig.BiotechActive)
             {
-                __instance.geneGraphics = new System.Collections.Generic.List<GeneGraphicRecord>();
+            //    __instance.geneGraphics = new System.Collections.Generic.List<GeneGraphicRecord>();
                 __instance.swaddledBabyGraphic = GraphicDatabase.Get<Graphic_Multi>("Things/Pawn/Humanlike/Apparel/SwaddledBaby/Swaddled_Child", ShaderDatabase.Cutout, Vector2.one, SwaddleColor(__instance));
             }
+            /*
             if (__instance.pawn.style != null && ModsConfig.IdeologyActive && ModLister.BiotechInstalled && __instance.pawn.genes != null && !__instance.pawn.genes.GenesListForReading.Any((Gene x) => x.def.graphicData != null && !x.def.graphicData.tattoosVisible && x.Active))
             {
 
@@ -127,7 +128,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
                     __instance.bodyTattooGraphic = null;
                 }
 
-            }
+            }*//*
             __instance.ResolveApparelGraphics();
             if (comp.ShouldResetGraphics)
             {
@@ -145,3 +146,4 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
     }
 }
+*/

@@ -14,6 +14,7 @@ namespace RVCRestructured.RVR.HarmonyPatches {
         {
             if (!victim.RaceProps.Humanlike)
                 return true;
+            /*
             OrganComp comp = victim.TryGetComp<OrganComp>();
             
             if (comp==null)
@@ -33,6 +34,7 @@ namespace RVCRestructured.RVR.HarmonyPatches {
 
                 if (pawn == victim)
                     continue;
+                /*
                 OrganComp secondComp=pawn.TryGetComp<OrganComp>();
                 if (secondComp == null)
                 {
@@ -43,8 +45,9 @@ namespace RVCRestructured.RVR.HarmonyPatches {
                 ThoughtDef thought = secondComp.Props.GetHarvestedThought(victim.def, victim.IsColonist);
                 if (thought != null)
                     pawn.needs.mood.thoughts.memories.TryGainMemory(thought, null);
+                
 
-            }
+            }*/
 
             return true;
         }

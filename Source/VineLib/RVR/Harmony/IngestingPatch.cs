@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
-
+/*
 namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class IngestingPatch
@@ -38,8 +38,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
             if (thoughtGetter == null) return;
             List<FoodUtility.ThoughtFromIngesting> backupCopy = __result;
             List<FoodUtility.ThoughtFromIngesting> finalResult = new List<FoodUtility.ThoughtFromIngesting>();
-            
-            bool cannibal = ingester.story.traits.HasTrait(TraitDefOf.Cannibal);
+
+            bool cannibal = ingester.ideo != null ? ingester.Ideo.GetPrecept(PreceptDefOf.Cannibalism_Preferred) != null || ingester.Ideo.GetPrecept(PreceptDefOf.Cannibalism_RequiredRavenous) != null || ingester.Ideo.GetPrecept(PreceptDefOf.Cannibalism_RequiredStrong) != null: false;
             try
             {
                 for(int i =0; i < __result.Count; i++)
@@ -80,3 +80,4 @@ namespace RVCRestructured.RVR.HarmonyPatches
         }
     }
 }
+*/

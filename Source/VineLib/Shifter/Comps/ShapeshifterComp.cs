@@ -257,8 +257,8 @@ namespace RVCRestructured.Shifter
             }
             
             comp.InformGraphicsDirty();
-            if(!generating)
-                pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+          /*  if(!generating)
+                pawn.Drawer.renderer.graphics.ResolveAllGraphics();*/
         }
 
         public virtual bool FormUnstable()
@@ -412,8 +412,8 @@ namespace RVCRestructured.Shifter
             float result = 0;
             Pawn pawn = parent as Pawn;
             if (IsParentDef()) return result;
-            result -= pawn.def.statBases.GetStatOffsetFromList(stat);
-            result += CurrentForm.statBases.GetStatOffsetFromList(stat);
+            result -= pawn.def.statBases.StatListContains(stat)? pawn.def.statBases.GetStatOffsetFromList(stat) : stat.defaultBaseValue;
+            result += CurrentForm.statBases.StatListContains(stat) ? CurrentForm.statBases.GetStatOffsetFromList(stat) : stat.defaultBaseValue;
             return result;
         }
     }

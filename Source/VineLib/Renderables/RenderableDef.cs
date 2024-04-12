@@ -59,7 +59,7 @@ namespace RVCRestructured.Defs
         }
 
 
-        public BodyPartGraphicPos GetPos(Rot4 rot,PawnGraphicSet set, bool inBed= false,bool portrait=false)
+        public BodyPartGraphicPos GetPos(Rot4 rot,PawnRenderTree tree, bool inBed= false,bool portrait=false)
         {
             GenerateWestIfNeeded();
 
@@ -194,12 +194,12 @@ namespace RVCRestructured.Defs
             return partCache[pair];
         }
 
-        private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot,PawnGraphicSet set)
+        private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, PawnRenderTree set)
         {
             BodyPartGraphicPos pos = GetBodyPartGraphicPosFromIntRot(rot,set.pawn.InBed());
 
             if (!linkWithHeadPos) return pos;
-            Vector3 offset = set.headGraphic.DrawOffset(new Rot4(rot));
+            Vector3 offset = set.HeadGraphic.DrawOffset(new Rot4(rot));
             pos.position.x +=offset.x;
             pos.position.y += offset.y;
             pos.position.z += offset.z;

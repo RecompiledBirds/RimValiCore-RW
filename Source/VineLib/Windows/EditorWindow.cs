@@ -295,7 +295,7 @@ namespace RVCRestructured
             kvp.Value.colors = colors;
 
             SelectedPawn.TryGetComp<RVRComp>()?.InformGraphicsDirty();
-            SelectedPawn.Drawer.renderer.graphics.ResolveAllGraphics();
+            SelectedPawn.Drawer.renderer.renderTree.SetDirty();
         }
 
         /// <summary>
