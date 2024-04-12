@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<PawnRenderTreeDef Name="Vine_BaseRenderTree">
+		<defName>Vine_RenderTree</defName>
+		<root Class="PawnRenderNodeProperties_Parent">
+			<debugLabel>Root</debugLabel>
+			<tagDef>Root</tagDef>
+			<children>
+				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
+					<def>RVFFA_Body</def>
+					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
+				</li>
+				<li Class="PawnRenderNodeProperties_Carried">
+					<debugLabel>Weapon/carried thing</debugLabel>
+					<workerClass>PawnRenderNodeWorker_Carried</workerClass>
+				</li>
+			</children>
+		</root>
+	</PawnRenderTreeDef>
+</Defs>

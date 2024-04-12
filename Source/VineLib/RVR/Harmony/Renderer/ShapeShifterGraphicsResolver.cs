@@ -11,9 +11,10 @@ using Verse;
 
 namespace RVCRestructured
 { 
+    /*
     public static class ShapeShifterGraphicsResolver
     {
-        public static void ResolveNonHuman(ShapeshifterComp shapeshifterComp,Pawn pawn, PawnGraphicSet __instance, RVG_Graphic empty)
+        public static void ResolveNonHuman(ShapeshifterComp shapeshifterComp,Pawn pawn, PawnRenderTree __instance, RVG_Graphic empty)
         {
             RaceProperties props = shapeshifterComp.CurrentForm.race;
             __instance.bodyTattooGraphic = empty;
@@ -35,7 +36,7 @@ namespace RVCRestructured
                 __instance.packGraphic = GraphicDatabase.Get<Graphic_Multi>(__instance.nakedGraphic.path + "Pack", ShaderDatabase.Cutout, __instance.nakedGraphic.drawSize, Color.white);
             }
         }
-        public static void ResolveHumanLike(ShapeshifterComp shapeshifterComp, RVRComp comp, PawnGraphicSet __instance, Pawn pawn, Color skinTwo, Color skinThree, RVG_Graphic empty)
+        public static void ResolveHumanLike(ShapeshifterComp shapeshifterComp, RVRComp comp, PawnRenderTree __instance, Pawn pawn, Color skinTwo, Color skinThree, RVG_Graphic empty)
         {
             __instance.bodyTattooGraphic = empty;
             __instance.faceTattooGraphic = empty;
@@ -93,7 +94,7 @@ namespace RVCRestructured
             Pawn pawn = shapeshifterComp.parent as Pawn;
             if (comp == null)
             {
-                return shapeshifterComp.MimickedHead.GetGraphic(pawn.story.SkinColor, desiccated, pawn.story.SkinColorOverriden);
+                return shapeshifterComp.MimickedHead.GetGraphic(pawn,skinTwo);
             }
             return RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(HeadTexShifted(shapeshifterComp), Vector2.one, pawn.story.SkinColor, skinTwo, skinThree);
         }
@@ -103,7 +104,7 @@ namespace RVCRestructured
             Pawn pawn = shapeshifterComp.parent as Pawn;
             if (comp == null)
             {
-                return GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
+                return GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn), Vector2.one, pawn.story.SkinColor);
             }
             return comp.bodyTex != null ? RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(comp.bodyTex, Vector2.one, pawn.story.SkinColor, skinTwo, skinThree) : GraphicDatabase.Get<Graphic_Multi>(shapeshifterComp.MimickedBodyType.bodyNakedGraphicPath, ShaderUtility.GetSkinShader(pawn.story.SkinColorOverriden), Vector2.one, pawn.story.SkinColor);
         }
@@ -135,4 +136,5 @@ namespace RVCRestructured
             return comp != null;
         }
     }
+    */
 }

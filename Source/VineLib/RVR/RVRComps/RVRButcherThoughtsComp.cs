@@ -35,8 +35,8 @@ namespace RVCRestructured
 
             if (!careAboutUndefinedRaces)
                 return null;
-
-            return isButcher ? ThoughtDefOf.ButcheredHumanlikeCorpse : ThoughtDefOf.KnowButcheredHumanlikeCorpse;
+            return null;
+          //  return isButcher ? ThoughtDefOf.ButcheredHumanlikeCorpse : ThoughtDefOf.KnowButcheredHumanlikeCorpse;
         }
         public RVRButcherThoughtsComp() {
             compClass = typeof(RVRButcherComp);

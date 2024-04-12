@@ -77,7 +77,7 @@ namespace RVCRestructured
             };
         }
 
-        public BodyPartGraphicPos GetPos(Rot4 rotation, PawnGraphicSet set, bool inBed, bool portrait = false)
+        public BodyPartGraphicPos GetPos(Rot4 rotation, PawnRenderTree set, bool inBed, bool portrait = false)
         {
             throw new NotImplementedException();
         }

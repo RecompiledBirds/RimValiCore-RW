@@ -35,16 +35,17 @@ namespace RVCRestructured
 
             if (!caresAboutUndefinedRaces)
                 return VineDefOf.Vine_ThoughtDidntCare;
-
-            if (cannibal)
-            {
-                if (cooked)
-                    return ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal;
-                return ThoughtDefOf.AteHumanlikeMeatDirectCannibal;
-            }
-            if (cooked)
-                return ThoughtDefOf.AteHumanlikeMeatAsIngredient;
-            return ThoughtDefOf.AteHumanlikeMeatDirect;
+            /*
+             if (cannibal)
+             {
+                 if (cooked)
+                     return ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal;
+                 return ThoughtDefOf.AteHumanlikeMeatDirectCannibal;
+             }
+             if (cooked)
+                 return ThoughtDefOf.AteHumanlikeMeatAsIngredient;
+             return ThoughtDefOf.AteHumanlikeMeatDirect;*/
+            return null;
         }
 
         public RVRCannibalismComp()

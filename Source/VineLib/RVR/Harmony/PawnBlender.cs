@@ -16,21 +16,44 @@ namespace RVCRestructured.RVR.HarmonyPatches
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> codes = instructions.ToList();
-
             for (int a = 0; a < codes.Count; a++)
             {
                 //Look for where the pawn is created.
-                if (codes[a].opcode == OpCodes.Call && codes[a].Calls(typeof(ThingMaker).GetMethod("MakeThing")))
+                CodeInstruction code = codes[a];
+                CodeInstruction next = a<codes.Count-1? codes[a + 1]:null;
+                if (code.opcode == OpCodes.Ldarg_0)
+                {
+                    if(next!=null && next.opcode==OpCodes.Call && next.Calls(typeof(PawnGenerationRequest).GetMethod("get_KindDef"))){
+                        yield return codes[a];
+                        yield return new CodeInstruction(OpCodes.Ldobj, typeof(PawnGenerationRequest));
+                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PawnBlender), nameof(GetHumanoidRace), new Type[] { typeof(PawnGenerationRequest) }));
+                        a += 4;
+                        for(int i =  0; i < 5; i++)
+                        {
+                            yield return new CodeInstruction(OpCodes.Call,AccessTools.Method(typeof(PawnBlender),nameof(test)));
+                        }
+                    }
+                    else
+                    {
+                        yield return codes[a];
+                    }
+                }
+                /*
+                if (codes[a].opcode == OpCodes.Call && codes[a].Calls(typeof(ThingMaker).GetMethod(nameof(ThingMaker.MakeThing))))
                 {
                     yield return new CodeInstruction(OpCodes.Ldarg_0);
                     yield return new CodeInstruction(OpCodes.Ldobj, typeof(PawnGenerationRequest));
                     yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(PawnBlender), "GetHumanoidRace", new Type[] { typeof(PawnGenerationRequest) }));
-                }
+                }*/
                 else
                 {
                     yield return codes[a];
                 }
             }
+        }
+        private static void test(PawnGenerationRequest request)
+        {
+            RVCLog.MSG(request.KindDef.race);
         }
 
         private static bool SkipOnce;
@@ -86,39 +109,46 @@ namespace RVCRestructured.RVR.HarmonyPatches
 
         public static Thing GetHumanoidRace(PawnGenerationRequest request)
         {
-         
+
+            Log.Message("test");
+            RVCLog.MSG(request.KindDef == null);
             ThingDef def = request.KindDef.race;
             //saftey check for scenario pawns
-            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter)||!VineMod.VineSettings.RaceBlender)
-                return ThingMaker.MakeThing(def);
-            
-            if (!CanSwapRace(def))
-            {
-                return ThingMaker.MakeThing(def);
-            }
-            
+            if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter) || !VineMod.VineSettings.RaceBlender || !CanSwapRace(def))
+                return CreateThing(def);
+            Log.Message("test2");
             if (SkipOnce)
             {
                 SkipOnce = false;
-                return ThingMaker.MakeThing(def);
+                return CreateThing(def);
             }
-
+            Log.Message("test3");
             if (ShouldSwitch(request) && CanSwapPawnkind(request.KindDef))
             {
                 List<ThingDef> defs = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.race != null && x.race.Humanlike).ToList();
                 def = defs.RandomElement();
                 
             }
-
+            Log.Message("test4");
             if (ShouldSwitchPawnkindBased(request))
             {
                 RaceSwapDef randomSwapDef = ShuffleDefs.Where(x => x.targetRaces.Contains(def)).RandomElement();
                 def = randomSwapDef.replacementRaces.RandomElement();
             }
-            return ThingMaker.MakeThing(def);
+            Log.Message("test5");
+            return CreateThing(def);
         }
 
-
-
+        private static Thing CreateThing(ThingDef def)
+        {
+            Log.Message("test6");
+            Thing thing = ThingMaker.MakeThing(def);
+            Log.Message("test7");
+            RVRComp comp = thing.TryGetComp<RVRComp>();
+            Log.Message("test8");
+            comp?.GenGraphics();
+            Log.Message("test9");
+            return thing;
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
-
+/*
 namespace RVCRestructured
 {
     public class OrganThought
@@ -80,3 +80,4 @@ namespace RVCRestructured
         }
     }
 }
+*/
