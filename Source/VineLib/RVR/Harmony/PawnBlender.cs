@@ -29,21 +29,19 @@ namespace RVCRestructured.RVR.HarmonyPatches
             {
                 //Look for where the pawn is created.
                 CodeInstruction code = codes[a];
-                CodeInstruction next = a<codes.Count-1? codes[a + 1]:null;
-                if (code.opcode == OpCodes.Ldarg_0 && !found)
+                ///this is the instruction that gets the def
+                CodeInstruction next = a<codes.Count-2? codes[a + 2]:null;
+                if (   code.opcode == OpCodes.Ldloc 
+                    && !found && next != null 
+                    && next.opcode == OpCodes.Call 
+                    && next.Calls(typeof(PawnGenerationRequest).GetMethod("get_KindDef")))
                 {
-                    if(next!=null && next.opcode==OpCodes.Call && next.Calls(typeof(PawnGenerationRequest).GetMethod("get_KindDef"))){
-                        yield return codes[a];
-                        yield return new CodeInstruction(OpCodes.Ldobj, typeof(PawnGenerationRequest));
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(GenerationPatches), nameof(CreatePawn), new Type[] { typeof(PawnGenerationRequest) }));
-                        a += 5;
-                        found = true;
+                    yield return new CodeInstruction(OpCodes.Ldobj, typeof(PawnGenerationRequest));
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(GenerationPatches), nameof(CreatePawn), new Type[] { typeof(PawnGenerationRequest) }));
+                    //the next 5 instructions would normally call thingmaker.makething(def) and cast it to pawn, but we've already done this.
+                    a += 5;
+                    found = true;
 
-                    }
-                    else
-                    {
-                        yield return codes[a];
-                    }
                 }
                 else
                 {
@@ -51,11 +49,6 @@ namespace RVCRestructured.RVR.HarmonyPatches
                 }
             }
         }
-        private static void test(PawnGenerationRequest request)
-        {
-            RVCLog.MSG(request.KindDef.race);
-        }
-
         private static bool SkipOnce;
         private static List<ExcludedRaceShuffleDef> excludedDefs = null;
 
