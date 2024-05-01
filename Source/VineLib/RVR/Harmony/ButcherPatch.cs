@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Verse;
-
+/*
 namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class ButcherPatch
@@ -53,3 +53,4 @@ namespace RVCRestructured.RVR.HarmonyPatches
         }
     }
 }
+*/

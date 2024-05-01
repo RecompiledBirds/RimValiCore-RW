@@ -7,7 +7,7 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static void ResearchPostfix(Pawn pawn, ref bool __result)
         {
-            ResearchProjectDef def = Find.ResearchManager.currentProj;
+            ResearchProjectDef def = Find.ResearchManager.GetProject(null);
             if (def == null)
                 return;
             ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();

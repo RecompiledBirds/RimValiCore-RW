@@ -257,8 +257,8 @@ namespace RVCRestructured.Shifter
             }
             
             comp.InformGraphicsDirty();
-            if(!generating)
-                pawn.Drawer.renderer.graphics.ResolveAllGraphics();
+          /*  if(!generating)
+                pawn.Drawer.renderer.graphics.ResolveAllGraphics();*/
         }
 
         public virtual bool FormUnstable()

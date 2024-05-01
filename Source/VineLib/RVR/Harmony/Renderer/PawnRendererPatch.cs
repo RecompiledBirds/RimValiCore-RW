@@ -12,7 +12,8 @@ namespace RVCRestructured.RVR
     {
         public static void RenderingPostfix(Vector3 rootLoc, float angle, bool renderBody, Rot4 bodyFacing, RotDrawMode bodyDrawType, PawnRenderFlags flags, PawnRenderer __instance)
         {
-            Pawn pawn = __instance.graphics.pawn;
+            
+            Pawn pawn = __instance.renderTree.pawn;
             //Portrait checks
             bool portrait = flags.HasFlag(PawnRenderFlags.Portrait);
             Rot4 rotation = portrait ? Rot4.South : bodyFacing;
@@ -30,7 +31,7 @@ namespace RVCRestructured.RVR
                 {
                     GeneRenderableDef def = gene.def as GeneRenderableDef;
                     RenderableDef renderableDef = def.renderableDef;
-                    BodyPartGraphicPos pos = renderableDef.GetPos(rotation, __instance.graphics,inBed,portrait);
+                    BodyPartGraphicPos pos = renderableDef.GetPos(rotation, __instance.renderTree,inBed,portrait);
                     Vector3 position = pos.position;
                     
                     if (bedHidesBody && !renderableDef.ShowsInBed())
@@ -55,7 +56,7 @@ namespace RVCRestructured.RVR
             {
                 
                 //Render the def
-                BodyPartGraphicPos pos = renderableDef.GetPos(rotation,__instance.graphics,inBed,portrait);
+                BodyPartGraphicPos pos = renderableDef.GetPos(rotation,__instance.renderTree,inBed,portrait);
                 Vector3 position = pos.position;
 
                 if (bedHidesBody && !renderableDef.ShowsInBed())

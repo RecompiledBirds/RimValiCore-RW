@@ -2,6 +2,7 @@
 using RVCRestructured.Defs;
 using RVCRestructured.RVR;
 using RVCRestructured.Shifter;
+using System.Reflection;
 using UnityEngine;
 using Verse;
 
@@ -11,7 +12,7 @@ namespace RVCRestructured.Source.RVR.Harmony
     {
         public static void Postfix(ref Vector3 __result, Rot4 rotation, PawnRenderer __instance)
         {
-            Pawn pawn = __instance.graphics.pawn;
+            Pawn pawn = __instance.renderTree.pawn;
             GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
             ShapeshifterComp shapeshifterComp;
             if (comp == null)
