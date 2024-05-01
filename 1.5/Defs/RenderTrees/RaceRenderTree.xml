@@ -7,51 +7,51 @@
 			<tagDef>Root</tagDef>
 			<children>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_Body</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_Body</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_Head</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_Head</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_EarLL</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_EarLL</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_EarRL</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_EarRL</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_EarLU</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_EarLU</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_EarRU</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_EarRU</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_TailSkirt</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_TailSkirt</def>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_Tail</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_Tail</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_EyeL</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_EyeL</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
 				<li Class="RVCRestructured.RVR.RenderableDefNodeProperties">
-					<def>RVFFA_EyeR</def>
+					<def MayRequire="Nesi.RimValiFFARW">RVFFA_EyeR</def>
 					<workerClass>RVCRestructured.RVR.RNodeWorker</workerClass>
 					<nodeClass>RVCRestructured.RVR.RenderableDefNode</nodeClass>
 				</li>
