@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using RVCRestructured.RVR;
 using RVCRestructured.RVR.HarmonyPatches;
+using RVCRestructured.Source.VineLib.Restrictions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
@@ -15,32 +16,32 @@ namespace RVCRestructured.Source.RVR.Harmony
     {
         public static void Postfix(PawnGenerationRequest request, ref XenotypeDef __result)
         {
-            bool restricted = __result != null && RestrictionsChecker.IsRestricted(__result);
-            ThingDef thing = request.KindDef != null ? request.KindDef.race ?? (request.KindDef.RaceProps != null ? Utils.GetDef(request.KindDef.RaceProps) : null) : null;
-            if (thing == null) return;
-            RVRRestrictionComp comp = thing.GetCompProperties<RVRRestrictionComp>();
+            if (!(request.KindDef?.race is ThingDef raceDef)) return;
+            RVRRestrictionComp comp = raceDef.GetCompProperties<RVRRestrictionComp>();
 
-            if (comp==null)
+            bool restricted = __result.IsRestricted();
+            if (comp is null)
             {
                 if (restricted)
                 {
-                    while (__result == null || RestrictionsChecker.IsRestricted(__result))
-                        __result = PawnGenerator.XenotypesAvailableFor(request.KindDef).RandomElementByWeight(x => x.Value).Key;
-
+                    if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp)) return;
+                    __result = kvp.Key;
                 }
                 return;
             }
-            if ((restricted && !(!comp.restrictedXenoTypes.NullOrEmpty() && __result != null &&comp.restrictedXenoTypes.Contains(__result))) && comp.xenoTypeWhitelist.NullOrEmpty())
-            {
 
-                //try again
-                while (__result == null || RestrictionsChecker.IsRestricted(__result) && !comp.restrictedXenoTypes.Contains(__result))
-                    __result = PawnGenerator.XenotypesAvailableFor(request.KindDef).RandomElementByWeight(x => x.Value).Key;
+            List<XenotypeDef> onlyAllowedXenoTypes = comp.restrictionsManager[RestrictionType.XenotypeDef].Where(info => info.IsRequired).Select(info => info.Def as XenotypeDef).ToList();
+            if (onlyAllowedXenoTypes?.Count > 0)
+            {
+                __result = onlyAllowedXenoTypes.Contains(__result) ? __result : onlyAllowedXenoTypes.RandomElement();
                 return;
             }
-            if (!comp.xenoTypeWhitelist.NullOrEmpty() && !comp.xenoTypeWhitelist.Contains(__result))
+
+            if (!(comp.restrictionsManager[__result]?.CanUse ?? false) || restricted)
             {
-                __result =comp.xenoTypeWhitelist.RandomElement();
+                if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => (comp.restrictionsManager[x.Key]?.CanUse ?? false) || !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp)) return;
+                __result = kvp.Key;
+                return;
             }
         }
     }

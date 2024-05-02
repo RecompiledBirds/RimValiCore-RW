@@ -10,14 +10,17 @@ namespace RVCRestructured
     public static class EatingPatch
     {
         
-        public static void EdiblePatch(ref bool __result, RaceProperties __instance, ThingDef t)
+        public static void CanEverEatPostFix(ref bool __result, RaceProperties __instance, ThingDef t)
         {
-            bool restricted = RestrictionsChecker.IsRestricted(t);
+            if (!__result) return;
+
+            bool restricted = t.IsRestricted();
+            if (!restricted) return;
+
             ThingDef def = Utils.GetDef(__instance);
             RVRRestrictionComp comp = def.GetCompProperties<RVRRestrictionComp>();
-            if (comp==null)
+            if (comp == null)
             {
-                __result &= !restricted;
                 if (restricted)
                 {
                     JobFailReason.Is($"{def.label} {"CannotEatRVR".Translate(def.label.Named("RACE"))}");
@@ -25,15 +28,9 @@ namespace RVCRestructured
                 return;
             }
 
-            bool isInAllowedlists =comp.allowedFoodDefs.Contains(t) || comp.restrictedFoodDefs.Contains(t);
+            __result = comp.IsAlwaysAllowed(Source.VineLib.Restrictions.RestrictionType.FoodDef) || (comp[def]?.CanUse ?? false) || !def.IsRestricted();
 
-            bool canEatAnyFood =comp.canEatAnyFood;
-
-            bool allowed = (restricted && isInAllowedlists) || (canEatAnyFood || isInAllowedlists);
-
-            __result &= allowed;
-
-            if(!allowed) JobFailReason.Is($"{def.label} {"CannotEatRVR".Translate(def.label.Named("RACE"))}");
+            if(!__result) JobFailReason.Is($"{def.label} {"CannotEatRVR".Translate(def.label.Named("RACE"))}");
         }
     }
 }

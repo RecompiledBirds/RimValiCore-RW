@@ -2,6 +2,7 @@
 using RimWorld;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using Verse;
 
 namespace RVCRestructured.RVR.HarmonyPatches
@@ -10,8 +11,8 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static void CanUsePairPatch(ThingStuffPair pair, Pawn pawn, ref bool __result)
         {
-
-            __result &= pair.thing.ApparelAllowedForRace(pawn);
+            if (!__result) return;
+            __result = pawn.CanUse(pair.thing);
         }
     }
 }

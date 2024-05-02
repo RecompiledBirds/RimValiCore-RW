@@ -11,36 +11,14 @@ namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class EquipingPatch
     {
-        public static bool EquipmentAllowedForRace(this ThingDef def, Pawn pawn)
-        {
-            bool restricted = RestrictionsChecker.IsRestricted(def);
-            RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
-            RVRRestrictionComp restrictions = null;
-
-            if (comp != null) restrictions = comp.Props;
-
-            ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-            if (shapeshifterComp != null)
-            {
-                restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
-            }
-
-            if (restrictions == null) return !restricted;
-
-            bool inAllowedDefs = comp.Props.allowedEquipment.Contains(def) || comp.Props.restrictedEquipment.Contains(def);
-
-            return (restricted && inAllowedDefs) || !restricted;
-        }
-
         public static void EquipingPostfix(ref bool __result, Thing thing, Pawn pawn, ref string cantReason)
         {
+            if (!__result) return;
             if (thing.def.IsApparel) return;
 
-            bool allowed = EquipmentAllowedForRace(thing.def,pawn);
+            __result = pawn.CanUse(thing.def);
 
-            __result &= allowed;
-
-            if (!allowed)
+            if (!__result)
             {
                 cantReason = "RVC_CannotUse".Translate(pawn.def.label.Named("RACE"));
             }

@@ -12,10 +12,9 @@ namespace RVCRestructured.RVR.HarmonyPatches
     {
         public static void ApparelScoreGain_NewTmp(Pawn pawn, Apparel ap, List<float> wornScoresCache, ref float __result)
         {
-            ThingDef def = ap.def;
-            if (!ApparelEquipping.ApparelAllowedForRace(def, pawn))
+            if (!pawn.CanUse(ap.def))
             {
-                __result = -100;
+                __result = int.MinValue;
                 return;
             }
         }
