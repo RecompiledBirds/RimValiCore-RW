@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,11 @@ namespace RVCRestructured
             if (!pawnKindCache.ContainsKey(race))
                 pawnKindCache.Add(race, DefDatabase<PawnKindDef>.AllDefs.First(x => x.race == race));
             return pawnKindCache[race];
+        }
 
+        public static float GetStatOffsetOrBaseFromList(this List<StatModifier> mods, StatDef stat)
+        {
+            return mods.GetStatValueFromList(stat, stat.defaultBaseValue);
         }
     }
 }
