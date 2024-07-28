@@ -83,54 +83,42 @@ namespace RVCRestructured.Defs
             }
         }
         bool useScalingForPos = true;
-        private Dictionary<KeyValuePair<bool,int>, Vector3> posCache = new Dictionary<KeyValuePair<bool, int>, Vector3>();
-        private Vector3 GetPosRecursively(int rot, bool inBed, bool portrait = false)
+        private Dictionary<BoolIntPair, Vector3> posCache = new Dictionary<BoolIntPair, Vector3>();
+        private class BoolIntPair
         {
-            KeyValuePair<bool, int> pair;
-            if (portrait) pair = new KeyValuePair<bool, int>(false,2);
-            else pair = new KeyValuePair<bool, int>(inBed, rot);
+            public bool boolean;
+            public int num;
+        }
+        private Vector3 GetPosRecursively(int rot, bool inBed, bool portrait = false,BoolIntPair pair = null)
+        {
+            if (pair == null)
+            {
+                if (portrait) pair = new BoolIntPair() { boolean = false, num = 2 };
+                else pair = new BoolIntPair() { boolean = inBed, num = rot };
+            }
             if (!posCache.ContainsKey(pair))
             {
                 Vector3 position;
-                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot,inBed,portrait) : Vector3.zero);
+                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot,inBed,portrait,pair) : Vector3.zero);
+                BodyPartGraphicPos graphicPos = north;
                 switch (rot)
                 {
-                    case 0:
-                        position = (north.position + recursizePos)*(useScalingForPos? north.size:Vector2.one);
-                        if (inBed && !portrait)
-                        {
-                            position.x -= north.offsetInBed.x;
-                            position.z -= north.offsetInBed.y;
-                        }
+                    case 1:
+                        graphicPos = east;
                         break;
                     case 2:
-                        position = (south.position + recursizePos) * (useScalingForPos ? south.size : Vector2.one); ;
-                        if (inBed && !portrait)
-                        {
-                            position.z -= south.offsetInBed.y;
-                            position.x -= south.offsetInBed.x;
-                        }
-                        break;
-                    case 1:
-                        position = (east.position + recursizePos) * (useScalingForPos ? east.size : Vector2.one); ;
-                        if (inBed && !portrait)
-                        {
-                            position.x -= east.offsetInBed.x;
-                            position.z -= east.offsetInBed.y;
-                        }
+                        graphicPos = south;
                         break;
                     case 3:
                         GenerateWestIfNeeded();
-                        position = (west.position + recursizePos) * (useScalingForPos ? west.size : Vector2.one); ;
-                        if (inBed && !portrait)
-                        {
-                            position.x -= west.offsetInBed.x;
-                            position.z -= west.offsetInBed.y;
-                        }
+                        graphicPos = west;
                         break;
-                    default:
-                        position= Vector3.zero;
-                        break;
+                }
+                position = (graphicPos.position + recursizePos) * (useScalingForPos ? graphicPos.size : Vector2.one);
+                if (inBed && !portrait)
+                {
+                    position.z -= graphicPos.offsetInBed.y;
+                    position.x -= graphicPos.offsetInBed.x;
                 }
                 posCache[pair] = position;
             }
