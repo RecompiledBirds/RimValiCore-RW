@@ -17,14 +17,15 @@ namespace RVCRestructured.Shifter
             if (!didCECheck)
             {
                 RVCLog.Log("Doing character editor check!");
-                didCECheck=true;
-                isCELoaded= ModLister.HasActiveModWithName("Character Editor");
+                didCECheck = true;
+                isCELoaded = ModLister.HasActiveModWithName("Character Editor");
                 RVCLog.Log("Found character editor was loaded. Using simple logic.", RVCLogType.Message, isCELoaded);
             }
+
             Pawn pawn = (Pawn)typeof(Pawn_AgeTracker).GetField("pawn", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);
-            if (pawn == null) return;
-            ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
-            if (comp == null) return;
+            
+            if (pawn?.TryGetComp<ShapeshifterComp>() is null) return;
+
             if (isCELoaded)
             {
                 __result = pawn.RaceProps.lifeStageAges.Count - 1;
