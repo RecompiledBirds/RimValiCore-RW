@@ -19,7 +19,7 @@ namespace RVCRestructured.RVCBeds
 
                 harmony.Patch(AccessTools.PropertyGetter(typeof(Building_Bed), nameof(Building_Bed.SleepingSlotsCount)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_SleepingSlotsCount)));
                 harmony.Patch(AccessTools.Method(typeof(Building_Bed), nameof(Building_Bed.GetSleepingSlotPos)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_GetSleepingSlotPos)));
-                harmony.Patch(AccessTools.Method(typeof(CompAffectedByFacilities), nameof(CompAffectedByFacilities.CanPotentiallyLinkTo_Static), new Type[] { typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(ThingDef), typeof(IntVec3), typeof(Rot4) }), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_CanPotentiallyLinkTo_Static)));
+                harmony.Patch(AccessTools.Method(typeof(CompAffectedByFacilities), nameof(CompAffectedByFacilities.CanPotentiallyLinkTo_Static), new Type[] { typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(Map) }), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_CanPotentiallyLinkTo_Static)));
                 harmony.Patch(AccessTools.Method(typeof(CompProperties_AssignableToPawn), nameof(CompProperties_AssignableToPawn.PostLoadSpecial)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_PostLoadSpecial)));
 
                 RVCLog.Log($"{moduleName} Patching success");
@@ -75,7 +75,7 @@ namespace RVCRestructured.RVCBeds
         /// <param name="myPos">The <see cref="Building_Bed"/>s position</param>
         /// <param name="myRot">The <see cref="Building_Bed"/>s rotation</param>
         /// <returns>if the vanilla function should execute</returns>
-        public static bool Prefix_CanPotentiallyLinkTo_Static(ref bool __result, ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot)
+        public static bool Prefix_CanPotentiallyLinkTo_Static(ref bool __result, ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot, Map map)
         {
             if (!myDef.HasBedComp()) return true;
 

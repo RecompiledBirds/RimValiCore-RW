@@ -18,7 +18,17 @@ namespace RVCRestructured.RVR
 
     public class RNodeWorker : PawnRenderNodeWorker
     {
+        public override void AppendDrawRequests(PawnRenderNode node, PawnDrawParms parms, List<PawnGraphicDrawRequest> requests)
+        {
+            
+            base.AppendDrawRequests(node, parms, requests);
+        }
 
+        public override float LayerFor(PawnRenderNode node, PawnDrawParms parms)
+        {
+            RenderableDefNode rNode = node as RenderableDefNode;
+            return rNode.RProps.def.GetPos(parms.pawn.Rotation, node.tree, parms.pawn.InBed(), parms.Portrait).position.z;
+        }
 
         public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
         {
