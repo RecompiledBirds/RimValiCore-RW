@@ -75,7 +75,7 @@ namespace RVCRestructured.RVCBeds
         /// <param name="myPos">The <see cref="Building_Bed"/>s position</param>
         /// <param name="myRot">The <see cref="Building_Bed"/>s rotation</param>
         /// <returns>if the vanilla function should execute</returns>
-        public static bool Prefix_CanPotentiallyLinkTo_Static(ref bool __result, ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot, Map map)
+        public static bool Prefix_CanPotentiallyLinkTo_Static(ref bool __result, ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot, Map myMap)
         {
             if (!myDef.HasBedComp()) return true;
 

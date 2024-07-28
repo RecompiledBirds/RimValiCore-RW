@@ -82,7 +82,7 @@ namespace RVCRestructured.Defs
                     west.position.z = east.position.z;
             }
         }
-
+        bool useScalingForPos = true;
         private Dictionary<KeyValuePair<bool,int>, Vector3> posCache = new Dictionary<KeyValuePair<bool, int>, Vector3>();
         private Vector3 GetPosRecursively(int rot, bool inBed, bool portrait = false)
         {
@@ -96,7 +96,7 @@ namespace RVCRestructured.Defs
                 switch (rot)
                 {
                     case 0:
-                        position = north.position + recursizePos;
+                        position = (north.position + recursizePos)*(useScalingForPos? north.size:Vector2.one);
                         if (inBed && !portrait)
                         {
                             position.x -= north.offsetInBed.x;
@@ -104,15 +104,15 @@ namespace RVCRestructured.Defs
                         }
                         break;
                     case 2:
-                        position = south.position + recursizePos;
+                        position = (south.position + recursizePos) * (useScalingForPos ? south.size : Vector2.one); ;
                         if (inBed && !portrait)
                         {
-                            position.x -= south.offsetInBed.x;
                             position.z -= south.offsetInBed.y;
+                            position.x -= south.offsetInBed.x;
                         }
                         break;
                     case 1:
-                        position = east.position + recursizePos;
+                        position = (east.position + recursizePos) * (useScalingForPos ? east.size : Vector2.one); ;
                         if (inBed && !portrait)
                         {
                             position.x -= east.offsetInBed.x;
@@ -121,7 +121,7 @@ namespace RVCRestructured.Defs
                         break;
                     case 3:
                         GenerateWestIfNeeded();
-                        position = west.position + recursizePos;
+                        position = (west.position + recursizePos) * (useScalingForPos ? west.size : Vector2.one); ;
                         if (inBed && !portrait)
                         {
                             position.x -= west.offsetInBed.x;
