@@ -89,17 +89,21 @@ namespace RVCRestructured.Defs
             public bool boolean;
             public int num;
         }
-        private Vector3 GetPosRecursively(int rot, bool inBed, bool portrait = false,BoolIntPair pair = null)
+
+        /// <summary>
+        /// Travels along the parents of the renderabledef until it reaches the root.
+        /// </summary>
+        /// <param name="rot"></param>
+        /// <param name="inBed"></param>
+        /// <param name="pair"></param>
+        /// <param name="portrait"></param>
+        /// <returns></returns>
+        private Vector3 GetPosRecursively(int rot, bool inBed,BoolIntPair pair, bool portrait = false)
         {
-            if (pair == null)
-            {
-                if (portrait) pair = new BoolIntPair() { boolean = false, num = 2 };
-                else pair = new BoolIntPair() { boolean = inBed, num = rot };
-            }
             if (!posCache.ContainsKey(pair))
             {
                 Vector3 position;
-                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot,inBed,portrait,pair) : Vector3.zero);
+                Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot,inBed,pair,portrait) : Vector3.zero);
                 BodyPartGraphicPos graphicPos = north;
                 switch (rot)
                 {
@@ -124,15 +128,15 @@ namespace RVCRestructured.Defs
             }
             return posCache[pair];
         }
-        private Dictionary<KeyValuePair<bool, int>, BodyPartGraphicPos> partCache = new Dictionary<KeyValuePair<bool, int>, BodyPartGraphicPos>();
+        private Dictionary<BoolIntPair, BodyPartGraphicPos> partCache = new Dictionary<BoolIntPair, BodyPartGraphicPos>();
         private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, bool inBed=false, bool portrait = false)
         {
-            KeyValuePair<bool, int> pair;
-            if (portrait) pair = new KeyValuePair<bool, int>(false, 2);
-            else pair = new KeyValuePair<bool, int>(inBed, rot);
+            BoolIntPair pair;
+            if (portrait) pair = new BoolIntPair() { boolean = false, num = 2 };
+            else pair = new BoolIntPair() { boolean = inBed, num = rot };
             if (!partCache.ContainsKey(pair))
             {
-                Vector3 pos = GetPosRecursively(rot,inBed,portrait);
+                Vector3 pos = GetPosRecursively(rot,inBed,pair,portrait);
                 BodyPartGraphicPos newPos;
                 switch (rot)
                 {

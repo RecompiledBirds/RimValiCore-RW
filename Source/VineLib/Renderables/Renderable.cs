@@ -54,7 +54,7 @@ namespace RVCRestructured
 
         public TriColorSet ColorSet(Pawn pawn)
         {
-
+            
             RVRComp comp = pawn.TryGetComp<RVRComp>();
             if (comp == null)
             {
