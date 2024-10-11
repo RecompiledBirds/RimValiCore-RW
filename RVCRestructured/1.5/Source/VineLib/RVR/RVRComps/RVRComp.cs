@@ -9,22 +9,21 @@ public class RVRCP : CompProperties
 {
     public RVRCP()
     {
-        this.compClass = typeof(RVRComp);
+        compClass = typeof(RVRComp);
     }
 }
 public class RVRComp : ThingComp
 {
-
     public override void PostSpawnSetup(bool respawningAfterLoad)
     {
-       
+
         base.PostSpawnSetup(respawningAfterLoad);
     }
 
     private List<IRenderable> defList = [];
     private List<Renderable> defListRenderable = [];
     private List<RenderableDef> defListRenderableDefs = [];
-    private bool generated= false;
+    private bool generated = false;
     public List<IRenderable> RenderableDefs
     {
         get
@@ -38,8 +37,8 @@ public class RVRComp : ThingComp
     }
 
     private Dictionary<string, TriColorSet> sets = [];
-    
-    public Dictionary<string,TriColorSet> Colors
+
+    public Dictionary<string, TriColorSet> Colors
     {
         get
         {
@@ -47,7 +46,7 @@ public class RVRComp : ThingComp
         }
     }
 
-  
+
 
     private Dictionary<string, int> masks = [];
     private Dictionary<string, int> renderableIndexes = [];
@@ -79,7 +78,7 @@ public class RVRComp : ThingComp
         index--;
         if (index == -1)
         {
-            index = def.textures.Count-1;
+            index = def.textures.Count - 1;
         }
         renderableIndexes[def.defName] = index;
     }
@@ -87,7 +86,7 @@ public class RVRComp : ThingComp
     public void SendRenderableDefToNextMask(RenderableDef def)
     {
         if (!renderableIndexes.ContainsKey(def.defName)) return;
-        if(!masks.ContainsKey(def.defName)) return;
+        if (!masks.ContainsKey(def.defName)) return;
         int texIndex = renderableIndexes[def.defName];
         int maskIndex = masks[def.defName];
         maskIndex--;
@@ -108,7 +107,7 @@ public class RVRComp : ThingComp
         List<string> maskList = def.textures[texIndex].GetMasks(parent as Pawn);
         if (maskIndex == -1)
         {
-            maskIndex = maskList.Count-1;
+            maskIndex = maskList.Count - 1;
         }
         masks[def.defName] = maskIndex;
     }
@@ -143,7 +142,7 @@ public class RVRComp : ThingComp
         Scribe_Collections.Look(ref sets, "sets", LookMode.Value, LookMode.Deep, ref lKeys, ref lSets);
         Scribe_Collections.Look(ref masks, "masks", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
         Scribe_Collections.Look(ref renderableIndexes, "renderableIndexes", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
-        
+
         if (Scribe.mode == LoadSaveMode.Saving)
         {
             foreach (IRenderable renderable in defList)
@@ -173,9 +172,9 @@ public class RVRComp : ThingComp
 
     public void ClearAllGraphics()
     {
-        generated=false;
+        generated = false;
         masks = [];
-        renderableIndexes= [];
+        renderableIndexes = [];
         sets = [];
         defList = [];
         defListRenderable = [];
@@ -267,7 +266,7 @@ public class RVRComp : ThingComp
     }
     public void InformGraphicsDirty()
     {
-        graphicsDirty=true;
+        graphicsDirty = true;
     }
 
     private void GenerateRenderableDef(RenderableDef rDef, Pawn pawn)
@@ -277,14 +276,15 @@ public class RVRComp : ThingComp
             return;
         }
         bool hasLink = rDef.linkTexWith != null;
-        if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith.defName) && !renderableIndexes.ContainsKey(rDef.defName)) {
+        if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith.defName) && !renderableIndexes.ContainsKey(rDef.defName))
+        {
             string linkString = rDef.linkTexWith.defName;
             renderableIndexes[rDef.defName] = renderableIndexes[linkString];
             masks[rDef.defName] = masks[linkString];
             return;
         }
         if (renderableIndexes.ContainsKey(rDef.defName)) return;
-        BaseTex tex= rDef.textures.RandomElement();
+        BaseTex tex = rDef.textures.RandomElement();
         int index = rDef.textures.IndexOf(tex);
         renderableIndexes[rDef.defName] = index;
         index = tex.GetMasks(pawn).IndexOf(tex.GetMasks(pawn).RandomElement());

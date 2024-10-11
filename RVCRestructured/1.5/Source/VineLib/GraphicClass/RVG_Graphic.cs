@@ -29,7 +29,7 @@ public class RVG_Graphic : Graphic
         if (cachedShadowlessGraphic != null)
             return cachedShadowlessGraphic;
         RVG_GraphicData graphicData = new();
-        graphicData.CopyFrom(this.data);
+        graphicData.CopyFrom(data);
         graphicData.shadowData = null;
         cachedShadowlessGraphic = graphicData.Graphic;
         return cachedShadowlessGraphic;

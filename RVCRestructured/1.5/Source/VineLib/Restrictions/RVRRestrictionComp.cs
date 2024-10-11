@@ -19,7 +19,7 @@ public class RVRRestrictionComp : CompProperties
 
     public RVRRestrictionComp()
     {
-        this.compClass=typeof(RestrictionComp);
+        compClass=typeof(RestrictionComp);
     }
 
     public override void ResolveReferences(ThingDef parentDef)

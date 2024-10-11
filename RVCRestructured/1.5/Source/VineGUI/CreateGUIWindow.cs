@@ -208,7 +208,7 @@ public class CreateItemWinow : Window
             if (Widgets.ButtonText(createRect, "Create!") && rectTouse != null)
             {
                 //GuiMaker.MakeLine(posOne, posTwo, name);
-                this.Close();
+                Close();
             }
             return;
         }

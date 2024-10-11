@@ -20,7 +20,7 @@ public class Renderable : IRenderable
 
     public Renderable(Graphic graphic,string colorSet=null, string bodyPart=null, bool showsInBed = true)
     {
-        this.storedGraphic = graphic;
+        storedGraphic = graphic;
         this.bodyPart = bodyPart;
         this.showsInBed = showsInBed;
         this.colorSet= colorSet;

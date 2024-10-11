@@ -361,7 +361,7 @@ public class ShapeshifterComp : ThingComp
             try
             {
                 thingComp = (ThingComp)Activator.CreateInstance(properties.compClass);
-                thingComp.parent = this.parent;
+                thingComp.parent = parent;
                 comps.Add(thingComp);
                 thingComp.Initialize(properties);
             }

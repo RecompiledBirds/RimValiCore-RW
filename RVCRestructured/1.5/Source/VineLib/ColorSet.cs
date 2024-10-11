@@ -15,7 +15,7 @@ public class TriColorSet : IExposable
         this.one = one;
         this.two = two;
         this.three = three;
-        this.dyeable = dyable;
+        dyeable = dyable;
     }
     public TriColorSet()
     {

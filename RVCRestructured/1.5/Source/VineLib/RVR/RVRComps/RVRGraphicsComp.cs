@@ -47,7 +47,7 @@ public class RVRGraphicsComp : CompProperties
         get
         {
             //If none is defined, use generator 0
-            RaceColors colors = this[this.skinColorSet];
+            RaceColors colors = this[skinColorSet];
             if (colors != null)
                 return colors;
 
@@ -70,7 +70,7 @@ public class RVRGraphicsComp : CompProperties
 
     public RVRGraphicsComp()
     {
-        this.compClass = typeof(GraphicsComp);
+        compClass = typeof(GraphicsComp);
     }
 }
 

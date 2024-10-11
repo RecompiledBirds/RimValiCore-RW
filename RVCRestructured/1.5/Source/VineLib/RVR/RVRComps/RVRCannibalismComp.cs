@@ -44,7 +44,7 @@ public class RVRCannibalismComp : CompProperties
 
     public RVRCannibalismComp()
     {
-        this.compClass=typeof(CannibalismComp);
+        compClass=typeof(CannibalismComp);
     }
 }
 

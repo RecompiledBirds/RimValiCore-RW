@@ -23,7 +23,7 @@ public class RVRRecipeGetterComp : CompProperties
     
     public RVRRecipeGetterComp()
     {
-        this.compClass=typeof(RVRRecipeSetterComp);
+        compClass=typeof(RVRRecipeSetterComp);
     }
 }
 

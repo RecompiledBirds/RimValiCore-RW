@@ -6,7 +6,7 @@ namespace RVCRestructured;
 public class RVRBodyGetterComp : CompProperties
 {
     public RVRBodyGetterComp() { 
-        this.compClass = typeof(RVRBodyGetter);
+        compClass = typeof(RVRBodyGetter);
     }
     public List<BodyTypeDef> allowedBodyTypes = [];
     public List<string> modAllowedBodyTypes = [];

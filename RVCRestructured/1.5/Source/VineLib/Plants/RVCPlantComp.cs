@@ -8,7 +8,7 @@ public class RVCPlantCompProperties : CompProperties
     public float maxPreferredTemp;
     public RVCPlantCompProperties()
     {
-        this.compClass = typeof(RVCPlantComp);
+        compClass = typeof(RVCPlantComp);
     }
 }
 
@@ -18,7 +18,7 @@ public class RVCPlantComp : ThingComp
     {
         get
         {
-            return this.props as RVCPlantCompProperties;
+            return props as RVCPlantCompProperties;
         }
     }
 }

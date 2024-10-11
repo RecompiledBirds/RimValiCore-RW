@@ -10,12 +10,12 @@ public class HealableMaterialCompProperties : CompProperties
 
     public HealableMaterialCompProperties()
     {
-        this.compClass = typeof(HealableMaterialCompProperties);
+        compClass = typeof(HealableMaterialCompProperties);
     }
 }
 
 
 public class HealableMaterialComp : ThingComp
 {
-    public HealableMaterialCompProperties Props => this.props as HealableMaterialCompProperties;
+    public HealableMaterialCompProperties Props => props as HealableMaterialCompProperties;
 }
