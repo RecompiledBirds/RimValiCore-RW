@@ -7,49 +7,29 @@ namespace RVCRestructured;
 
 public class RVRCP : CompProperties
 {
-    public RVRCP()
-    {
-        compClass = typeof(RVRComp);
-    }
+    public RVRCP() => compClass = typeof(RVRComp);
 }
+
 public class RVRComp : ThingComp
 {
-    public override void PostSpawnSetup(bool respawningAfterLoad)
-    {
+    private Dictionary<string, int> renderableIndexes = [];
+    private Dictionary<string, TriColorSet> sets = [];
+    private Dictionary<string, int> masks = [];
 
-        base.PostSpawnSetup(respawningAfterLoad);
-    }
-
-    private List<IRenderable> defList = [];
-    private List<Renderable> defListRenderable = [];
     private List<RenderableDef> defListRenderableDefs = [];
+    private List<Renderable> defListRenderable = [];
+    private List<IRenderable> defList = [];
+
     private bool generated = false;
+
     public List<IRenderable> RenderableDefs
     {
-        get
-        {
-            return defList;
-        }
-        set
-        {
-            defList = value;
-        }
+        get => defList;
+        set => defList = value;
     }
 
-    private Dictionary<string, TriColorSet> sets = [];
+    public Dictionary<string, TriColorSet> Colors => sets;
 
-    public Dictionary<string, TriColorSet> Colors
-    {
-        get
-        {
-            return sets;
-        }
-    }
-
-
-
-    private Dictionary<string, int> masks = [];
-    private Dictionary<string, int> renderableIndexes = [];
     //used in loading
     private List<string> lKeys = [];
     private List<TriColorSet> lSets = [];
@@ -104,7 +84,7 @@ public class RVRComp : ThingComp
         int texIndex = renderableIndexes[def.defName];
         int maskIndex = masks[def.defName];
         maskIndex--;
-        List<string> maskList = def.textures[texIndex].GetMasks(parent as Pawn);
+        List<string> maskList = def.textures[texIndex].GetMasks((Pawn)parent);
         if (maskIndex == -1)
         {
             maskIndex = maskList.Count - 1;
@@ -122,20 +102,17 @@ public class RVRComp : ThingComp
     {
         get
         {
-            if (sets.ContainsKey(name))
-            {
-                return sets[name];
-            }
-            Pawn pawn = parent as Pawn;
+            if (sets.TryGetValue(name, out TriColorSet set)) return set;
+
+            Pawn pawn = (Pawn)parent;
             RVCLog.Log($"ColorSet {name} is not on {pawn.Name.ToStringShort}!", RVCLogType.Error);
-            return null;
+            return TriColorSet.Empty;
         }
         set
         {
             sets[name] = value;
         }
     }
-
 
     public override void PostExposeData()
     {
@@ -150,11 +127,10 @@ public class RVRComp : ThingComp
                 if (renderable is Def)
                 {
                     defListRenderableDefs.Append(renderable);
+                    continue;
                 }
-                else
-                {
-                    defListRenderable.Append(renderable);
-                }
+                
+                defListRenderable.Append(renderable);
             }
         }
 
@@ -191,33 +167,29 @@ public class RVRComp : ThingComp
     {
         if (generated) return;
         generated = true;
-        Pawn pawn = parent as Pawn;
+        Pawn pawn = (Pawn)parent;
 
-        GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
-        if (comp == null)
-            return;
+        if (pawn.TryGetComp<GraphicsComp>() is not GraphicsComp comp) return;
+
         RVRGraphicsComp props = comp.Props;
 
-        ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-        if (shapeshifterComp != null)
+        if (pawn.TryGetComp<ShapeshifterComp>() is ShapeshifterComp shapeshifterComp)
         {
             RVRGraphicsComp shifterGraphics = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
             if (!shapeshifterComp.IsParentDef())
             {
-
-                if (shifterGraphics != null)
-                    props = shifterGraphics;
-                else
-                    return;
+                if (shifterGraphics == null) return;
+                
+                props = shifterGraphics;
             }
         }
+
         GenFromComp(props, pawn);
     }
 
     public void GenFromComp(RVRGraphicsComp comp, Pawn pawn)
     {
         GenColors(comp, pawn);
-
         GenAllDefs(comp, pawn);
         InformGraphicsDirty();
     }
@@ -235,18 +207,21 @@ public class RVRComp : ThingComp
             sets.Add(colors.name, new TriColorSet(c1, c2, c3, true));
         }
     }
+
     public void GenAllDefs(RVRGraphicsComp comp, Pawn pawn)
     {
         defList.Clear();
+
         if (defList.NullOrEmpty() && !comp.renderableDefs.NullOrEmpty())
         {
-
             defList = [.. comp.renderableDefs];
         }
+
         foreach (RenderableDef rDef in comp.renderableDefs)
         {
             GenerateRenderableDef(rDef, pawn);
         }
+
         InformGraphicsDirty();
     }
 
@@ -271,28 +246,39 @@ public class RVRComp : ThingComp
 
     private void GenerateRenderableDef(RenderableDef rDef, Pawn pawn)
     {
-        if (renderableIndexes.ContainsKey(rDef.defName))
-        {
-            return;
-        }
+        if (renderableIndexes.ContainsKey(rDef.defName)) return;
+
         bool hasLink = rDef.linkTexWith != null;
-        if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith.defName) && !renderableIndexes.ContainsKey(rDef.defName))
+        if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith!.defName))
         {
             string linkString = rDef.linkTexWith.defName;
             renderableIndexes[rDef.defName] = renderableIndexes[linkString];
             masks[rDef.defName] = masks[linkString];
             return;
         }
-        if (renderableIndexes.ContainsKey(rDef.defName)) return;
+
+        if (rDef.textures.Count == 0)
+        {
+            Log.Warning($"Textures count for {rDef.defName} is 0!");
+            return;
+        }
+
         BaseTex tex = rDef.textures.RandomElement();
         int index = rDef.textures.IndexOf(tex);
         renderableIndexes[rDef.defName] = index;
-        index = tex.GetMasks(pawn).IndexOf(tex.GetMasks(pawn).RandomElement());
-        masks.Add(rDef.defName, index);
+
+        int maskCount = tex.GetMasks(pawn).Count;
+        if (maskCount == 0)
+        {
+            Log.Warning($"Mask count for def: {rDef.defName}, path: {tex.texPath}, index: ({index}) is 0!");
+            return;
+        }
+
+        masks.Add(rDef.defName, Rand.Range(0, maskCount));
 
         if (hasLink)
         {
-            string linkString = rDef.linkTexWith.defName;
+            string linkString = rDef.linkTexWith!.defName;
             renderableIndexes[linkString] = renderableIndexes[rDef.defName];
             masks[linkString] = renderableIndexes[rDef.defName];
             return;

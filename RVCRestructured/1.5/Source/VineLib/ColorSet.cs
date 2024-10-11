@@ -10,6 +10,8 @@ public class TriColorSet : IExposable
     private Color three;
     private readonly bool dyeable;
 
+    public static TriColorSet Empty { get; } = new();
+
     public TriColorSet(Color one, Color two, Color three, bool dyable)
     {
         this.one = one;
@@ -17,49 +19,27 @@ public class TriColorSet : IExposable
         this.three = three;
         dyeable = dyable;
     }
-    public TriColorSet()
-    {
 
-    }
-    public bool Dyeable
-    {
-        get
-        {
-            return dyeable;
-        }
-    }
+    public TriColorSet() { }
 
-    public Color[] colors
+    public bool Dyeable => dyeable;
+
+    public Color[] Colors
     {
-        get
-        {
-            return [one,two,three];
-        }
-        set
-        {
-            one = value[0];
-            two = value[1];
-            three = value[2];
-        }
+        get => [one, two, three];
+        set => (one, two, three) = (value[0], value[1], value[2]);
     }
 
     //Allow access to colors via index
-    public Color this[int index]
+    public Color this[int index] => index switch
     {
-        get
-        {
-            switch (index)
-            {
-                case 0: return one;
-                case 1: return two;
-                case 2: return three;
-                //If something odd is inputted, return one.
-                default:
-                    Log.Warning($"Tried to access a color index greater than 2 from a colorset!");
-                    return one;
-            }
-        }
-    }
+        0 => one,
+        1 => two,
+        2 => three,
+
+        //If something odd is inputted, return one.
+        _ => one
+    };
 
     public void ExposeData()
     {

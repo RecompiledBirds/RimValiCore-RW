@@ -215,7 +215,7 @@ public class EditorWindow : Window
                     if (Widgets.ButtonInvisible(rectColorColor))
                     {
                         int k = i; //save the current i to k so that the value of i isn't overridden during the for loop
-                        Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { VineSettings.savedColors = newSavedColors.ToList(); RimValiCore.settings.Write(); }, kvp.Value.colors[k], VineSettings.savedColors.ToArray()));
+                        Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { VineSettings.savedColors = newSavedColors.ToList(); RimValiCore.settings.Write(); }, kvp.Value.Colors[k], VineSettings.savedColors.ToArray()));
                     }
                     TooltipHandler.TipRegion(rectColorColor, $"RVC_EditColor".Translate());
                 }
@@ -286,9 +286,9 @@ public class EditorWindow : Window
     /// <param name="index"></param>
     private void SetColor(Color color, KeyValuePair<string, TriColorSet> kvp, int index)
     {
-        Color[] colors = kvp.Value.colors;
+        Color[] colors = kvp.Value.Colors;
         colors[index] = color;
-        kvp.Value.colors = colors;
+        kvp.Value.Colors = colors;
 
         SelectedPawn.TryGetComp<RVRComp>()?.InformGraphicsDirty();
         SelectedPawn.Drawer.renderer.renderTree.SetDirty();

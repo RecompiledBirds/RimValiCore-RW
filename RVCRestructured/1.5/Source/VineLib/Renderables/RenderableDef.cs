@@ -291,6 +291,7 @@ public class BaseTex
 
     public List<string> MaskPaths(Pawn pawn)
     {
+        //TODO: Make sure that this never returns an empty list
         if(alternateFemaleMaskPaths.Count>0&&pawn.gender==Gender.Female)return alternateFemaleMaskPaths;
         if (alternateMaleMaskPaths.Count > 0 && pawn.gender == Gender.Male) return alternateMaleMaskPaths;
         return alternateMaskPaths;

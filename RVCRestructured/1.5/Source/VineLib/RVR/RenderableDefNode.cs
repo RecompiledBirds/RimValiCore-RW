@@ -56,6 +56,7 @@ public class RenderableDefNode : PawnRenderNode
         
         TriColorSet set = RProps.def.ColorSet(pawn);
        
+        //TODO: Check if this works?
         return RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(RProps.def.GetTexPath(pawn), RProps.def.GetPos(pawn.Rotation).size, set[0], set[1], set[2], RProps.def.GetMaskPath(pawn));            
     }
 }
