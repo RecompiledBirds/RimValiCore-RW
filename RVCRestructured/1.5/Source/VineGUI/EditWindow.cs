@@ -3,44 +3,33 @@ using Verse;
 
 namespace NesGUI;
 
-public class EditableItemWindow : Window
+public class EditableItemWindow(GUIItem item) : Window
 {
-    private string xSizeBuffer;
-    private string ySizeBuffer;
-    private string xPosBuffer;
-    private string yPosBuffer;
-    public override void OnCancelKeyPressed()
-    {
-        //Do nothing
-    }
-    public override void OnAcceptKeyPressed()
-    {
-        //Do nothing
-    }
-    public override Vector2 InitialSize
-    {
-        get
-        {
-            return new Vector2(440, 190);
-        }
-    }
-    private readonly GUIItem gI;
-    public EditableItemWindow(GUIItem item)
-    {
-        gI = item;
-    }
+    private string xSizeBuffer = string.Empty;
+    private string ySizeBuffer = string.Empty;
+    private string xPosBuffer = string.Empty;
+    private string yPosBuffer = string.Empty;
+
+    public override void OnCancelKeyPressed() { } //Do Nothing
+    public override void OnAcceptKeyPressed() { } //Do nothing
+
+    public override Vector2 InitialSize { get; } = new Vector2(440, 190);
+
+    private readonly GUIItem editItem = item;
 
     public override void DoWindowContents(Rect inRect)
     {
         Text.Font = GameFont.Small;
         Rect editingitemlabel = new(new Vector2(10f, 5f), new Vector2(480f, 30f));
         Rect closeRect = new(new Vector2(inRect.xMax - 25, 5), new Vector2(20, 20));
+
         if (Widgets.ButtonImage(closeRect, Widgets.CheckboxOffTex))
         {
             Close();
         }
-        Widgets.Label(editingitemlabel, $"Editing: {gI.name}");
-        if (gI is GUIRect rect)
+
+        Widgets.Label(editingitemlabel, $"Editing: {editItem.name}");
+        if (editItem is GUIRect rect)
         {
             //COMPILED BY NESGUI
             //Rect pass
@@ -88,15 +77,14 @@ public class EditableItemWindow : Window
             //END NESGUI CODE
 
             //Scroll controls
-            
+
 
             rect.UpdateRect();
 
             return;
         }
 
-
-        if (gI.GetType() == typeof(GUITextElement))
+        if (editItem is GUITextElement)
         {
             //COMPILED BY NESGUI
 
@@ -109,14 +97,14 @@ public class EditableItemWindow : Window
             Rect selectFontRect = new(new Vector2(10f, 90f), new Vector2(120f, 40f));
             Rect selectAnchorRect = new(new Vector2(135f, 90f), new Vector2(100f, 40f));
 
-            bool selectRect = Widgets.ButtonText(selectRectButton, gI.parent == null ? "Aelect rect" : $"Using rec: {gI.parent.name}");
+            bool selectRect = Widgets.ButtonText(selectRectButton, editItem.parent == null ? "Aelect rect" : $"Using rec: {editItem.parent.name}");
             bool selectFont = Widgets.ButtonText(selectFontRect, "Select font");
             bool selectAnchor = Widgets.ButtonText(selectAnchorRect, "Select anchor");
 
             Widgets.Label(nameInputLabel, "Set name/label:");
             //END NESGUI CODE
-            gI.name = Widgets.TextField(inputField, gI.name);
-            gI.label = gI.name;
+            editItem.name = Widgets.TextField(inputField, editItem.name);
+            editItem.label = editItem.name;
 
             if (selectRect)
             {
@@ -132,27 +120,28 @@ public class EditableItemWindow : Window
             {
                 Find.WindowStack.Add(new FloatMenu(GetAnchors()));
             }
-
         }
     }
+
     public List<FloatMenuOption> SetRect()
     {
         List<FloatMenuOption> result = [];
-        foreach (GUIRect i in GuiMaker.Rectangles)
+        foreach (GUIRect i in GuiMaker.Rectangles.Cast<GUIRect>())
         {
             result.Add(new FloatMenuOption(i.name, delegate ()
             {
-                gI.parent = i;
+                editItem.parent = i;
 
             }));
         }
+
         return result;
     }
 
     public List<FloatMenuOption> GetFonts()
     {
         List<FloatMenuOption> res = [];
-        if (gI is GUITextElement elem)
+        if (editItem is GUITextElement elem)
         {
             foreach (GameFont font in Enum.GetValues(typeof(GameFont)))
             {
@@ -162,6 +151,7 @@ public class EditableItemWindow : Window
                 }));
             }
         }
+
         return res;
     }
 
@@ -169,17 +159,14 @@ public class EditableItemWindow : Window
     {
 
         List<FloatMenuOption> res = [];
-        if (gI is GUITextElement elem)
+        if (editItem is GUITextElement elem)
         {
             foreach (TextAnchor anchor in Enum.GetValues(typeof(TextAnchor)))
             {
                 res.Add(new FloatMenuOption($"{anchor}  {(elem.GetTextAnchor == anchor ? "(current)" : "")}", delegate ()
                 {
                     elem.SetAnchor(anchor);
-                }
-
-
-            ));
+                }));
             }
         }
 
