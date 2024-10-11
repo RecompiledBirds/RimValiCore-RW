@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net481</TargetFramework>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
+		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RootNamespace>RVCRestructured</RootNamespace>
+		<OutputPath>../../../1.5/Assemblies</OutputPath>
+		<LangVersion>12.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4243" />
+		<PackageReference Include="Lib.Harmony" Version="2.3.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Using Include="System.Diagnostics.CodeAnalysis" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<DefProjPath>../Defs/</DefProjPath>
+		<DefOutputPath>$(OutputPath)/../Defs/</DefOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Defs Include="$(DefProjPath)**\*.xml" Exclude="$(DefProjPath)\obj\**" />
+		<DefsDestinations Include="@(Defs -> '$(DefOutputPath)%(Identity)')" />
+		<FileWrites Include="@(DefsDestinations)" />
+		<DirectoryWrites Include="@(DefsDestinations -> '%(RelativeDir)')" />
+	</ItemGroup>
+
+	<Target Name="CustomAfterBuildTarget" AfterTargets="Build">
+		<Copy SourceFiles="@(Defs)" DestinationFiles="@(DefsDestinations)" SkipUnchangedFiles="true">
+			<Output TaskParameter="CopiedFiles" ItemName="CopiedFileList" />
+		</Copy>
+		<Message Text="Copied Files:%0A@(CopiedFileList, '%0D')" Importance="high" />
+	</Target>
+
+	<Target Name="RemoveDirectories" AfterTargets="Clean">
+		<Message Text="Deleting empty definition Folders:%0A@(DirectoryWrites, '%0D')" Importance="high" />
+		<RemoveDir Directories="@(DirectoryWrites)" />
+	</Target>
+</Project>

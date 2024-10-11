@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<StatDef>
+		<defName>RVC_HealthOffset</defName>
+		<label>health offset</label>
+		<description>This changes the max health a part can have.</description>
+		<category>BasicsNonPawnImportant</category>
+		<defaultBaseValue>100</defaultBaseValue>
+		<minValue>1</minValue>
+		<roundValue>true</roundValue>
+		<toStringStyle>Integer</toStringStyle>
+		<roundToFiveOver>200</roundToFiveOver>
+		<showNonAbstract>true</showNonAbstract>
+		<scenarioRandomizable>true</scenarioRandomizable>
+		<showOnPawns>false</showOnPawns>
+		<displayPriorityInCategory>99997</displayPriorityInCategory>
+	</StatDef>
+</Defs>
