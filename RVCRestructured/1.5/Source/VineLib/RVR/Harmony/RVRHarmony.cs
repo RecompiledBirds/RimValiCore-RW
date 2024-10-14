@@ -46,8 +46,9 @@ public static class RVRHarmony
             //harmony.Patch(AccessTools.Method(typeof(FoodUtility), "ThoughtsFromIngesting"), postfix: new HarmonyMethod(typeof(IngestingPatch),nameof(IngestingPatch.IngestingPostfix)));
             //harmony.Patch(AccessTools.Method(typeof(Corpse), "ButcherProducts"),prefix:new HarmonyMethod(typeof(ButcherPatch),nameof(ButcherPatch.ButcherPrefix)));
             //harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
-            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), transpiler: new HarmonyMethod(typeof(GenerationPatches), nameof(GenerationPatches.BlendTranspiler)));
-            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(GenerationPatches), nameof(GenerationPatches.GraphicsGenPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), prefix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ModifyPawnGenerationRequest)));
+            harmony.Patch(AccessTools.Method(typeof(ThingMaker), nameof(ThingMaker.MakeThing)), prefix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ModifyThingMaker)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.GraphicsGenPostfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)), postfix: new HarmonyMethod(typeof(XenoTypeGenPatch), nameof(XenoTypeGenPatch.Postfix)));
             RVCLog.Log("Completed all RVR patches with no issues!");
         }catch(Exception e)

@@ -1,5 +1,6 @@
 ﻿using RVCRestructured.Defs;
 using RVCRestructured.Shifter;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Verse;
 
@@ -70,7 +71,7 @@ public class RVRComp : ThingComp
         int texIndex = renderableIndexes[def.defName];
         int maskIndex = masks[def.defName];
         maskIndex--;
-        List<string> maskList = def.textures[texIndex].GetMasks(parent as Pawn);
+        List<string> maskList = def.textures[texIndex].GetMasks((Pawn)parent);
         if (maskIndex == maskList.Count)
         {
             maskIndex = 0;
@@ -163,28 +164,35 @@ public class RVRComp : ThingComp
         GenGraphics();
     }
 
-    public void GenGraphics()
+    public void GenGraphics([CallerMemberName] string callerMemberName = "")
     {
-        if (generated) return;
-        generated = true;
-        Pawn pawn = (Pawn)parent;
-
-        if (pawn.TryGetComp<GraphicsComp>() is not GraphicsComp comp) return;
-
-        RVRGraphicsComp props = comp.Props;
-
-        if (pawn.TryGetComp<ShapeshifterComp>() is ShapeshifterComp shapeshifterComp)
+        try
         {
-            RVRGraphicsComp shifterGraphics = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
-            if (!shapeshifterComp.IsParentDef())
-            {
-                if (shifterGraphics == null) return;
-                
-                props = shifterGraphics;
-            }
-        }
+            if (generated) return;
+            generated = true;
+            Pawn pawn = (Pawn)parent;
 
-        GenFromComp(props, pawn);
+            if (pawn.TryGetComp<GraphicsComp>() is not GraphicsComp comp) return;
+
+            RVRGraphicsComp props = comp.Props;
+
+            if (pawn.TryGetComp<ShapeshifterComp>() is ShapeshifterComp shapeshifterComp)
+            {
+                RVRGraphicsComp shifterGraphics = shapeshifterComp.GetCompProperties<RVRGraphicsComp>();
+                if (!shapeshifterComp.IsParentDef())
+                {
+                    if (shifterGraphics == null) return;
+                
+                    props = shifterGraphics;
+                }
+            }
+
+            GenFromComp(props, pawn);
+        }
+        catch (Exception ex)
+        {
+            RVCLog.Log($"Hit an exception {ex} trying to generate graphics from {callerMemberName}!", RVCLogType.Error);
+        }
     }
 
     public void GenFromComp(RVRGraphicsComp comp, Pawn pawn)
