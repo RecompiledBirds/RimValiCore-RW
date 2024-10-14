@@ -7,5 +7,5 @@ public static class ArrayExtensions
     public static T RandomElement<T>(this T[] array) => array.AsSpan().RandomElement();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T RandomElement<T>(this Span<T> span) => span[Rand.RangeInclusive(0, span.Length)];
+    public static T RandomElement<T>(this Span<T> span) => span[Rand.Range(0, span.Length)];
 }
