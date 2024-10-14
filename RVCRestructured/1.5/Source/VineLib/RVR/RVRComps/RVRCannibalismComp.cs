@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.VineLib.Defs.DefOfs;
 using Verse;
 
 namespace RVCRestructured;
@@ -28,7 +29,7 @@ public class RVRCannibalismComp : CompProperties
         }
 
         if (!caresAboutUndefinedRaces)
-            return VineDefOf.Vine_ThoughtDidntCare;
+            return Vine_ThoughtDefOf.Vine_ThoughtDidntCare;
         /*
          if (cannibal)
          {

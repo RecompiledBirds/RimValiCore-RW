@@ -18,7 +18,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Using Include="RimWorld" />
 	  <Using Include="System.Diagnostics.CodeAnalysis" />
+	  <Using Include="Verse" />
 	</ItemGroup>
 
 	<PropertyGroup>

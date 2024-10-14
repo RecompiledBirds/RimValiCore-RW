@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RVCRestructured.VineLib.Defs.DefOfs;
 using UnityEngine;
 using Verse;
 
@@ -17,10 +18,10 @@ public static class BodyPartHealthPatch
                 return;
             if (hediff.Part.def != __instance)
                 return;
-            StatModifier modifier = hediff.CurStage?.statOffsets?.Find(x => x.stat == VineDefOf.RVC_HealthOffset)??null;
+            StatModifier modifier = hediff.CurStage?.statOffsets?.Find(x => x.stat == Vine_StatDefOf.RVC_HealthOffset)??null;
             if (modifier != null)
                 num += modifier.value;
-            modifier = hediff.CurStage?.statFactors?.Find(x => x.stat == VineDefOf.RVC_HealthOffset)??null;
+            modifier = hediff.CurStage?.statFactors?.Find(x => x.stat == Vine_StatDefOf.RVC_HealthOffset)??null;
             if (modifier != null)
             {
                 multNum += modifier.value;
