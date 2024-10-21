@@ -45,7 +45,7 @@ public class ColorPickerWindow : Window
     private float oldHue = 1f;
 
     private Color selectedColor = Color.red;
-    private Texture2D texture;
+    private Texture2D? texture;
 
     public ColorPickerWindow(Action<Color> setColor, Action<Color[]> setColorHistory, Color color, Color[] colorHistory)
     {

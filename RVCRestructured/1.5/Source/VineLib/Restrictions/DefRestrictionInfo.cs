@@ -1,15 +1,13 @@
 ﻿using RVCRestructured.RVR;
-using Verse;
-
 namespace RVCRestructured;
 
 public record DefRestrictionInfo
 {
     public static DefRestrictionInfo Empty => new();
 
-    public Def Def { get; }
+    public Def Def { get; } = null!;
 
-    public Def User { get; private set; }
+    public Def User { get; private set; } = null!;
 
     public bool UserWhitelisted { get; private set; }
 
@@ -17,7 +15,7 @@ public record DefRestrictionInfo
 
     public bool IsRequired { get; private set; }
 
-    public bool CanUse => IsRequired || UserWhitelisted || (!Def.IsRestricted() && !UserBlacklisted);
+    public bool CanUse => this != Empty && IsRequired || UserWhitelisted || (!Def.IsRestricted() && !UserBlacklisted);
 
     private DefRestrictionInfo() 
     {

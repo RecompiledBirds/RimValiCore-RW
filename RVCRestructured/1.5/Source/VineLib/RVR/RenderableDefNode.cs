@@ -8,7 +8,7 @@ namespace RVCRestructured.RVR;
 
 public class RenderableDefNodeProperties : PawnRenderNodeProperties
 {
-    public RenderableDef def;
+    public readonly RenderableDef def = null!;
 }
 
 public class RNodeWorker : PawnRenderNodeWorker

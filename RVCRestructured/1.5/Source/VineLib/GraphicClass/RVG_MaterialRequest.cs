@@ -9,14 +9,20 @@ public struct RVG_MaterialRequest : IEquatable<RVG_MaterialRequest>
     public Texture2D mainTex;
     public Color color;
     public Color colorTwo;
-    public Texture2D maskTex;
+    public Texture2D? maskTex;
     public int renderQueue;
-    public List<ShaderParameter> shaderParameters;
+    private List<ShaderParameter> shaderParameters = [];
     public Color colorThree;
 
     public string BaseTexPath
     {
         set => mainTex = ContentFinder<Texture2D>.Get(value);
+    }
+
+    public List<ShaderParameter> ShaderParameters 
+    { 
+        readonly get => shaderParameters; 
+        set => shaderParameters = value ?? []; 
     }
 
     public RVG_MaterialRequest(Texture2D tex)
@@ -28,7 +34,7 @@ public struct RVG_MaterialRequest : IEquatable<RVG_MaterialRequest>
         colorThree = Color.blue;
         maskTex = null;
         renderQueue = 0;
-        shaderParameters = [];
+        ShaderParameters = [];
     }
 
     public RVG_MaterialRequest(Texture2D tex, Shader shader)
@@ -40,7 +46,7 @@ public struct RVG_MaterialRequest : IEquatable<RVG_MaterialRequest>
         colorThree = Color.red;
         maskTex = null;
         renderQueue = 0;
-        shaderParameters = [];
+        ShaderParameters = [];
     }
 
     public RVG_MaterialRequest(Texture2D tex, Shader shader, Color color)
@@ -52,22 +58,22 @@ public struct RVG_MaterialRequest : IEquatable<RVG_MaterialRequest>
         colorThree = Color.blue;
         maskTex = null;
         renderQueue = 0;
-        shaderParameters = [];
+        ShaderParameters = [];
     }
 
-    public override int GetHashCode()
+    public override readonly int GetHashCode()
     {
-        return Gen.HashCombine(Gen.HashCombineInt(Gen.HashCombine(Gen.HashCombine(Gen.HashCombineStruct(Gen.HashCombineStruct(Gen.HashCombine(0, shader), color), colorTwo), mainTex), maskTex), renderQueue), shaderParameters);
+        return Gen.HashCombine(Gen.HashCombineInt(Gen.HashCombine(Gen.HashCombine(Gen.HashCombineStruct(Gen.HashCombineStruct(Gen.HashCombine(0, shader), color), colorTwo), mainTex), maskTex), renderQueue), ShaderParameters);
     }
 
-    public override bool Equals(object obj)
+    public override readonly bool Equals(object obj)
     {
         return obj is RVG_MaterialRequest request && Equals(request);
     }
 
-    public bool Equals(RVG_MaterialRequest other)
+    public readonly bool Equals(RVG_MaterialRequest other)
     {
-        return other.shader == shader && other.mainTex == mainTex && other.color == color && other.colorTwo == colorTwo && colorThree==other.colorThree && other.maskTex == maskTex && other.renderQueue == renderQueue && other.shaderParameters == shaderParameters;
+        return other.shader == shader && other.mainTex == mainTex && other.color == color && other.colorTwo == colorTwo && colorThree==other.colorThree && other.maskTex == maskTex && other.renderQueue == renderQueue && other.ShaderParameters == ShaderParameters;
     }
 
     public static bool operator ==(RVG_MaterialRequest lhs, RVG_MaterialRequest rhs)
@@ -80,7 +86,7 @@ public struct RVG_MaterialRequest : IEquatable<RVG_MaterialRequest>
         return !(lhs == rhs);
     }
 
-    public override string ToString()
+    public override readonly string ToString()
     {
         return $"AvaliMaterialRequest({shader.name}, {mainTex.name}, {color}, {colorTwo}, {colorThree}, {maskTex}, {renderQueue})";
     }

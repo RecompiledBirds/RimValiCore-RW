@@ -21,7 +21,7 @@ public static class RaceIcons
         faction.TryMakeInitialRelationsWith(Faction.OfPlayer);
     }
 
-    public static Texture GetThingDefTexture((ThingDef thingDef, XenotypeDef xenoDef, Vector2 size) key)
+    public static Texture? GetThingDefTexture((ThingDef thingDef, XenotypeDef xenoDef, Vector2 size) key)
     {
         if (textures.ContainsKey(key)) return textures[key];
 

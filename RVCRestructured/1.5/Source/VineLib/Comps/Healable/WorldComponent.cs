@@ -16,7 +16,7 @@ public class HealableGameComp : WorldComponent
     public void RegisterThing(Thing thing, HealableMaterialCompProperties props)
     {
         healables.Add(thing, props);
-        ticks.Add(thing,props.ticksBetweenHeal);
+        ticks.Add(thing,props.TicksBetweenHeal);
         things.Add(thing);
     }
 
@@ -45,9 +45,9 @@ public class HealableGameComp : WorldComponent
 
             HealableMaterialCompProperties props = healables[thing];
 
-            int wantedHp = thing.HitPoints + props.amountHealed;
+            int wantedHp = thing.HitPoints + props.AmountHealed;
             thing.HitPoints = wantedHp > thing.MaxHitPoints ? thing.MaxHitPoints : wantedHp;
-            ticks[thing] = props.ticksBetweenHeal;
+            ticks[thing] = props.TicksBetweenHeal;
         }
     }
 }

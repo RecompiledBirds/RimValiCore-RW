@@ -209,9 +209,14 @@ public class RVRComp : ThingComp
             if (sets.ContainsKey(colors.name))
                 continue;
 
-            Color c1 = colors.GeneratorToUse(pawn).colorOne.NewRandomizedColor();
-            Color c2 = colors.GeneratorToUse(pawn).colorTwo.NewRandomizedColor();
-            Color c3 = colors.GeneratorToUse(pawn).colorThree.NewRandomizedColor();
+            TriColorGenerator triColorGenerator = colors.GeneratorToUse(pawn);
+            if (triColorGenerator.colorOne == null) continue;
+            if (triColorGenerator.colorTwo == null) continue;
+            if (triColorGenerator.colorThree == null) continue;
+
+            Color c1 = triColorGenerator.colorOne.NewRandomizedColor();
+            Color c2 = triColorGenerator.colorTwo.NewRandomizedColor();
+            Color c3 = triColorGenerator.colorThree.NewRandomizedColor();
             sets.Add(colors.name, new TriColorSet(c1, c2, c3, true));
         }
     }

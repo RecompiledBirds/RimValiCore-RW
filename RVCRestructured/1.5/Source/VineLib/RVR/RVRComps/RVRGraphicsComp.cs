@@ -1,34 +1,32 @@
 ﻿using RVCRestructured.Defs;
 using UnityEngine;
-using Verse;
 
 namespace RVCRestructured;
 
 public class RVRGraphicsComp : CompProperties
 {
-    public bool hasUniqueHeadApparel = false;
-    public bool throwApparelError = false;
-    public bool useEmptyApparelIfNoDefault = true;
-    public bool hasHair = false;
-    public List<RaceColors> colorGenerators = [];
-    public List<RenderableDef> renderableDefs = [];
-    public string skinColorSet;
+    public readonly bool hasUniqueHeadApparel = false;
+    public readonly bool throwApparelError = false;
+    public readonly bool useEmptyApparelIfNoDefault = true;
+    public readonly bool hasHair = false;
+    public readonly List<RaceColors> colorGenerators = [];
+    public readonly List<RenderableDef> renderableDefs = [];
+    public readonly string skinColorSet = string.Empty;
 
-    public string bodyTex;
-    public string headTex;
-    public string skeleton = "Things/Pawn/Humanlike/HumanoidDessicated";
-    public string skull = "Things/Pawn/Humanlike/Heads/None_Average_Skull";
-    public string stump = "Things/Pawn/Humanlike/Heads/None_Average_Stump";
-    public Vector2 headSize;
-    public Vector2 bodySize = new(1f, 1f);
+    public readonly string bodyTex = string.Empty;
+    public readonly string headTex = string.Empty;
+    public readonly string skeleton = "Things/Pawn/Humanlike/HumanoidDessicated";
+    public readonly string skull = "Things/Pawn/Humanlike/Heads/None_Average_Skull";
+    public readonly string stump = "Things/Pawn/Humanlike/Heads/None_Average_Stump";
+    public readonly Vector2 headSize;
+    public readonly Vector2 bodySize = new(1f, 1f);
 
-    public  Dictionary<string, RaceColors> cachedColors = [];
-    public RaceColors this[string name]
+    public Dictionary<string, RaceColors> cachedColors = [];
+    public RaceColors? this[string name]
     {
         get
         {
-            if (cachedColors.ContainsKey(name))
-                return cachedColors[name];
+            if (cachedColors.ContainsKey(name)) return cachedColors[name];
 
             for (int i = 0; i < colorGenerators.Count; i++)
             {
@@ -38,6 +36,7 @@ public class RVRGraphicsComp : CompProperties
                     return colorGenerators[i];
                 }
             }
+
             return null;
         }
     }
@@ -47,9 +46,8 @@ public class RVRGraphicsComp : CompProperties
         get
         {
             //If none is defined, use generator 0
-            RaceColors colors = this[skinColorSet];
-            if (colors != null)
-                return colors;
+            RaceColors? colors = this[skinColorSet];
+            if (colors != null) return colors;
 
             //If we can't find any that match, log an error and create a temporary/debug color generator.
             Log.Error($"Could not find a color generator named {skinColorSet}.");
@@ -63,6 +61,7 @@ public class RVRGraphicsComp : CompProperties
                     colorTwo = new ColorGenerator_Single() { color = Color.blue }
                 }
             };
+
             colorGenerators.Add(debugColors);
             return debugColors;
         }
@@ -76,11 +75,5 @@ public class RVRGraphicsComp : CompProperties
 
 public class GraphicsComp : ThingComp
 {
-    public RVRGraphicsComp Props
-    {
-        get
-        {
-            return props as RVRGraphicsComp;
-        }
-    }
+    public RVRGraphicsComp Props => (RVRGraphicsComp)props;
 }

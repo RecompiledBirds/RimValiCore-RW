@@ -1,9 +1,10 @@
-﻿using Verse;
-
-namespace RVCRestructured;
+﻿namespace RVCRestructured;
 
 public class RaceSwapDef : Def
 {
-    public List<ThingDef> targetRaces;
-    public List<ThingDef> replacementRaces;
+    private readonly List<ThingDef> targetRaces = [];
+    private readonly List<ThingDef> replacementRaces = [];
+
+    public List<ThingDef> TargetRaces => targetRaces;
+    public List<ThingDef> ReplacementRaces => replacementRaces;
 }

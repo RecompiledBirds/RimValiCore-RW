@@ -4,7 +4,6 @@ namespace RVCRestructured;
 
 public class RVCSettings : ModSettings
 {
-
     public override void ExposeData()
     {
         base.ExposeData();
@@ -13,33 +12,29 @@ public class RVCSettings : ModSettings
 
 public class RimValiCore : Mod
 {
-    public static RVCSettings settings;
-    public string DataPath
-    {
-        get
-        {
-            return $"{Content.RootDir}/../../RimValiCore";
-        }
-    }
+    private static RVCSettings? settings;
 
-    private static string dir;
-    public static string ModDir
-    {
-        get
-        {
-            return dir;
-        }
+    public string DataPath => $"{Content.RootDir}/../../RimValiCore";
+
+    private static string dir = string.Empty;
+    public static string ModDir => dir;
+
+    public static RVCSettings Settings 
+    { 
+        get => settings ?? throw new NullReferenceException(); 
+        private set => settings = value; 
     }
 
     public RimValiCore(ModContentPack content) : base(content)
     {
-        settings=GetSettings<RVCSettings>();
+        Settings = GetSettings<RVCSettings>();
         dir = content.RootDir;
         if (!Directory.Exists(DataPath))
         {
             Log.Message("[RVC] Doing first time setup..");
             Directory.CreateDirectory(DataPath);
         }
+
         RVCLog.Log("Initalized mod.");
     }
 }

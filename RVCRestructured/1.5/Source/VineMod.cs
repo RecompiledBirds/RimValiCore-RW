@@ -5,23 +5,13 @@ namespace RVCRestructured;
 
 public class VineMod : Mod
 {
-    public static VineSettings VineSettings
-    {
-        get
-        {
-            return settings;
-        }
-    }
+    public static VineSettings VineSettings => settings ?? throw new NullReferenceException();
     private readonly string dir;
-    public string ModDir
-    {
-        get
-        {
-            return dir;
-        }
-    }
-    private static VineSettings settings;
+
+    public string ModDir => dir;
+    private static VineSettings? settings;
     private readonly ModContentPack modContentPack;
+
     public VineMod(ModContentPack content) : base(content)
     {
         modContentPack= content;
@@ -32,9 +22,11 @@ public class VineMod : Mod
     //Todo: Translation Strings
     public override void DoSettingsWindowContents(Rect inRect)
     {
+        if (settings == null) return;
+
         Listing_Standard listing_Standard = new();
         listing_Standard.Begin(inRect);
-        listing_Standard.CheckboxLabeled("Enable VGUI editor: ",ref settings.VGUIEnabled);
+        listing_Standard.CheckboxLabeled("Enable VGUI editor: ", ref settings.VGUIEnabled);
         listing_Standard.CheckboxLabeled("Race blending enabled: ", ref settings.RaceBlender);
         listing_Standard.End();
         base.DoSettingsWindowContents(inRect);

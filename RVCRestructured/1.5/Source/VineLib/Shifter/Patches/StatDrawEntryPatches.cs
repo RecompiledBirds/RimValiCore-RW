@@ -1,7 +1,4 @@
-﻿using RimWorld;
-using Verse;
-
-namespace RVCRestructured.Shifter;
+﻿namespace RVCRestructured.Shifter;
 
 /// <summary>
 /// Changes some of the display UI elements to better fit shapeshifters.
@@ -18,7 +15,7 @@ public static class StatDrawEntryPatches
     /// <returns></returns>
     public static IEnumerable<StatDrawEntry> RacePostfix(IEnumerable<StatDrawEntry> __result, ThingDef parentDef, StatRequest req, RaceProperties __instance)
     {
-        Pawn pawn = req.Pawn ?? (req.Thing as Pawn);
+        Pawn pawn = req.Pawn ?? ((Pawn)req.Thing);
         ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
         if (comp == null)
         {
@@ -106,7 +103,7 @@ public static class StatDrawEntryPatches
     /// <returns></returns>
     public static IEnumerable<StatDrawEntry> SourcePostFix(IEnumerable<StatDrawEntry> __result, StatRequest req, Def __instance)
     {
-        Pawn pawn = req.Pawn ?? (req.Thing as Pawn);
+        Pawn pawn = req.Pawn ?? ((Pawn)req.Thing);
         ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
         if (comp == null)
         {
@@ -149,7 +146,7 @@ public static class StatDrawEntryPatches
     /// <returns></returns>
     public static IEnumerable<StatDrawEntry> DescPostFix(IEnumerable<StatDrawEntry> __result, StatRequest req, Def __instance)
     {
-        Pawn pawn = req.Pawn ?? (req.Thing as Pawn);
+        Pawn pawn = req.Pawn ?? ((Pawn)req.Thing);
         ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
         if (comp == null)
         {

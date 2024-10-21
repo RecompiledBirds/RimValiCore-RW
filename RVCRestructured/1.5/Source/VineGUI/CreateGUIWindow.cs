@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
-using Verse;
 
 namespace NesGUI;
 
-public class CreateItemWinow : Window
+public class CreateItemWindow(Type type, GUITextElement.TextElemType textType = GUITextElement.TextElemType.Button, TextAnchor anchor = TextAnchor.MiddleLeft, GameFont font = GameFont.Tiny) : Window
 {
     public override void OnCancelKeyPressed()
     {
         //Do nothing
     }
+
     public override void OnAcceptKeyPressed()
     {
         //Do nothing
     }
+
     public override Vector2 InitialSize
     {
         get
@@ -21,25 +22,15 @@ public class CreateItemWinow : Window
         }
     }
 
-
-
-
-    public CreateItemWinow(Type type, GUITextElement.TextElemType textType = GUITextElement.TextElemType.Button, TextAnchor anchor = TextAnchor.MiddleLeft, GameFont font = GameFont.Tiny)
-    {
-        itemToMakeType = type;
-        elemType = textType;
-        this.font = font;
-        this.anchor = anchor;
-    }
-    private readonly Type itemToMakeType;
-    private TextAnchor anchor;
-    private GameFont font;
-    private readonly GUITextElement.TextElemType elemType;
-    private string xSizeBuffer;
-    private string ySizeBuffer;
-    private string xTwoSizeBuffer;
-    private string yTwoSizeBuffer;
-    private GUIRect rectTouse;
+    private readonly Type itemToMakeType = type;
+    private TextAnchor anchor = anchor;
+    private GameFont font = font;
+    private readonly GUITextElement.TextElemType elemType = textType;
+    private string xSizeBuffer = string.Empty;
+    private string ySizeBuffer = string.Empty;
+    private string xTwoSizeBuffer = string.Empty;
+    private string yTwoSizeBuffer = string.Empty;
+    private GUIRect? rectToUse;
 
     public List<FloatMenuOption> GetFonts()
     {
@@ -70,22 +61,21 @@ public class CreateItemWinow : Window
         return res;
     }
 
-    public List<FloatMenuOption> rectList()
+    public List<FloatMenuOption> RectList()
     {
         List<FloatMenuOption> result = [];
-        foreach (GUIRect i in GuiMaker.Rectangles)
+        foreach (GUIRect rect in GuiMaker.Rectangles.Cast<GUIRect>())
         {
-            result.Add(new FloatMenuOption(i.name, delegate ()
+            result.Add(new FloatMenuOption(rect.Name, delegate ()
             {
-                rectTouse = i;
+                rectToUse = rect;
             }));
         }
+
         return result;
     }
 
-
-
-    string name;
+    private string? name;
     public override void DoWindowContents(Rect inRect)
     {
         Text.Font = GameFont.Small;
@@ -94,17 +84,14 @@ public class CreateItemWinow : Window
         {
             Close();
         }
+
         Rect labelRect = new(new Vector2(inRect.x, 10), new Vector2(inRect.xMax, 40));
         if (itemToMakeType == typeof(GUIRect))
         {
             Vector2 size = new(100, 100);
             Vector2 pos = new(0, 0);
             //COMPILED BY NESGUI
-            //Prepare varibles
-
-            GameFont prevFont = Text.Font;
-            TextAnchor textAnchor = Text.Anchor;
-
+            
             //Rect pass
 
             Rect createrectanglelabel = new(new Vector2(10f, 10f), new Vector2(540f, 30f));
@@ -117,8 +104,8 @@ public class CreateItemWinow : Window
 
             //Button pass
 
-            prevFont = Text.Font;
-            textAnchor = Text.Anchor;
+            GameFont prevFont = Text.Font;
+            TextAnchor textAnchor = Text.Anchor;
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
 
@@ -205,7 +192,7 @@ public class CreateItemWinow : Window
             Widgets.DrawLine(new Vector2(posOne.x, posOne.y + 80), new Vector2(posTwo.x, posTwo.y + 80), Color.white, 1);
 
             Rect createRect = new(new Vector2(inRect.x, rectSizePos * 3), new Vector2(inRect.xMax, 40));
-            if (Widgets.ButtonText(createRect, "Create!") && rectTouse != null)
+            if (Widgets.ButtonText(createRect, "Create!") && rectToUse != null)
             {
                 //GuiMaker.MakeLine(posOne, posTwo, name);
                 Close();
@@ -216,9 +203,6 @@ public class CreateItemWinow : Window
         {
             //COMPILED BY NESGUI
             //Prepare varibles
-
-            GameFont prevFont = Text.Font;
-            TextAnchor textAnchor = Text.Anchor;
 
             //Rect pass
 
@@ -251,8 +235,8 @@ public class CreateItemWinow : Window
 
             Widgets.Label(namelabel, "Set name/label:");
 
-            prevFont = Text.Font;
-            textAnchor = Text.Anchor;
+            GameFont prevFont = Text.Font;
+            TextAnchor textAnchor = Text.Anchor;
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.MiddleLeft;
 
@@ -270,7 +254,7 @@ public class CreateItemWinow : Window
             //END NESGUI CODE
             if (AssignRect)
             {
-                Find.WindowStack.Add(new FloatMenu(rectList()));
+                Find.WindowStack.Add(new FloatMenu(RectList()));
             }
             if (Setfont)
             {
@@ -280,26 +264,26 @@ public class CreateItemWinow : Window
             {
                 Find.WindowStack.Add(new FloatMenu(GetAnchors()));
             }
-            if (Create && rectTouse != null && !name.NullOrEmpty())
+            if (Create && rectToUse != null && !name.NullOrEmpty())
             {
                 if (GUITextElement.TextElemType.Button == elemType)
                 {
-                    GuiMaker.MakeButton(rectTouse, name, anchor, font);
+                    GuiMaker.MakeButton(rectToUse, name, anchor, font);
                     return;
                 }
                 if (GUITextElement.TextElemType.Label == elemType)
                 {
-                    GuiMaker.MakeLabel(rectTouse, name, anchor, font);
+                    GuiMaker.MakeLabel(rectToUse, name, anchor, font);
                     return;
                 }
                 if (GUITextElement.TextElemType.Checkbox == elemType)
                 {
-                    GuiMaker.MakeCheckBox(rectTouse, name, anchor, font);
+                    GuiMaker.MakeCheckBox(rectToUse, name, anchor, font);
                     return;
                 }
                 if (GUITextElement.TextElemType.Textfield == elemType)
                 {
-                    GuiMaker.MakeTextField(rectTouse, name, anchor, font);
+                    GuiMaker.MakeTextField(rectToUse, name, anchor, font);
                     return;
                 }
                 Close();

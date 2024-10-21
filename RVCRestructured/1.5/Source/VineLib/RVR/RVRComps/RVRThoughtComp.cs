@@ -5,9 +5,10 @@ namespace RVCRestructured;
 
 public class ReplaceThought
 {
-    public ThoughtDef toReplace;
-    public ThoughtDef replacer;
+    public readonly ThoughtDef toReplace = null!;
+    public readonly ThoughtDef replacer = null!;
 }
+
 public class RVRThoughtComp : CompProperties
 {
     public List<ReplaceThought> thoughtReplacers = [];
@@ -40,11 +41,5 @@ public class RVRThoughtComp : CompProperties
 
 public class ThoughtComp : ThingComp
 {
-    public RVRThoughtComp Props
-    {
-        get
-        {
-            return props as RVRThoughtComp;
-        }
-    }
+    public RVRThoughtComp Props => (RVRThoughtComp)props;
 }

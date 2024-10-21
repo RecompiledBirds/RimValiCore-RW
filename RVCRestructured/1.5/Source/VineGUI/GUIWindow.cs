@@ -38,11 +38,10 @@ public class OpenGUIWindow : MainButtonWorker
 public static class DebugActionsMisc
 {
     [DebugAction("Mods", null, false, false, allowedGameStates = AllowedGameStates.Entry)]
-    private static void ActivateNesGuiWindow()
+    public static void ActivateNesGuiWindow()
     {
         Find.WindowStack.Add(new NesGUIWindow());
     }
-            
 }
 
 public class NesGUIWindow : Window
@@ -57,10 +56,10 @@ public class NesGUIWindow : Window
 
     private static Vector2 rectSize = new(100, 100);
     private static Vector2 rectPos = new(0, 0);
-    private string xSizeBuffer;
-    private string ySizeBuffer;
-    private string xPosBuffer;
-    private string yPosBuffer;
+    private string xSizeBuffer = string.Empty;
+    private string ySizeBuffer = string.Empty;
+    private string xPosBuffer = string.Empty;
+    private string yPosBuffer = string.Empty;
 
     public List<FloatMenuOption> GetItemOptions()
     {
@@ -68,19 +67,19 @@ public class NesGUIWindow : Window
         [
             new FloatMenuOption("Rectangle", delegate ()
             {
-                Find.WindowStack.Add(new CreateItemWinow(typeof(GUIRect)));
+                Find.WindowStack.Add(new CreateItemWindow(typeof(GUIRect)));
             }),
             new FloatMenuOption("Button", delegate ()
             {
-                Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement)));
+                Find.WindowStack.Add(new CreateItemWindow(typeof(GUITextElement)));
             }),
             new FloatMenuOption("CheckBox", delegate ()
             {
-                Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement),GUITextElement.TextElemType.Checkbox));
+                Find.WindowStack.Add(new CreateItemWindow(typeof(GUITextElement),GUITextElement.TextElemType.Checkbox));
             }),
             new FloatMenuOption("Label", delegate ()
             {
-                Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement),GUITextElement.TextElemType.Label));
+                Find.WindowStack.Add(new CreateItemWindow(typeof(GUITextElement),GUITextElement.TextElemType.Label));
             }),
             /*new FloatMenuOption("Line", delegate ()
             {
@@ -88,7 +87,7 @@ public class NesGUIWindow : Window
             }),*/
               new FloatMenuOption("Textfield", delegate ()
             {
-                Find.WindowStack.Add(new CreateItemWinow(typeof(GUITextElement),GUITextElement.TextElemType.Textfield));
+                Find.WindowStack.Add(new CreateItemWindow(typeof(GUITextElement),GUITextElement.TextElemType.Textfield));
             })
         ];
 
@@ -102,7 +101,7 @@ public class NesGUIWindow : Window
 
         foreach (GUIItem i in GuiMaker.Items)
         {
-            result.Add(new FloatMenuOption(i.name, delegate () {
+            result.Add(new FloatMenuOption(i.Name, delegate () {
                 Find.WindowStack.Add(new EditableItemWindow(i));
             }));
         }
@@ -197,7 +196,7 @@ public class NesGUIWindow : Window
 
         foreach (GUIItem item in GuiMaker.Items)
         {
-            res.Add(new FloatMenuOption($"{item.name}", delegate ()
+            res.Add(new FloatMenuOption($"{item.Name}", delegate ()
             {
                 GuiMaker.DeleteItem(item);
             }));
@@ -211,7 +210,7 @@ public class NesGUIWindow : Window
 
         foreach (GUIItem rect in GuiMaker.Rectangles)
         {
-            res.Add(new FloatMenuOption($"{rect.name} {(IsEnabled(rect) ? "(on)":"(off)")}", delegate()
+            res.Add(new FloatMenuOption($"{rect.Name} {(IsEnabled(rect) ? "(on)":"(off)")}", delegate()
             {
                 if (!GuiMaker.enabledRects.ContainsKey(rect))
                 {

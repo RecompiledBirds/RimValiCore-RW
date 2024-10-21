@@ -1,14 +1,11 @@
 ﻿using UnityEngine;
-using Verse;
+
 namespace NesGUI;
 
 public class GUILine : GUIItem
 {
 
 }
-
-
-
 
 public class GUITextElement : GUIItem
 {
@@ -47,11 +44,11 @@ public class GUITextElement : GUIItem
         Checkbox
     }
     readonly TextElemType type;
-    public GUITextElement(GUIRect rect, string label, string name, TextAnchor anchor, GameFont font,TextElemType type = TextElemType.Button)
+    public GUITextElement(GUIRect rect, string label, string name, TextAnchor anchor, GameFont font, TextElemType type = TextElemType.Button)
     {
-        parent = rect;
-        this.label = label;
-        this.name = name;
+        Parent = rect;
+        this.Label = label;
+        this.Name = name;
         this.type = type;
         this.font = font;
         this.anchor = anchor;
@@ -62,20 +59,21 @@ public class GUITextElement : GUIItem
         GameFont prevFont = Text.Font;
         Text.Anchor = anchor;
         Text.Font = font;
-        if (TextElemType.Button==type)
+        if (TextElemType.Button == type)
         {
-            Widgets.ButtonText(GetRectWithOffset, label);
+            Widgets.ButtonText(GetRectWithOffset, Label);
         }
-        else if(TextElemType.Label==type)
+        else if (TextElemType.Label == type)
         {
-            Widgets.Label(GetRectWithOffset, label);
-        }else if (TextElemType.Textfield == type)
+            Widgets.Label(GetRectWithOffset, Label);
+        }
+        else if (TextElemType.Textfield == type)
         {
-            label = Widgets.TextField(GetRectWithOffset, label);
+            Label = Widgets.TextField(GetRectWithOffset, Label);
         }
         else
         {
-            Widgets.CheckboxLabeled(GetRectWithOffset, label, ref placeholder);
+            Widgets.CheckboxLabeled(GetRectWithOffset, Label, ref placeholder);
         }
         Text.Anchor = prevAnchor;
         Text.Font = prevFont;
@@ -84,7 +82,7 @@ public class GUITextElement : GUIItem
     {
 
         GuiMaker.Remove(this, type == TextElemType.Button ? "buttons" : type == TextElemType.Label ? "labels" : type == TextElemType.Checkbox ? "checkboxes" : "textfields");
-        
+
         base.Delete();
     }
 }
@@ -98,12 +96,12 @@ public class GUIRect : GUIItem
     {
         get
         {
-            return GuiMaker.Items.Where(x => x.parent == this).ToList();
+            return GuiMaker.Items.Where(x => x.Parent == this).ToList();
         }
     }
     public GUIRect(Vector2 pos, Vector2 size, string name)
     {
-        this.name = name;
+        this.Name = name;
         this.size = size;
         this.pos = pos;
         rect = new Rect(pos, size);
@@ -122,21 +120,21 @@ public class GUIRect : GUIItem
             Rect r = new(new Vector2(pos.x, pos.y + 50), rect.size);
 
             Widgets.DrawBoxSolidWithOutline(r, Color.clear, Color.red);
-            Widgets.Label(r, name);
+            Widgets.Label(r, Name);
         }
-        else if(GuiMaker.enabledRects[this])
+        else if (GuiMaker.enabledRects[this])
         {
             Rect r = new(new Vector2(pos.x, pos.y + 50), rect.size);
 
             Widgets.DrawBoxSolidWithOutline(r, Color.clear, Color.red);
-            Widgets.Label(r, name);
+            Widgets.Label(r, Name);
         }
         base.Draw();
     }
     public override void Delete()
     {
         GuiMaker.Remove(this, "rects");
-        foreach(GUIItem child in Children)
+        foreach (GUIItem child in Children)
         {
             child.Delete();
         }
@@ -147,67 +145,55 @@ public class GUIRect : GUIItem
 //TODO: Seperate GUITypes into seperate types, inheriting from GUIItem
 public class GUIItem
 {
-   
+    private GUIRect? parent = null;
+
+    public GUIRect Parent
+    {
+        get => parent ?? throw new NullReferenceException();
+        set => parent = value;
+    }
+
     public Vector2 posOne;
     public Vector2 posTwo;
     public Color color;
 
-    public GUIRect parent;
     public virtual void Draw()
     {
 
     }
+
     public virtual void Delete()
     {
 
     }
-    
 
+    public Rect GetRectWithOffset => new(new Vector2(GetRect.position.x, GetRect.position.y + 50), GetRect.size);
+    public Rect GetRect => Parent.rect;
 
-    
-
-    public Rect GetRectWithOffset
-    {
-        get
-        {
-            return new Rect(new Vector2(GetRect.position.x, GetRect.position.y+50) , GetRect.size);
-        }
-    }
-    public Rect GetRect
-    {
-        get
-        {
-            return parent.rect;
-        }
-    }
-   
     public Vector2 Size
     {
-        get
-        {
-            return parent.size;
-        }
-        set
-        {
-            parent.size = value;
-        }
+        get => Parent.size;
+        set => Parent.size = value;
     }
 
     public Vector2 Pos
     {
-        get
-        {
-            return parent.pos;
-        }
-        set
-        {
-            parent.pos = value;
-        }
+        get => Parent.pos;
+        set => Parent.pos = value;
     }
 
-    
+    public string Name 
+    { 
+        get => name ?? throw new NullReferenceException(); 
+        set => name = value; 
+    }
 
-    public string label;
-    public string name;
+    public string Label 
+    { 
+        get => label ?? throw new NullReferenceException(); 
+        set => label = value; 
+    }
 
+    private string? label;
+    private string? name;
 }

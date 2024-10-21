@@ -31,21 +31,14 @@ public class ShapeshifterComp : ThingComp
     }
 
 
-    private XenotypeDef baseXenoTypeDef;
-    private ThingDef currentForm;
-    private BodyTypeDef mimickedBody;
-    private HeadTypeDef mimickedHead;
+    private XenotypeDef? baseXenoTypeDef = null;
+    private ThingDef? currentForm = null;
+    private BodyTypeDef? mimickedBody = null;
+    private HeadTypeDef? mimickedHead = null;
 
-    public XenotypeDef BaseXenoType
-    {
-        get
-        {
+    public XenotypeDef BaseXenoTypeDef => baseXenoTypeDef ?? throw new NullReferenceException();
 
-            return baseXenoTypeDef;
-        }
-    }
-
-    private RaceProperties raceProperties = null;
+    private RaceProperties raceProperties = null!;
     public virtual RaceProperties RaceProperties
     {
         get
@@ -53,21 +46,16 @@ public class ShapeshifterComp : ThingComp
             if (raceProperties == null)
             {
                 raceProperties = CurrentForm.race;
-                FieldInfo field = typeof(RaceProperties).GetField("intelligence", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                field.SetValue(raceProperties, Intelligence.Humanlike);
+                FieldInfo fieldInfo = typeof(RaceProperties).GetField("intelligence", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                fieldInfo.SetValue(raceProperties, Intelligence.Humanlike);
             }
+
             return raceProperties;
         }
     }
     private readonly List<ThingComp> comps = [];
 
-    public List<ThingComp> Comps
-    {
-        get
-        {
-            return comps;
-        }
-    }
+    public List<ThingComp> Comps => comps;
 
     public virtual BodyTypeDef MimickedBodyType
     {
@@ -75,8 +63,8 @@ public class ShapeshifterComp : ThingComp
         {
             if(mimickedBody == null)
             {
-                Pawn p = parent as Pawn;
-                mimickedBody = p.story.bodyType;
+                Pawn pawn = (Pawn)parent;
+                mimickedBody = pawn.story.bodyType;
             }
             return mimickedBody;
         }
@@ -88,59 +76,34 @@ public class ShapeshifterComp : ThingComp
         get {
             if (mimickedHead == null)
             {
-                Pawn p = parent as Pawn;
-                mimickedHead = p.story.headType;
+                Pawn pawn = (Pawn)parent;
+                mimickedHead = pawn.story.headType;
             }
             return mimickedHead; }
     }
 
-    public virtual ThingDef CurrentForm
-    {
-        get
-        {
-            if(currentForm == null)
-            {
-                currentForm = parent.def;
-            }
-            return currentForm;
-        }
-    }
+    public virtual ThingDef CurrentForm => currentForm ??= parent.def;
 
-    public virtual ModContentPack ContentPack
-    {
-        get
-        {
-            return CurrentForm.modContentPack;
-        }
-    }
+    public virtual ModContentPack ContentPack => CurrentForm.modContentPack;
 
     /// <summary>
     /// Is the parent the same def as our parent?
     /// </summary>
     /// <returns></returns>
-    public virtual bool IsParentDef()
-    {
-        return IsDef(parent.def);
-    }
+    public virtual bool IsParentDef() => IsDef(parent.def);
 
     /// <summary>
     /// Is the parent.def the given def?
     /// </summary>
     /// <param name="def"></param>
     /// <returns></returns>
-    public virtual bool IsDef(ThingDef def)
-    {
-        return def == CurrentForm;
-    }
+    public virtual bool IsDef(ThingDef def) => def == CurrentForm;
 
     /// <summary>
     /// Returns the label of the currently shifted race.
     /// </summary>
     /// <returns></returns>
-    public virtual string Label()
-    {
-        return CurrentForm.label;
-    }
+    public virtual string Label() => CurrentForm.label;
 
 
 
@@ -149,18 +112,15 @@ public class ShapeshifterComp : ThingComp
     /// </summary>
     /// <typeparam name="T">Type of CompProperties to retrieve</typeparam>
     /// <returns></returns>
-    public virtual T GetCompProperties<T>() where T : CompProperties
-    {
-        return CurrentForm.GetCompProperties<T>();
-    }
+    public virtual T GetCompProperties<T>() where T : CompProperties => CurrentForm.GetCompProperties<T>();
 
- 
+
 
     public override void PostSpawnSetup(bool respawningAfterLoad)
     {
         base.PostSpawnSetup(respawningAfterLoad);
         if (baseXenoTypeDef == null) return;
-        Pawn pawn = parent as Pawn;
+        Pawn pawn = (Pawn)parent;
         if(ModLister.BiotechInstalled)
             baseXenoTypeDef = pawn.genes.Xenotype;           
     }
@@ -169,19 +129,16 @@ public class ShapeshifterComp : ThingComp
     /// Sets the current def and xenotype to that of the given pawn
     /// </summary>
     /// <param name="pawn"></param>
-    public virtual void SetForm(Pawn pawn)
-    {
-        SetForm(pawn, null);
-    }
+    public virtual void SetForm(Pawn pawn) => SetForm(pawn, null);
 
     /// <summary>
     /// Sets the form to the given pawns def, bodytype, headtype, and either the given xenotype, pawn's xenotype, or baseliner.
     /// </summary>
     /// <param name="pawn"></param>
     /// <param name="xenotypeDef"></param>
-    public virtual void SetForm(Pawn pawn, XenotypeDef xenotypeDef = null)
+    public virtual void SetForm(Pawn pawn, XenotypeDef? xenotypeDef = null)
     {
-        xenotypeDef = xenotypeDef ?? (pawn.genes?.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner);
+        xenotypeDef ??= (pawn.genes?.Xenogenes != null ? pawn.genes.Xenotype : XenotypeDefOf.Baseliner);
 
         if (pawn.story != null)
         {
@@ -198,7 +155,7 @@ public class ShapeshifterComp : ThingComp
 
         XenotypeDef def = xenotypeDef;
         parentPawn.genes.SetXenotype(def);
-        SetGenes(def, baseXenoTypeDef);
+        SetGenes(def, BaseXenoTypeDef);
     }
 
     public virtual void SetForm(ThingDef def, XenotypeDef xenotypeDef, BodyTypeDef bodyTypeDef)
@@ -217,21 +174,21 @@ public class ShapeshifterComp : ThingComp
         if (!ModLister.BiotechInstalled) return;
 
         parentPawn.genes.SetXenotype(xenotypeDef);
-        SetGenes(xenotypeDef, baseXenoTypeDef);
+        SetGenes(xenotypeDef, BaseXenoTypeDef);
     }
 
     private Pawn GetParentPawnAndSetBaseXenoType()
     {
-        Pawn parentPawn = parent as Pawn;
-        baseXenoTypeDef = baseXenoTypeDef ?? parentPawn.genes.Xenotype;
+        Pawn parentPawn = (Pawn)parent;
+        baseXenoTypeDef ??= parentPawn.genes.Xenotype;
         return parentPawn;
     }
 
-    public virtual void SetForm(ThingDef def,BodyTypeDef bodyTypeDef =null, bool log = true, bool generating = false)
+    public virtual void SetForm(ThingDef def, BodyTypeDef? bodyTypeDef = null, bool log = true, bool generating = false)
     {
         currentForm = def;
 
-        Pawn pawn = parent as Pawn;
+        Pawn pawn = (Pawn)parent;
         
         if(log)
             RVCLog.MSG($"{pawn.Name.ToStringShort} became {currentForm}",debugOnly:true);
@@ -255,17 +212,17 @@ public class ShapeshifterComp : ThingComp
 
     public virtual bool FormUnstable()
     {
-        Pawn p = parent as Pawn;
-        return HealthUtility.IsMissingSightBodyPart(p) || HealthUtility.TicksUntilDeathDueToBloodLoss(p) < 60000 || p.Downed || p.Dead;
+        Pawn pawn = (Pawn)parent;
+        return HealthUtility.IsMissingSightBodyPart(pawn) || HealthUtility.TicksUntilDeathDueToBloodLoss(pawn) < 60000 || pawn.Downed || pawn.Dead;
     }
 
     public void RevertGenes()
     {
         if (!ModLister.BiotechInstalled) return;
         
-        Pawn parentPawn = parent as Pawn;
+        Pawn parentPawn = (Pawn)parent;
         XenotypeDef def = parentPawn.genes.Xenotype;
-        if (baseXenoTypeDef == null) { baseXenoTypeDef = XenotypeDefOf.Baseliner; }
+        baseXenoTypeDef ??= XenotypeDefOf.Baseliner;
         parentPawn.genes.SetXenotype(baseXenoTypeDef);
         SetGenes(baseXenoTypeDef, def);
     }
@@ -281,14 +238,15 @@ public class ShapeshifterComp : ThingComp
 
     public void SetGenes(XenotypeDef xenotype, XenotypeDef from)
     {
-        Pawn parentPawn = parent as Pawn;
+        Pawn parentPawn = (Pawn)parent;
         foreach (GeneDef def in xenotype.AllGenes)
         {
             parentPawn.genes.AddGene(def, !xenotype.inheritable);
         }
+
         foreach(GeneDef def in from.AllGenes)
         {
-            if (!parentPawn.genes.HasGene(def)) continue;
+            if (!parentPawn.genes.HasActiveGene(def)) continue;
             parentPawn.genes.RemoveGene(parentPawn.genes.GetGene(def));
         }
     }
@@ -357,7 +315,8 @@ public class ShapeshifterComp : ThingComp
         foreach (CompProperties properties in def.comps)
         {
             if (!CanCopyComp(properties)) continue;
-            ThingComp thingComp = null;
+            
+            ThingComp? thingComp = null;
             try
             {
                 thingComp = (ThingComp)Activator.CreateInstance(properties.compClass);
@@ -368,7 +327,8 @@ public class ShapeshifterComp : ThingComp
             catch (Exception arg)
             {
                 Log.Error("Could not instantiate or initialize a ThingComp: " + arg);
-                comps.Remove(thingComp);
+                
+                if (thingComp != null) comps.Remove(thingComp);
             }
         }
     }
@@ -402,7 +362,7 @@ public class ShapeshifterComp : ThingComp
     public virtual float OffsetStat(StatDef stat)
     {
         float result = 0;
-        Pawn pawn = parent as Pawn;
+        Pawn pawn = (Pawn)parent;
         if (IsParentDef()) return result;
         
         result -= pawn.def.statBases.GetStatOffsetFromList(stat);

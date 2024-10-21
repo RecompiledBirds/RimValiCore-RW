@@ -24,7 +24,7 @@ public static class CanGrowPrefix
         float temperature = c.GetTemperature(map);
         if (props != null)
         {
-            return temperature > props.minPreferredTemp && temperature < props.maxPreferredTemp;
+            return temperature > props.MinPreferredTemp && temperature < props.MaxPreferredTemp;
         }
 
         Room roomOrAdjacent = c.GetRoomOrAdjacent(map, RegionType.Set_All);

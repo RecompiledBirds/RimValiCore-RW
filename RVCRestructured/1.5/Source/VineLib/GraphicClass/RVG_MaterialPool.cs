@@ -7,7 +7,7 @@ public class RVG_MaterialPool
 {
     private static readonly Dictionary<RVG_MaterialRequest, Material> matDictionary = [];
 
-    public static Material MatFrom(RVG_MaterialRequest req)
+    public static Material? MatFrom(RVG_MaterialRequest req)
     {
         //Log.Message("thisine");
         if (!UnityData.IsInMainThread)
@@ -15,15 +15,17 @@ public class RVG_MaterialPool
             Log.Error("Tried to get a material from a different thread.");
             return null;
         }
+
         if (req.mainTex == null)
         {
             Log.Error("MatFrom with null sourceTex.");
-            return RVGBaseContent.BadMat;
+            return null;
         }
+
         if (req.shader == null)
         {
             Log.Warning("Matfrom with null shader.");
-            return RVGBaseContent.BadMat;
+            return null;
         }
         /*
 			if (req.maskTex != null && !req.shader.SupportsMaskTex())
@@ -57,13 +59,13 @@ public class RVG_MaterialPool
                 material.renderQueue = req.renderQueue;
             }
 
-            if (!req.shaderParameters.NullOrEmpty())
+            if (!req.ShaderParameters.NullOrEmpty())
             {
-                int c = req.shaderParameters.Count;
+                int c = req.ShaderParameters.Count;
                 for (int i = 0; i < c; i++)
                 {
-                    RVCLog.Log(req.shaderParameters[i]);
-                    req.shaderParameters[i].Apply(material);
+                    RVCLog.Log(req.ShaderParameters[i]);
+                    req.ShaderParameters[i].Apply(material);
                 }
             }
 

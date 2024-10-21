@@ -22,8 +22,8 @@ public static class XenoTypeGenPatch
             return;
         }
 
-        List<XenotypeDef> onlyAllowedXenoTypes = comp.restrictions[RestrictionType.XenotypeDef].Where(info => info.IsRequired).Select(info => info.Def as XenotypeDef).ToList();
-        if (onlyAllowedXenoTypes?.Count > 0)
+        XenotypeDef[] onlyAllowedXenoTypes = comp.restrictions[RestrictionType.XenotypeDef].Where(info => info.IsRequired).Select(info => (XenotypeDef)info.Def).ToArray();
+        if (onlyAllowedXenoTypes?.Length > 0)
         {
             __result = onlyAllowedXenoTypes.Contains(__result) ? __result : onlyAllowedXenoTypes.RandomElement();
             return;

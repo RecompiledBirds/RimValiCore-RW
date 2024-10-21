@@ -10,9 +10,9 @@ public static class NesGUI_OutputGen
     public static void ReadRects()
     {
         int rects = 0;
-        foreach(GUIRect item in GuiMaker.Rectangles)
+        foreach(GUIRect item in GuiMaker.Rectangles.Cast<GUIRect>())
         {
-            string varName = item.name;
+            string varName = item.Name;
             varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
             
             program.AppendLine($"Rect {varName} = new Rect(new Vector2({item.pos.x}f,{item.pos.y}f),new Vector2({item.size.x}f,{item.size.y}f));");
@@ -26,9 +26,9 @@ public static class NesGUI_OutputGen
         int buttons = 0;
         foreach (GUIItem button in GuiMaker.Buttons)
         {
-            string rectName = button.parent.name;
+            string rectName = button.Parent.Name;
             rectName= new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-            string varName = button.name;
+            string varName = button.Name;
             varName = new string(varName.ToCharArray().Where(ch=>!char.IsWhiteSpace(ch)).ToArray());
 
 
@@ -39,7 +39,7 @@ public static class NesGUI_OutputGen
             program.AppendLine($"Text.Anchor = TextAnchor.{anchorName};");
 
             program.AppendLine();
-            program.AppendLine($"bool {varName} = Widgets.ButtonText({rectName},\"{button.label}\");");
+            program.AppendLine($"bool {varName} = Widgets.ButtonText({rectName},\"{button.Label}\");");
             program.AppendLine();
 
             program.AppendLine($"Text.Font = prevFont;");
@@ -56,9 +56,9 @@ public static class NesGUI_OutputGen
         int labels = 0;
         foreach (GUIItem label in GuiMaker.Labels)
         {
-            string rectName = label.parent.name;
+            string rectName = label.Parent.Name;
             rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-            string varName = label.name;
+            string varName = label.Name;
             varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
 
             GUITextElement elem = (GUITextElement)label;
@@ -71,7 +71,7 @@ public static class NesGUI_OutputGen
             
             program.AppendLine();
             
-            program.AppendLine($"Widgets.Label({rectName},\"{label.label}\");");
+            program.AppendLine($"Widgets.Label({rectName},\"{label.Label}\");");
             
             program.AppendLine();
 
@@ -88,9 +88,9 @@ public static class NesGUI_OutputGen
         int tf = 0;
         foreach (GUIItem field in GuiMaker.Textfields)
         {
-            string rectName = field.parent.name;
+            string rectName = field.Parent.Name;
             rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-            string varName = field.name;
+            string varName = field.Name;
             varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
             //Get current font & anchor
             GUITextElement elem = (GUITextElement)field;
@@ -124,9 +124,9 @@ public static class NesGUI_OutputGen
         int box = 0;
         foreach (GUIItem checkbox in GuiMaker.Checkboxes)
         {
-            string rectName = checkbox.parent.name;
+            string rectName = checkbox.Parent.Name;
             rectName = new string(rectName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
-            string varName = checkbox.name;
+            string varName = checkbox.Name;
             varName = new string(varName.ToCharArray().Where(ch => !char.IsWhiteSpace(ch)).ToArray());
 
             GUITextElement elem = (GUITextElement)checkbox;
@@ -138,7 +138,7 @@ public static class NesGUI_OutputGen
 
             program.AppendLine();
             program.AppendLine($"bool {varName} = false;");
-            program.AppendLine($" Widgets.CheckboxLabeled({rectName},\"{checkbox.label}\",ref {varName});");
+            program.AppendLine($" Widgets.CheckboxLabeled({rectName},\"{checkbox.Label}\",ref {varName});");
             program.AppendLine();
 
             program.AppendLine($"Text.Font = prevFont;");
@@ -148,10 +148,9 @@ public static class NesGUI_OutputGen
         Log.Message($"Read {box} boxes.");
     }
 
-    static string path;
     public static void ReadAndWriteGUI()
     {
-        path = Path.GetFullPath(Path.Combine(Application.dataPath, @"..\"));
+        string path = Path.GetFullPath(Path.Combine(Application.dataPath, @"..\"));
         path = $"{path}NesGUI/Output";
         if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
         path += "/output.txt";

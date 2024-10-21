@@ -1,36 +1,26 @@
 ﻿using UnityEngine;
-using Verse;
 
 namespace RVCRestructured.Graphics;
 
-public class RVG_Graphic : Graphic
+public abstract class RVG_Graphic : Graphic
 {
     public Color colorThree = Color.white;
 
-    public new RVG_GraphicData data;
+    public new RVG_GraphicData? data;
 
-    private RVG_Graphic cachedShadowlessGraphic;
+    private RVG_Graphic? cachedShadowlessGraphic;
 
-    [Obsolete]
-    public override Graphic GetCopy(Vector2 newDrawSize)
+    public abstract RVG_Graphic GetColoredVersion(Color color, Color colorTwo, Color ColorThree);
+
+    public override Graphic? GetShadowlessGraphic()
     {
-        return RVG_GraphicDataBase.Get(GetType(), path, drawSize, color, colorTwo, colorThree);
-    }
+        if (data == null || data.shadowData == null) return this;
+        if (cachedShadowlessGraphic != null) return cachedShadowlessGraphic;
 
-    public virtual RVG_Graphic GetColoredVersion(Color color, Color colorTwo, Color ColorThree)
-    {
-        return RVGBaseContent.BadGraphic;
-    }
-
-    public override Graphic GetShadowlessGraphic()
-    {
-        if (data == null || data.shadowData == null)
-            return this;
-        if (cachedShadowlessGraphic != null)
-            return cachedShadowlessGraphic;
         RVG_GraphicData graphicData = new();
         graphicData.CopyFrom(data);
         graphicData.shadowData = null;
+
         cachedShadowlessGraphic = graphicData.Graphic;
         return cachedShadowlessGraphic;
     }

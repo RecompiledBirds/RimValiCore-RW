@@ -10,7 +10,7 @@ public static class TempThreshPrefix
         RVCPlantComp plantComp = __instance.TryGetComp<RVCPlantComp>();
         if (plantComp != null)
         {
-            __result = plantComp.Props.minPreferredTemp - 8;
+            __result = plantComp.Props.MinPreferredTemp - 8;
 
 
             return false;

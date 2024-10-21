@@ -38,13 +38,13 @@ public class EditorWindow : Window
     private readonly Rect RectInfoBox;
 
     private Dictionary<string, TriColorSet> colorSets = [];
-    private Rect[] RectColorFields;
+    private Rect[] RectColorFields = [];
     private Rect RectColorSelectInner;
     private Rect RectPawnSelectInner;
     private Vector2 PawnSelectorScroll;
     private Vector2 ColorSelectorScroll;
 
-    private Pawn selectedPawn;
+    private Pawn? selectedPawn;
 
     public override Vector2 InitialSize => RectWindowMain.size;
 
@@ -115,7 +115,7 @@ public class EditorWindow : Window
 
     private Pawn SelectedPawn
     {
-        get => selectedPawn;
+        get => selectedPawn ?? throw new NullReferenceException();
         set
         {
             selectedPawn = value;
@@ -215,7 +215,7 @@ public class EditorWindow : Window
                     if (Widgets.ButtonInvisible(rectColorColor))
                     {
                         int k = i; //save the current i to k so that the value of i isn't overridden during the for loop
-                        Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { VineSettings.savedColors = newSavedColors.ToList(); RimValiCore.settings.Write(); }, kvp.Value.Colors[k], VineSettings.savedColors.ToArray()));
+                        Find.WindowStack.Add(new ColorPickerWindow(color => SetColor(color, kvp, k), (newSavedColors) => { VineSettings.savedColors = newSavedColors.ToList(); RimValiCore.Settings.Write(); }, kvp.Value.Colors[k], VineSettings.savedColors.ToArray()));
                     }
                     TooltipHandler.TipRegion(rectColorColor, $"RVC_EditColor".Translate());
                 }

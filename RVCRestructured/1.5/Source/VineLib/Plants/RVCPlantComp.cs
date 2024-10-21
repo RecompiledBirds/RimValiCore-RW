@@ -1,11 +1,13 @@
-﻿using Verse;
-
-namespace RVCRestructured.Plants;
+﻿namespace RVCRestructured.Plants;
 
 public class RVCPlantCompProperties : CompProperties
 {
-    public float minPreferredTemp;
-    public float maxPreferredTemp;
+    private readonly float minPreferredTemp = 0;
+    private readonly float maxPreferredTemp = 0;
+
+    public float MinPreferredTemp => minPreferredTemp;
+    public float MaxPreferredTemp => maxPreferredTemp;
+
     public RVCPlantCompProperties()
     {
         compClass = typeof(RVCPlantComp);
@@ -14,11 +16,5 @@ public class RVCPlantCompProperties : CompProperties
 
 public class RVCPlantComp : ThingComp
 {
-    public RVCPlantCompProperties Props
-    {
-        get
-        {
-            return props as RVCPlantCompProperties;
-        }
-    }
+    public RVCPlantCompProperties Props => (RVCPlantCompProperties)props;
 }

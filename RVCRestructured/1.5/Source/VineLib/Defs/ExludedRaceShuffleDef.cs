@@ -1,9 +1,10 @@
-﻿using Verse;
-
-namespace RVCRestructured;
+﻿namespace RVCRestructured;
 
 public class ExcludedRaceShuffleDef : Def
 {
-    public List<PawnKindDef> excludedPawnKinds;
-    public List<ThingDef> excludedRaces;
+    private readonly List<PawnKindDef> excludedPawnKinds = [];
+    private readonly List<ThingDef> excludedRaces = [];
+
+    public List<PawnKindDef> ExcludedPawnKinds => excludedPawnKinds;
+    public List<ThingDef> ExcludedRaces => excludedRaces;
 }

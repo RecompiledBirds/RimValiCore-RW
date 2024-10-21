@@ -49,8 +49,7 @@ public class RVG_Graphic_Multi : RVG_Graphic
 
     public override void Init(RVG_GraphicRequest req)
     {
-        if (req.maskPath == null)
-            req.maskPath = req.path;
+        req.maskPath ??= req.path;
 
         data = req.graphicData;
         path = req.path;
@@ -170,8 +169,8 @@ public class RVG_Graphic_Multi : RVG_Graphic
                     colorTwo = colorTwo,
                     colorThree = colorThree,
                     maskTex = texture2DArray2[index],
-                    shaderParameters = req.shaderParameters
-                });
+                    ShaderParameters = req.shaderParameters ?? []
+                }) ?? throw new NullReferenceException();
             };
         }
     }

@@ -4,9 +4,11 @@ namespace RVCRestructured.Comps;
 
 public class HealableMaterialCompProperties : CompProperties
 {
-    public int amountHealed = 1;
+    private readonly int amountHealed = 1;
+    private readonly int ticksBetweenHeal = 120;
 
-    public int ticksBetweenHeal = 120;
+    public int AmountHealed => amountHealed;
+    public int TicksBetweenHeal => ticksBetweenHeal;
 
     public HealableMaterialCompProperties()
     {
@@ -14,8 +16,7 @@ public class HealableMaterialCompProperties : CompProperties
     }
 }
 
-
 public class HealableMaterialComp : ThingComp
 {
-    public HealableMaterialCompProperties Props => props as HealableMaterialCompProperties;
+    public HealableMaterialCompProperties Props => (HealableMaterialCompProperties)props;
 }

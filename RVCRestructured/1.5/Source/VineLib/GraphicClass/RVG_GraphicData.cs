@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Verse;
 
 namespace RVCRestructured.Graphics;
 
@@ -8,9 +7,7 @@ public class RVG_GraphicData : GraphicData
     public Color colorThree = Color.white;
 
     [Unsaved(false)]
-    private RVG_Graphic cachedGraphic;
-
-
+    private RVG_Graphic? cachedGraphic;
 
     public void Init()
     {
@@ -46,13 +43,11 @@ public class RVG_GraphicData : GraphicData
         cachedGraphic = null;
     }
 
-
-    public new RVG_Graphic Graphic
+    public new RVG_Graphic? Graphic
     {
         get
         {
-            if (cachedGraphic == null)
-                Init();
+            if (cachedGraphic == null) Init();
 
             return cachedGraphic;
         }

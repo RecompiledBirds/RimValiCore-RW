@@ -9,13 +9,13 @@ public static class FactionStartRelations
     {
         foreach (FactionRelationDef factionRelationDef in DefDatabase<FactionRelationDef>.AllDefs)
         {
-            if (__instance.def != factionRelationDef.factionDef)
+            if (__instance.def != factionRelationDef.FactionDef)
                 continue;
-            if (other.def != factionRelationDef.otherFaction)
+            if (other.def != factionRelationDef.OtherFaction)
                 continue;
 
             FactionRelation rel = __instance.RelationWith(other);
-            rel.baseGoodwill = factionRelationDef.opinion;
+            rel.baseGoodwill = factionRelationDef.Opinion;
         }
     }
 }

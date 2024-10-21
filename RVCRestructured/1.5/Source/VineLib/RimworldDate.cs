@@ -51,20 +51,23 @@ public class RimworldDate : IExposable
 
 public class RimworldDeathDate : RimworldDate
 {
-    public Pawn deadPawn;
+    public Pawn? deadPawn;
 
     public RimworldDeathDate(Pawn pawn)
     {
+        deadPawn = pawn;
+        
         if (pawn != null)
         {
-            deadPawn = pawn;
             GetCurrentDate(pawn.Map);
         }
     }
+
     /// <summary>
     /// FOR USE WITH LOADING. DO NOT USE ELSEWHERE.
     /// </summary>
     public RimworldDeathDate() { }
+
     public override void ExposeData()
     {
         Scribe_References.Look(ref deadPawn, "dPawn");

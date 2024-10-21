@@ -28,7 +28,7 @@ public class EditableItemWindow(GUIItem item) : Window
             Close();
         }
 
-        Widgets.Label(editingitemlabel, $"Editing: {editItem.name}");
+        Widgets.Label(editingitemlabel, $"Editing: {editItem.Name}");
         if (editItem is GUIRect rect)
         {
             //COMPILED BY NESGUI
@@ -97,14 +97,14 @@ public class EditableItemWindow(GUIItem item) : Window
             Rect selectFontRect = new(new Vector2(10f, 90f), new Vector2(120f, 40f));
             Rect selectAnchorRect = new(new Vector2(135f, 90f), new Vector2(100f, 40f));
 
-            bool selectRect = Widgets.ButtonText(selectRectButton, editItem.parent == null ? "Aelect rect" : $"Using rec: {editItem.parent.name}");
+            bool selectRect = Widgets.ButtonText(selectRectButton, editItem.Parent == null ? "Aelect rect" : $"Using rec: {editItem.Parent.Name}");
             bool selectFont = Widgets.ButtonText(selectFontRect, "Select font");
             bool selectAnchor = Widgets.ButtonText(selectAnchorRect, "Select anchor");
 
             Widgets.Label(nameInputLabel, "Set name/label:");
             //END NESGUI CODE
-            editItem.name = Widgets.TextField(inputField, editItem.name);
-            editItem.label = editItem.name;
+            editItem.Name = Widgets.TextField(inputField, editItem.Name);
+            editItem.Label = editItem.Name;
 
             if (selectRect)
             {
@@ -128,9 +128,9 @@ public class EditableItemWindow(GUIItem item) : Window
         List<FloatMenuOption> result = [];
         foreach (GUIRect i in GuiMaker.Rectangles.Cast<GUIRect>())
         {
-            result.Add(new FloatMenuOption(i.name, delegate ()
+            result.Add(new FloatMenuOption(i.Name, delegate ()
             {
-                editItem.parent = i;
+                editItem.Parent = i;
 
             }));
         }

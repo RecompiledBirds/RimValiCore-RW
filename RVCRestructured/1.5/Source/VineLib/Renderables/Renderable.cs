@@ -1,7 +1,5 @@
-﻿using RimWorld;
-using RVCRestructured.Defs;
+﻿using RVCRestructured.Defs;
 using UnityEngine;
-using Verse;
 
 namespace RVCRestructured;
 
@@ -10,23 +8,15 @@ public enum BodyRegion
     head,
     torso
 }
-public class Renderable : IRenderable
+
+public class Renderable(Graphic graphic, string? colorSet = null, string? bodyPart = null, bool showsInBed = true) : IRenderable
 {
-    private readonly string bodyPart;
-    private readonly BodyRegion region;
-    private readonly Graphic storedGraphic;
-    private readonly bool showsInBed;
-    private readonly string colorSet;
+    private readonly string? bodyPart = bodyPart;
+    private readonly BodyRegion region = default;
+    private readonly Graphic storedGraphic = graphic;
+    private readonly bool showsInBed = showsInBed;
+    private readonly string? colorSet = colorSet;
 
-    public Renderable(Graphic graphic,string colorSet=null, string bodyPart=null, bool showsInBed = true)
-    {
-        storedGraphic = graphic;
-        this.bodyPart = bodyPart;
-        this.showsInBed = showsInBed;
-        this.colorSet= colorSet;
-
-    }
-   
     public bool CanDisplay(Pawn pawn, bool portrait = false)
     {
         IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
@@ -36,13 +26,10 @@ public class Renderable : IRenderable
 
     public TriColorSet ColorSet(RVRComp comp)
     {
-        TriColorSet set = null;
-        if (colorSet != null)
-            set = comp[colorSet];
-        if (set == null)
-        {
-            set = new TriColorSet(Color.red, Color.green, Color.blue, true);
-        }
+        TriColorSet? set = null;
+        if (colorSet != null) set = comp[colorSet];
+
+        set ??= new TriColorSet(Color.red, Color.green, Color.blue, true);
         return set;
     }
 

@@ -1,6 +1,4 @@
-﻿using RimWorld;
-using RVCRestructured.VineLib.Defs.DefOfs;
-using Verse;
+﻿using RVCRestructured.VineLib.Defs.DefOfs;
 
 namespace RVCRestructured;
 
@@ -8,7 +6,8 @@ public class RVRCannibalismComp : CompProperties
 {
     public bool caresAboutUndefinedRaces = true;
     public List<CannibalismThoughts> thoughts = [];
-    public ThoughtDef GetThoughtsForEatenRace(ThingDef race, bool cannibal, bool cooked = false)
+
+    public ThoughtDef? GetThoughtsForEatenRace(ThingDef race, bool cannibal, bool cooked = false)
     {
         for (int i = 0; i < thoughts.Count; i++)
         {
@@ -45,19 +44,19 @@ public class RVRCannibalismComp : CompProperties
 
     public RVRCannibalismComp()
     {
-        compClass=typeof(CannibalismComp);
+        compClass = typeof(CannibalismComp);
     }
 }
 
 public class CannibalismThoughts
 {
-    public ThoughtDef rawEatenThought;
-    public ThoughtDef rawCannibalThought;
+    public readonly ThoughtDef rawEatenThought = null!;
+    public readonly ThoughtDef rawCannibalThought = null!;
 
-    public ThoughtDef cookedEatenThought;
-    public ThoughtDef cookedCannibalThought;
+    public readonly ThoughtDef cookedEatenThought = null!;
+    public readonly ThoughtDef cookedCannibalThought = null!;
 
-    public ThingDef race;
+    public readonly ThingDef race = null!;
 }
 
 public class CannibalismComp : ThingComp

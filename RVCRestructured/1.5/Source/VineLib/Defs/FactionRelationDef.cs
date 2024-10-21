@@ -1,13 +1,23 @@
-﻿using RimWorld;
-using Verse;
-
-namespace RVCRestructured;
+﻿namespace RVCRestructured;
 
 public class FactionRelationDef : Def
 {
-    public FactionDef factionDef;
+    private readonly FactionDef? factionDef = null;
+    private readonly FactionDef? otherFaction = null;
+    private readonly int opinion = 0;
 
-    public FactionDef otherFaction;
+    public override IEnumerable<string> ConfigErrors()
+    {
+        if (factionDef == null) yield return "factionDef may not be empty";
+        if (otherFaction == null) yield return "otherFaction may not be empty";
 
-    public int opinion;
+        foreach (string item in base.ConfigErrors())
+        {
+            yield return item;   
+        }
+    }
+
+    public FactionDef FactionDef => factionDef ?? throw new NullReferenceException();
+    public FactionDef OtherFaction => otherFaction ?? throw new NullReferenceException();
+    public int Opinion => opinion;
 }

@@ -18,11 +18,11 @@ public static class SeasonGrowthRatePrefix
         float temperature = GridsUtility.GetTemperature(vec, map);
         if (temperature < 6f)
         {
-            __result = Mathf.InverseLerp(plantComp.Props.minPreferredTemp, plantComp.Props.maxPreferredTemp + 6f, temperature);
+            __result = Mathf.InverseLerp(plantComp.Props.MinPreferredTemp, plantComp.Props.MaxPreferredTemp + 6f, temperature);
         }
         if (temperature > 42f)
         {
-            __result = Mathf.InverseLerp(plantComp.Props.maxPreferredTemp, plantComp.Props.maxPreferredTemp + 42f, temperature);
+            __result = Mathf.InverseLerp(plantComp.Props.MaxPreferredTemp, plantComp.Props.MaxPreferredTemp + 42f, temperature);
         }
         return false;
     }

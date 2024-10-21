@@ -41,8 +41,8 @@ public static class PawnBlenderPatches
 
         if (ShouldSwitchPawnkindBased(in request))
         {
-            RaceSwapDef randomSwapDef = ShuffleDefs.Where(x => x.targetRaces.Contains(def)).RandomElement();
-            modifyThingMakerDef = randomSwapDef.replacementRaces.RandomElement();
+            RaceSwapDef randomSwapDef = ShuffleDefs.Where(x => x.TargetRaces.Contains(def)).RandomElement();
+            modifyThingMakerDef = randomSwapDef.ReplacementRaces.RandomElement();
             return;
         }
 
@@ -69,12 +69,12 @@ public static class PawnBlenderPatches
     private static bool ShouldSwitchPawnkindBased(ref readonly PawnGenerationRequest request)
     {
         ThingDef race = request.KindDef.race;
-        return ShuffleDefs.Count > 0 && ShuffleDefs.Any(x => x.targetRaces.Contains(race));
+        return ShuffleDefs.Count > 0 && ShuffleDefs.Any(x => x.TargetRaces.Contains(race));
     }
 
     private static bool CanSwapRace(ThingDef def) =>
-        !ExcludedDefs.Any(x => x.excludedRaces.Contains(def));
+        !ExcludedDefs.Any(x => x.ExcludedRaces.Contains(def));
 
     private static bool CanSwapPawnkind(PawnKindDef def) =>
-        ExcludedDefs.NullOrEmpty() || !ExcludedDefs.Any(x => !x.excludedPawnKinds.NullOrEmpty() && x.excludedPawnKinds.Contains(def));
+        ExcludedDefs.NullOrEmpty() || !ExcludedDefs.Any(x => !x.ExcludedPawnKinds.NullOrEmpty() && x.ExcludedPawnKinds.Contains(def));
 }

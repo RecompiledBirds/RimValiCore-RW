@@ -12,16 +12,16 @@ public class RenderableDef : Def, IRenderable
 {
     private readonly List<BaseTex> textures = [];
 
-    private readonly BodyPartGraphicPos? east;
-    private readonly BodyPartGraphicPos? south;
-    private readonly BodyPartGraphicPos? north;
-    private BodyPartGraphicPos? west;
+    private readonly BodyPartGraphicPos? east = null;
+    private readonly BodyPartGraphicPos? south = null;
+    private readonly BodyPartGraphicPos? north = null;
+    private BodyPartGraphicPos? west = null;
 
-    private readonly RenderableDef? linkTexWith;
-    private readonly RenderableDef? linkPosWith;
+    private readonly RenderableDef? linkTexWith = null;
+    private readonly RenderableDef? linkPosWith = null;
 
-    private readonly string? colorSet;
-    private readonly string? bodyPart;
+    private readonly string? colorSet = null;
+    private readonly string? bodyPart = null;
 
     private readonly bool flipLayerEastWest = true;
     private readonly bool showsInBed = true;
@@ -246,12 +246,11 @@ public class BodyPartGraphicPos
     public Vector3 position;
     public Vector2 size;
     public Vector2 offsetInBed;
-
 }
 
 public class HediffTex : BaseTex
 {
-    private readonly HediffDef? hediffDef;
+    private readonly HediffDef? hediffDef = null;
 
     public override bool CanApply(Pawn pawn)
     {
@@ -261,17 +260,18 @@ public class HediffTex : BaseTex
 
 public class BackstoryTex : BaseTex
 {
-    private readonly string? backstoryTitle;
+    private readonly string? backstoryTitle = null;
 
     public override bool CanApply(Pawn p)
     {
         return p.story.Adulthood.identifier == backstoryTitle || p.story.Childhood.identifier == backstoryTitle;
     }
 }
+
 public class HediffStoryTex : BaseTex
 {
-    private readonly string? backstoryTitle;
-    private readonly HediffDef? hediffDef;
+    private readonly string? backstoryTitle = null;
+    private readonly HediffDef? hediffDef = null;
 
     public override bool CanApply(Pawn p)
     {
@@ -281,8 +281,8 @@ public class HediffStoryTex : BaseTex
 
 public class BaseTex
 {
-    private readonly string? texPath;
-    private readonly string? femaleTexPath;
+    private readonly string? texPath = null;
+    private readonly string? femaleTexPath = null;
 
     public List<string> alternateMaskPaths = [];
     public List<string> alternateFemaleMaskPaths = [];
