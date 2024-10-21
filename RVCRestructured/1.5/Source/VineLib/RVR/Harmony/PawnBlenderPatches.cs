@@ -6,7 +6,8 @@ public static class PawnBlenderPatches
 {
     private static List<ExcludedRaceShuffleDef> ExcludedDefs => DefDatabase<ExcludedRaceShuffleDef>.AllDefsListForReading;
     private static List<RaceSwapDef> ShuffleDefs => DefDatabase<RaceSwapDef>.AllDefsListForReading;
-    private static ThingDef[] HumanLikeRaces { get; } = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.race?.Humanlike ?? false).ToArray();
+
+    private static ThingDef[] HumanLikeRaces { get; } = DefDatabase<ThingDef>.AllDefsListForReading.Where(IsValidRaceDef).ToArray();
 
     private static bool skipOnce = false;
     private static ThingDef? modifyThingMakerDef;
@@ -49,6 +50,12 @@ public static class PawnBlenderPatches
         {
             modifyThingMakerDef = HumanLikeRaces.AsSpan().RandomElement();
         }
+    }
+
+    private static bool IsValidRaceDef(ThingDef def)
+    {
+        if (!(def.race?.Humanlike ?? false)) return false;
+        return !def.IsCorpse;
     }
 
     private static bool CanModify(ref readonly PawnGenerationRequest request)
