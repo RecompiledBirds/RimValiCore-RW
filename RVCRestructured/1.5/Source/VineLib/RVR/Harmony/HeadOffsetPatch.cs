@@ -29,7 +29,7 @@ public static class HeadOffsetPatch
             return;
         }
 
-        RenderableDef renderableDef = comp.Props.renderableDefs.Find(x => x.bodyPart == BodyPartDefOf.Head.defName);
+        RenderableDef renderableDef = comp.Props.renderableDefs.Find(x => x.BodyPart == BodyPartDefOf.Head.defName);
 
         if (renderableDef != null)
             __result = new Vector3(renderableDef.GetPos(pawn).position.x,__result.y,renderableDef.GetPos(pawn).position.z);

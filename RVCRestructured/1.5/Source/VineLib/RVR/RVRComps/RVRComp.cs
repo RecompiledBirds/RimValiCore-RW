@@ -38,7 +38,7 @@ public class RVRComp : ThingComp
 
     public string GetTexPath(RenderableDef def)
     {
-        return def.textures[renderableIndexes[def.defName]].texPath;
+        return def.Textures[renderableIndexes[def.defName]].TexPath;
     }
 
     public void SendRenderableDefToNextTexture(RenderableDef def)
@@ -46,7 +46,7 @@ public class RVRComp : ThingComp
         if (!renderableIndexes.ContainsKey(def.defName)) return;
         int index = renderableIndexes[def.defName];
         index++;
-        if (def.textures.Count == index)
+        if (def.Textures.Count == index)
         {
             index = 0;
         }
@@ -59,7 +59,7 @@ public class RVRComp : ThingComp
         index--;
         if (index == -1)
         {
-            index = def.textures.Count - 1;
+            index = def.Textures.Count - 1;
         }
         renderableIndexes[def.defName] = index;
     }
@@ -71,7 +71,7 @@ public class RVRComp : ThingComp
         int texIndex = renderableIndexes[def.defName];
         int maskIndex = masks[def.defName];
         maskIndex--;
-        List<string> maskList = def.textures[texIndex].GetMasks((Pawn)parent);
+        List<string> maskList = def.Textures[texIndex].GetMasks((Pawn)parent);
         if (maskIndex == maskList.Count)
         {
             maskIndex = 0;
@@ -85,7 +85,7 @@ public class RVRComp : ThingComp
         int texIndex = renderableIndexes[def.defName];
         int maskIndex = masks[def.defName];
         maskIndex--;
-        List<string> maskList = def.textures[texIndex].GetMasks((Pawn)parent);
+        List<string> maskList = def.Textures[texIndex].GetMasks((Pawn)parent);
         if (maskIndex == -1)
         {
             maskIndex = maskList.Count - 1;
@@ -94,9 +94,9 @@ public class RVRComp : ThingComp
     }
     public string GetMaskPath(RenderableDef def, Pawn pawn)
     {
-        if (masks.ContainsKey(def.defName) && !def.textures[renderableIndexes[def.defName]].GetMasks(pawn).NullOrEmpty())
-            return def.textures[renderableIndexes[def.defName]].GetMasks(pawn)[masks[def.defName]];
-        return def.textures[renderableIndexes[def.defName]].texPath;
+        if (masks.ContainsKey(def.defName) && !def.Textures[renderableIndexes[def.defName]].GetMasks(pawn).NullOrEmpty())
+            return def.Textures[renderableIndexes[def.defName]].GetMasks(pawn)[masks[def.defName]];
+        return def.Textures[renderableIndexes[def.defName]].TexPath;
     }
 
     public TriColorSet this[string name]
@@ -256,29 +256,29 @@ public class RVRComp : ThingComp
     {
         if (renderableIndexes.ContainsKey(rDef.defName)) return;
 
-        bool hasLink = rDef.linkTexWith != null;
-        if (hasLink && renderableIndexes.ContainsKey(rDef.linkTexWith!.defName))
+        bool hasLink = rDef.LinkTexWith != null;
+        if (hasLink && renderableIndexes.ContainsKey(rDef.LinkTexWith!.defName))
         {
-            string linkString = rDef.linkTexWith.defName;
+            string linkString = rDef.LinkTexWith.defName;
             renderableIndexes[rDef.defName] = renderableIndexes[linkString];
             masks[rDef.defName] = masks[linkString];
             return;
         }
 
-        if (rDef.textures.Count == 0)
+        if (rDef.Textures.Count == 0)
         {
             Log.Warning($"Textures count for {rDef.defName} is 0!");
             return;
         }
 
-        BaseTex tex = rDef.textures.RandomElement();
-        int index = rDef.textures.IndexOf(tex);
+        BaseTex tex = rDef.Textures.RandomElement();
+        int index = rDef.Textures.IndexOf(tex);
         renderableIndexes[rDef.defName] = index;
 
         int maskCount = tex.GetMasks(pawn).Count;
         if (maskCount == 0)
         {
-            Log.Warning($"Mask count for def: {rDef.defName}, path: {tex.texPath}, index: ({index}) is 0!");
+            Log.Warning($"Mask count for def: {rDef.defName}, path: {tex.TexPath}, index: ({index}) is 0!");
             return;
         }
 
@@ -286,7 +286,7 @@ public class RVRComp : ThingComp
 
         if (hasLink)
         {
-            string linkString = rDef.linkTexWith!.defName;
+            string linkString = rDef.LinkTexWith!.defName;
             renderableIndexes[linkString] = renderableIndexes[rDef.defName];
             masks[linkString] = renderableIndexes[rDef.defName];
             return;
