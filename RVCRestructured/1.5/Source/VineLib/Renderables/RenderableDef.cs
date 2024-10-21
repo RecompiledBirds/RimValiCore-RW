@@ -55,6 +55,45 @@ public class RenderableDef : Def, IRenderable
         return GetBodyPartGraphicPosFromIntRot(rot.AsInt);
     }
 
+    public ref Vector3 GetPosRef(int rot)
+    {
+        switch (rot)
+        {
+            case 0:
+                return ref north.position;
+
+            case 1:
+                return ref east.position;
+
+            case 2:
+                return ref south.position;
+
+            case 3:
+                return ref west.position;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(rot), "Parameter has to be either 0, 1, 2, 3");
+    }
+
+    public ref Vector2 GetSizeRef(int rot)
+    {
+        switch (rot)
+        {
+            case 0:
+                return ref north.size;
+
+            case 1:
+                return ref east.size;
+
+            case 2:
+                return ref south.size;
+
+            case 3:
+                return ref west.size;
+        }
+
+        throw new ArgumentOutOfRangeException(nameof(rot), "Parameter has to be either 0, 1, 2, 3");
+    }
 
     public BodyPartGraphicPos GetPos(Rot4 rot,PawnRenderTree tree, bool inBed= false,bool portrait=false)
     {
@@ -73,114 +112,97 @@ public class RenderableDef : Def, IRenderable
                 size = east.size,
                 offsetInBed = east.offsetInBed
             };
-            if (!flipLayerEastWest)
-                west.position.y = east.position.y;
-            if (!flipYPos)
-                west.position.z = east.position.z;
+
+            if (!flipLayerEastWest) west.position.y = east.position.y;
+            if (!flipYPos) west.position.z = east.position.z;
         }
     }
     readonly bool useScalingForPos = true;
-    private readonly Dictionary<BoolIntPair, Vector3> posCache = [];
-    private class BoolIntPair
-    {
-        public bool boolean;
-        public int num;
-    }
+    private readonly Dictionary<(bool inBed, int rot), Vector3> posCache = [];
 
     /// <summary>
     /// Travels along the parents of the renderabledef until it reaches the root.
     /// </summary>
-    /// <param name="rot"></param>
-    /// <param name="inBed"></param>
-    /// <param name="pair"></param>
-    /// <param name="portrait"></param>
     /// <returns></returns>
-    private Vector3 GetPosRecursively(int rot, bool inBed,BoolIntPair pair, bool portrait = false)
+    private Vector3 GetPosRecursively(int rot, bool inBed, (bool inBed, int rot) pair, bool portrait = false)
     {
-        if (!posCache.ContainsKey(pair))
+        if (posCache.TryGetValue(pair, out Vector3 pos)) return pos;
+
+        Vector3 position;
+        Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot, inBed, pair, portrait) : Vector3.zero);
+        BodyPartGraphicPos graphicPos = north;
+
+        switch (rot)
         {
-            Vector3 position;
-            Vector3 recursizePos = (linkPosWith != null ? linkPosWith.GetPosRecursively(rot,inBed,pair,portrait) : Vector3.zero);
-            BodyPartGraphicPos graphicPos = north;
-            switch (rot)
-            {
-                case 1:
-                    graphicPos = east;
-                    break;
-                case 2:
-                    graphicPos = south;
-                    break;
-                case 3:
-                    GenerateWestIfNeeded();
-                    graphicPos = west;
-                    break;
-            }
-            position = (graphicPos.position + recursizePos) * (useScalingForPos ? graphicPos.size : Vector2.one);
-            if (inBed && !portrait)
-            {
-                position.z -= graphicPos.offsetInBed.y;
-                position.x -= graphicPos.offsetInBed.x;
-            }
-            posCache[pair] = position;
+            case 1:
+                graphicPos = east;
+                break;
+            case 2:
+                graphicPos = south;
+                break;
+            case 3:
+                GenerateWestIfNeeded();
+                graphicPos = west;
+                break;
+        } 
+
+        float scalar = useScalingForPos ? graphicPos.size.x : 1;
+        position = graphicPos.position.MultipliedBy(new(scalar, 1f, scalar)) + recursizePos;
+        
+        if (inBed)
+        {
+            position.z -= graphicPos.offsetInBed.y;
+            position.x -= graphicPos.offsetInBed.x;
         }
-        return posCache[pair];
+
+        return posCache[pair] = position;
     }
-    private readonly Dictionary<BoolIntPair, BodyPartGraphicPos> partCache = [];
+    private readonly Dictionary<(bool inBed, int rot), BodyPartGraphicPos> partCache = [];
+
     private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, bool inBed=false, bool portrait = false)
     {
-        BoolIntPair pair;
-        if (portrait) pair = new BoolIntPair() { boolean = false, num = 2 };
-        else pair = new BoolIntPair() { boolean = inBed, num = rot };
-        if (!partCache.ContainsKey(pair))
+        (bool inBed, int rot) key;
+        if (portrait)
         {
-            Vector3 pos = GetPosRecursively(rot,inBed,pair,portrait);
-            BodyPartGraphicPos newPos;
-            switch (rot)
-            {
-                case 0:
-
-                    newPos = new BodyPartGraphicPos()
-                    {
-                        position = pos,
-                        size = north.size,
-                        offsetInBed=north.offsetInBed
-                    };
-                    break;
-
-                case 2:
-                    newPos = new BodyPartGraphicPos()
-                    {
-                        position = pos,
-                        size = south.size,
-                        offsetInBed = south.offsetInBed
-                    };
-                    break;
-
-                case 1:
-
-                    newPos = new BodyPartGraphicPos()
-                    {
-                        position = pos,
-                        size = east.size,
-                        offsetInBed=east.offsetInBed
-                    };
-                    break;
-                case 3:
-                    newPos = new BodyPartGraphicPos()
-                    {
-                        position = pos,
-                        size = west.size,
-                        offsetInBed=west.offsetInBed
-                    };
-                    break;
-
-                default:
-                    newPos = null;
-                    break;
-            }
-            partCache[pair] = newPos;
+            rot = 2;
+            inBed = false;
         }
-        return partCache[pair];
+
+        key = (inBed, rot);
+
+        if (partCache.TryGetValue(key, out BodyPartGraphicPos graphicPos)) return graphicPos;
+
+        Vector3 pos = GetPosRecursively(rot, inBed, key, portrait);
+        BodyPartGraphicPos newPos = rot switch
+        {
+            0 => new BodyPartGraphicPos()
+            {
+                position = pos,
+                size = north.size,
+                offsetInBed = north.offsetInBed
+            },
+            2 => new BodyPartGraphicPos()
+            {
+                position = pos,
+                size = south.size,
+                offsetInBed = south.offsetInBed
+            },
+            1 => new BodyPartGraphicPos()
+            {
+                position = pos,
+                size = east.size,
+                offsetInBed = east.offsetInBed
+            },
+            3 => new BodyPartGraphicPos()
+            {
+                position = pos,
+                size = west.size,
+                offsetInBed = west.offsetInBed
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(rot), "Parameter has to be either 0, 1, 2, 3")
+        };
+
+        return partCache[key] = newPos;
     }
 
     private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, PawnRenderTree set)

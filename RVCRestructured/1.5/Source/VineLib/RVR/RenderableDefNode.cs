@@ -13,47 +13,27 @@ public class RenderableDefNodeProperties : PawnRenderNodeProperties
 
 public class RNodeWorker : PawnRenderNodeWorker
 {
-    public override void AppendDrawRequests(PawnRenderNode node, PawnDrawParms parms, List<PawnGraphicDrawRequest> requests)
-    {
-        
-        base.AppendDrawRequests(node, parms, requests);
-    }
-
     public override float LayerFor(PawnRenderNode node, PawnDrawParms parms)
     {
-        RenderableDefNode rNode = node as RenderableDefNode;
-        return rNode.RProps.def.GetPos(parms.pawn.Rotation, node.tree, parms.pawn.InBed(), parms.Portrait).position.z;
+        RenderableDefNode rNode = (RenderableDefNode)node;
+        return rNode.RProps.def.GetPos(parms.pawn.Rotation, node.tree, parms.pawn.InBed(), parms.Portrait).position.y;
     }
 
     public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
     {
-        RenderableDefNode rNode = node as RenderableDefNode;
+        RenderableDefNode rNode = (RenderableDefNode)node;
         pivot = Vector3.zero;
         return rNode.RProps.def.GetPos(parms.pawn.Rotation,node.tree,parms.pawn.InBed(),parms.Portrait).position;
     }
 }
-public class RenderableDefNode : PawnRenderNode
+public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree) : PawnRenderNode(pawn, props, tree)
 {
-    public RenderableDefNodeProperties RProps
-    {
-        get
-        {
-            return props as RenderableDefNodeProperties;
-        }
-    }
-    public RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree) : base(pawn, props, tree)
-    {
-    }
-    public override GraphicMeshSet MeshSetFor(Pawn pawn)
-    {
-        return HumanlikeMeshPoolUtility.GetHumanlikeBodySetForPawn(pawn, 1, 1);
-    }
+    public RenderableDefNodeProperties RProps => (RenderableDefNodeProperties)props;
 
-  
+    public override GraphicMeshSet MeshSetFor(Pawn pawn) => HumanlikeMeshPoolUtility.GetHumanlikeBodySetForPawn(pawn, 1, 1);
 
     public override Graphic GraphicFor(Pawn pawn)
     {
-        
         TriColorSet set = RProps.def.ColorSet(pawn);
        
         //TODO: Check if this works?
