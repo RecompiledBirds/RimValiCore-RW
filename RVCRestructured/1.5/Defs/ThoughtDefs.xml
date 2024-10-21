@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<ThoughtDef>
+		<defName>Vine_ThoughtDidntCare</defName>
+		<validWhileDespawned>false</validWhileDespawned>
+		<stages>
+			<li>
+				<label>Ate a person</label>
+				<description>I ate someone.</description>
+				<baseMoodEffect>0</baseMoodEffect>
+			</li>
+		</stages>
+	</ThoughtDef>
+</Defs>

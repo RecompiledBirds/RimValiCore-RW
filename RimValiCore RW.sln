@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RimValiCore RW", "RimValiCore RW.csproj", "{16ECA6DB-184C-4115-AF81-79C416C0D1D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RVCRestructured", "RVCRestructured\1.5\Source\RVCRestructured.csproj", "{16ECA6DB-184C-4115-AF81-79C416C0D1D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Definitions", "RVCRestructured\1.5\Defs\Definitions.csproj", "{B16045D3-EEC2-40EC-8020-AC84A064F86D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{16ECA6DB-184C-4115-AF81-79C416C0D1D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16ECA6DB-184C-4115-AF81-79C416C0D1D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16ECA6DB-184C-4115-AF81-79C416C0D1D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B16045D3-EEC2-40EC-8020-AC84A064F86D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B16045D3-EEC2-40EC-8020-AC84A064F86D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B16045D3-EEC2-40EC-8020-AC84A064F86D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B16045D3-EEC2-40EC-8020-AC84A064F86D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
