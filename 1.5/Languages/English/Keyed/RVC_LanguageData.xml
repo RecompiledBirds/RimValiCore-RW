@@ -2,7 +2,8 @@
 <LanguageData>
 	<RVC_Accept>Yes</RVC_Accept>
 	<RVC_Cancel>Cancel</RVC_Cancel>
-	<RVC_CannotWear>{RACE} cannot wear this</RVC_CannotWear>
+	<RVC_CannotWear>{RACE}s can't wear this</RVC_CannotWear>
+	<RVC_CannotBuild>{RACE}s can't build this</RVC_CannotBuild>
 	<RVC_EditPawn>Edit Pawn</RVC_EditPawn>
 	<RVC_EditColor>Click to edit this color</RVC_EditColor>
 	<RVC_Tutorial>Select one of the sets on the right to start editing the colors on your {0}! (If they have any you can edit.)</RVC_Tutorial>
