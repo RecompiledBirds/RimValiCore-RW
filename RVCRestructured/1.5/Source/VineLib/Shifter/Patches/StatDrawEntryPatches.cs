@@ -103,38 +103,29 @@ public static class StatDrawEntryPatches
     /// <returns></returns>
     public static IEnumerable<StatDrawEntry> SourcePostFix(IEnumerable<StatDrawEntry> __result, StatRequest req, Def __instance)
     {
-        Pawn pawn = req.Pawn ?? ((Pawn)req.Thing);
+        if ((req.Pawn ?? req.Thing) is not Pawn pawn) return __result;
+
         ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
-        if (comp == null)
-        {
-            foreach (StatDrawEntry entry in __result)
-            {
-                yield return entry;
-            }
-            yield break;
+        if (comp == null) return __result;
 
-        }
-        if (comp.IsParentDef())
-        {
-            foreach (StatDrawEntry entry in __result)
-            {
-                yield return entry;
-            }
-            yield break;
+        if (comp.IsParentDef()) return __result;
 
-        }
+        return ModifyResult(__result, comp);
+    }
+
+    private static IEnumerable<StatDrawEntry> ModifyResult(IEnumerable<StatDrawEntry> __result, ShapeshifterComp comp)
+    {
         foreach (StatDrawEntry entry in __result)
         {
             if (entry.LabelCap == "Stat_Source_Label".Translate().CapitalizeFirst())
             {
                 TaggedString t = comp.ContentPack.IsOfficialMod ? "Stat_Source_OfficialExpansionReport".Translate() : "Stat_Source_ModReport".Translate();
-                yield return new StatDrawEntry(StatCategoryDefOf.Source, "Stat_Source_Label".Translate(), comp.ContentPack.Name, t + ": " + comp.ContentPack.Name, 90000, null, null, false);
+                yield return new StatDrawEntry(StatCategoryDefOf.Source, "Stat_Source_Label".Translate(), comp.ContentPack.Name, t + ": " + comp.ContentPack.Name, 90000);
                 continue;
             }
-            yield return entry;
 
+            yield return entry;
         }
-        yield break;
     }
 
     /// <summary>
