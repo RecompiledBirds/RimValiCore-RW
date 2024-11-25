@@ -12,8 +12,8 @@ public static class BodyPartHealthPatch
 
         foreach (Hediff hediff in pawn.health.hediffSet.hediffs)
         {
-            if (hediff.Part == null) return;
-            if (hediff.Part.def != __instance) return;
+            if (hediff.Part == null) continue;
+            if (hediff.Part.def != __instance) continue;
 
             StatModifier? modifier = hediff.CurStage?.statOffsets?.Find(x => x.stat == Vine_StatDefOf.RVC_HealthOffset);
             
