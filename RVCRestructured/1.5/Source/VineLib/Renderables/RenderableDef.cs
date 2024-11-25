@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RVCRestructured.Shifter;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Verse;
 
@@ -26,6 +27,7 @@ public class RenderableDef : Def, IRenderable
     private readonly bool flipLayerEastWest = true;
     private readonly bool showsInBed = true;
     private readonly bool flipYPos = false;
+
 
     public BodyPartGraphicPos East => east ?? throw new NullReferenceException();
     public BodyPartGraphicPos West => west ??= GenerateWest();
@@ -60,8 +62,10 @@ public class RenderableDef : Def, IRenderable
         return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || ShowsInBed()) && !bodyIsHiding);
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BodyPartGraphicPos GetPos(Rot4 rot) => GetBodyPartGraphicPosFromIntRot(rot.AsInt);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref Vector3 GetPosRef(int rot)
     {
         switch (rot)
@@ -82,6 +86,8 @@ public class RenderableDef : Def, IRenderable
         throw new ArgumentOutOfRangeException(nameof(rot), "Parameter has to be either 0, 1, 2, 3");
     }
 
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public ref Vector2 GetSizeRef(int rot)
     {
         switch (rot)
@@ -101,8 +107,8 @@ public class RenderableDef : Def, IRenderable
 
         throw new ArgumentOutOfRangeException(nameof(rot), "Parameter has to be either 0, 1, 2, 3");
     }
-
-    public BodyPartGraphicPos GetPos(Rot4 rot, PawnRenderTree tree, bool inBed = false, bool portrait = false) 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BodyPartGraphicPos GetPos(Rot4 rot, bool inBed = false, bool portrait = false) 
         => GetBodyPartGraphicPosFromIntRot(rot.AsInt, inBed, portrait);
 
     private BodyPartGraphicPos GenerateWest()
@@ -114,8 +120,8 @@ public class RenderableDef : Def, IRenderable
             offsetInBed = East.offsetInBed
         };
 
-        if (!FlipLayerEastWest) West.position.y = East.position.y;
-        if (!FlipYPos) West.position.z = East.position.z;
+        if (!FlipLayerEastWest) graphicPos.position.y = East.position.y;
+        if (!FlipYPos) graphicPos.position.z = East.position.z;
 
         return graphicPos;
     }
@@ -132,18 +138,29 @@ public class RenderableDef : Def, IRenderable
         if (posCache.TryGetValue(pair, out Vector3 position)) return position;
 
         Vector3 recursizePos = (LinkPosWith != null ? LinkPosWith.GetPosRecursively(rot, inBed, pair, portrait) : Vector3.zero);
-        
-        BodyPartGraphicPos graphicPos = rot switch
-        {
-            1 => East,
-            2 => South,
-            3 => West,
-            _ => North
-        };
 
+
+
+        BodyPartGraphicPos? graphicPos = null;
+        switch (rot)
+        {
+
+            case 1:
+                graphicPos = East;
+                break;
+            case 2:
+                graphicPos = South;
+                break;
+            case 3:
+                graphicPos = West;
+                break;
+            default:
+                graphicPos = North;
+                break;
+        }
         float scalar = useScalingForPos ? graphicPos.size.x : 1;
         position = graphicPos.position.MultipliedBy(new(scalar, 1f, scalar)) + recursizePos;
-        
+
         if (inBed)
         {
             position.z -= graphicPos.offsetInBed.y;
@@ -156,6 +173,7 @@ public class RenderableDef : Def, IRenderable
 
     private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, bool inBed=false, bool portrait = false)
     {
+        
         (bool inBed, int rot) key;
         if (portrait)
         {
@@ -166,40 +184,61 @@ public class RenderableDef : Def, IRenderable
         key = (inBed, rot);
 
         if (partCache.TryGetValue(key, out BodyPartGraphicPos graphicPos)) return graphicPos;
-
         Vector3 pos = GetPosRecursively(rot, inBed, key, portrait);
-        BodyPartGraphicPos newPos = rot switch
+
+
+        BodyPartGraphicPos? newPos = null;
+        switch (rot)
         {
-            0 => new BodyPartGraphicPos()
-            {
-                position = pos,
-                size = North.size,
-                offsetInBed = North.offsetInBed
-            },
-            2 => new BodyPartGraphicPos()
-            {
-                position = pos,
-                size = South.size,
-                offsetInBed = South.offsetInBed
-            },
-            1 => new BodyPartGraphicPos()
-            {
-                position = pos,
-                size = East.size,
-                offsetInBed = East.offsetInBed
-            },
-            3 => new BodyPartGraphicPos()
-            {
-                position = pos,
-                size = West.size,
-                offsetInBed = West.offsetInBed
-            },
-            _ => throw new ArgumentOutOfRangeException(nameof(rot), "Parameter has to be either 0, 1, 2, 3")
-        };
+            case 0:
+                newPos = new BodyPartGraphicPos
+                {
+                    position = pos,
+                    size = North.size,
+                    offsetInBed = North.offsetInBed
+                };
+                break;
+            case 2:
+                newPos = new BodyPartGraphicPos
+                {
+                    position = pos,
+                    size = South.size,
+                    offsetInBed = South.offsetInBed
+                };
+                break;
+            case 1:
+                newPos = new BodyPartGraphicPos
+                {
+                    position = pos,
+                    size = East.size,
+                    offsetInBed = East.offsetInBed
+                };
+                break;
+            case 3:
+                newPos = new BodyPartGraphicPos
+                {
+                    position = pos,
+                    size = West.size,
+                    offsetInBed = West.offsetInBed
+                };
+                break;
+
+            default:
+                //Default returns south
+                newPos = new BodyPartGraphicPos
+                {
+                    position = pos,
+                    size = South.size,
+                    offsetInBed = South.offsetInBed
+                };
+                RVCLog.Log("Rotation parameter has to be either 0, 1, 2, 3!",type:RVCLogType.Error);
+                break;
+        }
 
         return partCache[key] = newPos;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BodyPartGraphicPos GetPos(Pawn pawn)
     {
         return GetPos(pawn.Rotation);

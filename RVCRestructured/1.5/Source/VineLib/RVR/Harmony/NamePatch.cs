@@ -12,16 +12,14 @@ public static class NamePatch
     public static bool Prefix(ref Name __result, Pawn pawn, NameStyle style = NameStyle.Full, string? forcedLastName = null)
     {
         if (pawn.TryGetComp<RVRComp>()==null) return true;
+        __result= GenName(out NameTriple name, pawn);
 
-        GenName(out NameTriple name, pawn);
 
         if (Rand.Chance(0.01f))
         {
             __result = new NameTriple(UnityEngine.Random.Range(1, 100) != 30 ? name.First : SteamUtility.SteamPersonaName, name.Nick ?? name.First, name.Last);
             return true;
         }
-        __result = new NameTriple(name.First, name.Nick ?? name.First, name.Last);
-
         return false;
     }
 }
