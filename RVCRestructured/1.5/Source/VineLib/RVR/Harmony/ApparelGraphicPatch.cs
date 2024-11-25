@@ -16,11 +16,12 @@ public static class ApparelGraphicPatch
         string path;
         GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
         ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+        GraphicsComp rVRGraphicsComp = pawn.TryGetComp<GraphicsComp>();
         if(shapeshifterComp != null)
         {
             typeDef = shapeshifterComp.MimickedBodyType;
         }
-
+       
         Graphic graphic;
         string altPath = $"{apparel.WornGraphicPath}_{typeDef.defName}";
         if (ContentFinder<Texture2D>.Get($"{altPath}_north", false))
@@ -44,9 +45,7 @@ public static class ApparelGraphicPatch
         //empty texture, avoids errors..
         else
         {
-            if (comp!=null && comp.Props.throwApparelError)
-                RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {typeDef.defName}, no bodytype, or thin bodytype. Returning an empty texture...");
-
+            RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {typeDef.defName}, no bodytype, or thin bodytype. Returning an empty texture...", condition: comp != null && comp.Props.throwApparelError);
             path = "RVC/Empty";
         }
 
@@ -55,7 +54,6 @@ public static class ApparelGraphicPatch
         {
             shader = ShaderDatabase.CutoutComplex;
         }
-
         graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.DrawSize, apparel.DrawColor);
 
         rec = new ApparelGraphicRecord(graphic, apparel);

@@ -272,7 +272,7 @@ public class RVRComp : ThingComp
 
         if (rDef.Textures.Count == 0)
         {
-            Log.Warning($"Textures count for {rDef.defName} is 0!");
+            RVCLog.Warn($"Textures count for {rDef.defName} is 0!");
             return;
         }
 
@@ -281,11 +281,9 @@ public class RVRComp : ThingComp
         renderableIndexes[rDef.defName] = index;
 
         int maskCount = tex.GetMasks(pawn).Count;
-        if (maskCount == 0)
-        {
-            Log.Warning($"Mask count for def: {rDef.defName}, path: {tex.TexPath}, index: ({index}) is 0!");
-            return;
-        }
+
+        RVCLog.Warn($"Mask count for def: {rDef.defName}, path: {tex.TexPath}, index: ({index}) is 0!",condition:maskCount== 0,debugOnly: true);
+
 
         masks.Add(rDef.defName, Rand.Range(0, maskCount));
 

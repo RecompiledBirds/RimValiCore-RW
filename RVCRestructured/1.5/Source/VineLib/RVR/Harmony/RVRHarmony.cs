@@ -16,7 +16,8 @@ public static class RVRHarmony
         HarmonyLib.Harmony harmony = new("RecompiledBirds.RVC.RVR");
         try
         {
-            
+            harmony.Patch(AccessTools.Method(typeof(PawnRenderNodeWorker), nameof(PawnRenderNodeWorker.ScaleFor)), postfix: new HarmonyMethod(typeof(ApparelScalingPatch), nameof(ApparelScalingPatch.Postfix)));
+       //     harmony.Patch(AccessTools.Method(typeof(PawnRenderNodeWorker_Apparel_Body),nameof(PawnRenderNodeWorker_Apparel_Body.ScaleFor)),postfix: new HarmonyMethod(typeof(ApparelScalingPatch),nameof(ApparelScalingPatch.Postfix)));
             harmony.Patch(AccessTools.Constructor(typeof(PawnTextureAtlas)), transpiler: new HarmonyMethod(typeof(RenderTextureTranspiler), nameof(RenderTextureTranspiler.Transpile)));
             harmony.Patch(AccessTools.Method(typeof(RaceProperties), "CanEverEat", [typeof(ThingDef)]), postfix: new HarmonyMethod(typeof(EatingPatch), nameof(EatingPatch.CanEverEatPostFix)));
             harmony.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "CanUsePair"), postfix: new HarmonyMethod(typeof(ApparelGenPatch), nameof(ApparelGenPatch.CanUsePairPatch)));
@@ -52,7 +53,7 @@ public static class RVRHarmony
             RVCLog.Log("Completed all RVR patches with no issues!");
         }catch(Exception e)
         {
-            Log.Error(e.ToString());
+            RVCLog.Error(e.ToString());
         }
 
        RVCLog.Log($"{harmony.GetPatchedMethods().Count()} RVR Patches completed.");

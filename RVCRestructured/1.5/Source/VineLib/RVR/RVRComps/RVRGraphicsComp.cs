@@ -13,14 +13,9 @@ public class RVRGraphicsComp : CompProperties
     public readonly List<RenderableDef> renderableDefs = [];
     public readonly string skinColorSet = string.Empty;
 
-    public readonly string bodyTex = string.Empty;
-    public readonly string headTex = string.Empty;
-    public readonly string skeleton = "Things/Pawn/Humanlike/HumanoidDessicated";
-    public readonly string skull = "Things/Pawn/Humanlike/Heads/None_Average_Skull";
-    public readonly string stump = "Things/Pawn/Humanlike/Heads/None_Average_Stump";
-    public readonly Vector2 headSize;
-    public readonly Vector2 bodySize = new(1f, 1f);
 
+    public Vector2 apparelScaleBody = Vector2.one;
+    public Vector2 apparelScaleHead = Vector2.one;
     public Dictionary<string, RaceColors> cachedColors = [];
     public RaceColors? this[string name]
     {
