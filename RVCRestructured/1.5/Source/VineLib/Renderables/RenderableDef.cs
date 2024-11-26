@@ -57,10 +57,11 @@ public class RenderableDef : Def, IRenderable
     public bool CanDisplay(Pawn pawn, bool portrait = false)
     {
         IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
-        bool bodyIsHiding =(( BodyPart == null) || bodyParts.Any(x => x.def.defName.ToLower() == BodyPart.ToLower() || x.Label.ToLower() == BodyPart.ToLower()));
-        return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || ShowsInBed()) && !bodyIsHiding);
+        
+        bool shownByBody = BodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == BodyPart.ToLower() || x.Label.ToLower() == BodyPart.ToLower());
+        return (portrait || NotInBedOrShouldShowBody(pawn)) && shownByBody;
     }
-
+    public bool NotInBedOrShouldShowBody(Pawn pawn) => ((!pawn.InBed() || showsInBed) || pawn.CurrentBed().def.building.bed_showSleeperBody);
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public BodyPartGraphicPos GetPos(Rot4 rot) => GetBodyPartGraphicPosFromIntRot(rot.AsInt);
 
