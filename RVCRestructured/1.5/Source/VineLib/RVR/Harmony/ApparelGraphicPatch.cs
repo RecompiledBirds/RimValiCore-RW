@@ -32,17 +32,14 @@ public static class ApparelGraphicPatch
         {
             path = apparel.WornGraphicPath;
         }
+        else if (comp?.Props.useEmptyApparelIfNoDefault ?? false)
+        {
+            path = "RVC/Empty";
+        }
         else if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
         {
-            
-            if(comp==null || comp.Props.useEmptyApparelIfNoDefault) 
-                path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
-            else
-                path = "RVC/Empty";
+            path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
         }
-
-
-        //empty texture, avoids errors..
         else
         {
             RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {typeDef.defName}, no bodytype, or thin bodytype. Returning an empty texture...", condition: comp != null && comp.Props.throwApparelError);
