@@ -26,9 +26,14 @@ public class RNodeWorker : PawnRenderNodeWorker
     public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
     {
         RenderableDefNode rNode = (RenderableDefNode)node;
-        pivot = Vector3.zero;
-        return rNode.RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position;
+        Vector3 pos = rNode.RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position;
+        Vector3 newPos = new Vector3(pos.x,0,pos.z);
+        Quaternion quat = base.RotationFor(node, parms);
+        pivot = newPos.RotatedBy(Mathf.Acos(Quaternion.Dot(Quaternion.identity, quat)) * 114.59156f); 
+        return pos;
     }
+
+    
 }
 public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree) : PawnRenderNode(pawn, props, tree)
 {
