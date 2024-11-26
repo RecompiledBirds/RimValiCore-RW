@@ -23,6 +23,11 @@ public class RNodeWorker : PawnRenderNodeWorker
         Vector2 size = rNode.RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).size;
         return new Vector3 (size.x,1,size.y);
     }
+
+    public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
+    {
+        return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
+    }
     public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
     {
         RenderableDefNode rNode = (RenderableDefNode)node;
