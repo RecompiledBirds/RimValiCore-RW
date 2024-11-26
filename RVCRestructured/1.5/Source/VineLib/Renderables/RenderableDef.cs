@@ -57,8 +57,7 @@ public class RenderableDef : Def, IRenderable
     public bool CanDisplay(Pawn pawn, bool portrait = false)
     {
         IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
-        ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
-        bool bodyIsHiding =(( BodyPart == null || pawn.TryGetComp<ShapeshifterComp>() == null) || bodyParts.Any(x => x.def.defName.ToLower() == BodyPart.ToLower() || x.Label.ToLower() == BodyPart.ToLower()));
+        bool bodyIsHiding =(( BodyPart == null) || bodyParts.Any(x => x.def.defName.ToLower() == BodyPart.ToLower() || x.Label.ToLower() == BodyPart.ToLower()));
         return (portrait && !bodyIsHiding) || ((!pawn.InBed() || (pawn.CurrentBed().def.building.bed_showSleeperBody) || ShowsInBed()) && !bodyIsHiding);
     }
 

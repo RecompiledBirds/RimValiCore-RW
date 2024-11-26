@@ -24,10 +24,12 @@ public class RNodeWorker : PawnRenderNodeWorker
         return new Vector3 (size.x,1,size.y);
     }
 
-    public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
-    {
-        return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
-    }
+    
+
+    //public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
+    //{
+    //    return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
+    //}
     public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
     {
         RenderableDefNode rNode = (RenderableDefNode)node;
