@@ -141,22 +141,13 @@ public class RenderableDef : Def, IRenderable
 
 
         BodyPartGraphicPos? graphicPos = null;
-        switch (rot)
+        graphicPos = rot switch
         {
-
-            case 1:
-                graphicPos = East;
-                break;
-            case 2:
-                graphicPos = South;
-                break;
-            case 3:
-                graphicPos = West;
-                break;
-            default:
-                graphicPos = North;
-                break;
-        }
+            1 => East,
+            2 => South,
+            3 => West,
+            _ => North,
+        };
         float scalar = useScalingForPos ? graphicPos.size.x : 1;
         position = graphicPos.position.MultipliedBy(new(scalar, 1f, scalar)) + recursizePos;
 
@@ -214,12 +205,14 @@ public class RenderableDef : Def, IRenderable
                 };
                 break;
             case 3:
-                newPos = new BodyPartGraphicPos
-                {
-                    position = pos,
-                    size = West.size,
-                    offsetInBed = West.offsetInBed
-                };
+
+                    newPos = new BodyPartGraphicPos
+                    {
+                        position = pos,
+                        size = West.size,
+                        offsetInBed = West.offsetInBed
+                    };
+                
                 break;
 
             default:

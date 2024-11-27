@@ -14,41 +14,33 @@ public class RNodeWorker : PawnRenderNodeWorker
     public override float LayerFor(PawnRenderNode node, PawnDrawParms parms)
     {
         RenderableDefNode rNode = (RenderableDefNode)node;
-        return rNode.RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position.y;
+        return rNode.RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position.y+base.LayerFor(node,parms);
     }
 
     public override Vector3 ScaleFor(PawnRenderNode node, PawnDrawParms parms)
     {
         RenderableDefNode rNode = (RenderableDefNode)node;
         Vector2 size = rNode.RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).size;
-        return new Vector3 (size.x,1,size.y);
+        return new Vector3 (size.x,1,size.y).MultipliedBy(base.ScaleFor(node,parms));
     }
 
-    //protected override Graphic GetGraphic(PawnRenderNode node, PawnDrawParms parms)
-    //{
-    //    if (!((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait)) return RVG_GraphicDataBase.Get<RVG_Graphic_Multi>("Empty");
-    //    return base.GetGraphic(node, parms);
-    //}
-    public override Quaternion RotationFor(PawnRenderNode node, PawnDrawParms parms)
-    {
-        return base.RotationFor(node, parms);
-    }
+    
 
     public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
     {
-        return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
+        return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait)&&base.CanDrawNow(node,parms);
     }
     public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
     {
-        Vector3 pos = ((RenderableDefNode)node).RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position;
-        pivot = piv(node, parms);
-        return pos+base.OffsetFor(node,parms,out pivot);
+        BodyPartGraphicPos pos = ((RenderableDefNode)node).RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait);
+        pivot=PivotFor(node,parms);
+        return pos.position+base.OffsetFor(node,parms,out pivot);
     }
 
      
+      
     
-    
-    protected Vector3 piv(PawnRenderNode node, PawnDrawParms parms)
+    protected override Vector3 PivotFor(PawnRenderNode node, PawnDrawParms parms)
     {
         
         Vector3 pos = ((RenderableDefNode)node).RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position;
@@ -64,18 +56,6 @@ public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRe
 
     public override GraphicMeshSet MeshSetFor(Pawn pawn) => MeshPool.GetMeshSetForSize(RProps.def.GetPos(pawn.Rotation).size);
 
-    //is this section of code actually helping? no idea!
-    public override Mesh GetMesh(PawnDrawParms parms)
-    {
-        //if we dont do this little check here
-        //it crashes your some really important drivers!
-        //or at least it does on my computer
-        if(rvrGraphic==null)
-            return base.GetMesh(parms);
-        return rvrGraphic.MeshAt(parms.facing);
-    }
-
-    //end section of code that might or might not be helping
 
     RVG_Graphic? rvrGraphic = null;
     public override Graphic GraphicFor(Pawn pawn)
