@@ -41,14 +41,14 @@ public class RNodeWorker : PawnRenderNodeWorker
     public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
     {
         Vector3 pos = ((RenderableDefNode)node).RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position;
-        pivot = PivotFor(node, parms);
+        pivot = piv(node, parms);
         return pos+base.OffsetFor(node,parms,out pivot);
     }
 
      
     
     
-    protected override Vector3 PivotFor(PawnRenderNode node, PawnDrawParms parms)
+    protected Vector3 piv(PawnRenderNode node, PawnDrawParms parms)
     {
         
         Vector3 pos = ((RenderableDefNode)node).RProps.def.GetPos(parms.pawn.Rotation, parms.pawn.InBed(), parms.Portrait).position;
@@ -75,13 +75,6 @@ public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRe
         return rvrGraphic.MeshAt(parms.facing);
     }
 
-    protected override bool FlipGraphic
-    {
-        get
-        {
-            return !ContentFinder<Texture2D>.Get($"{RProps.def.GetTexPath(pawn)}_west");
-        }
-    }
     //end section of code that might or might not be helping
 
     RVG_Graphic? rvrGraphic = null;
