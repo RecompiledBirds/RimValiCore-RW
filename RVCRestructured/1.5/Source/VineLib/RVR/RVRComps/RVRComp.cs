@@ -18,16 +18,8 @@ public class RVRComp : ThingComp
     private Dictionary<string, int> masks = [];
 
     private List<RenderableDef> defListRenderableDefs = [];
-    private List<Renderable> defListRenderable = [];
-    private List<IRenderable> defList = [];
 
     private bool generated = false;
-
-    public List<IRenderable> RenderableDefs
-    {
-        get => defList;
-        set => defList = value;
-    }
 
     public Dictionary<string, TriColorSet> Colors => sets;
 
@@ -121,30 +113,11 @@ public class RVRComp : ThingComp
         Scribe_Collections.Look(ref masks, "masks", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
         Scribe_Collections.Look(ref renderableIndexes, "renderableIndexes", LookMode.Value, LookMode.Value, ref lKeys, ref lInts);
 
-        if (Scribe.mode == LoadSaveMode.Saving)
-        {
-            foreach (IRenderable renderable in defList)
-            {
-                if (renderable is Def)
-                {
-                    defListRenderableDefs.Append(renderable);
-                    continue;
-                }
-                
-                defListRenderable.Append(renderable);
-            }
-        }
-
-        Scribe_Collections.Look(ref defListRenderable, nameof(defListRenderable), LookMode.Deep);
+       
         Scribe_Collections.Look(ref defListRenderableDefs, nameof(defListRenderableDefs), LookMode.Def);
 
 
-        if (Scribe.mode == LoadSaveMode.PostLoadInit)
-        {
-            if (defList.NullOrEmpty()) defList = [];
-            if (!defListRenderableDefs.NullOrEmpty()) defList.AddRange(defListRenderableDefs);
-            if (!defListRenderable.NullOrEmpty()) defList.AddRange(defListRenderable);
-        }
+       
     }
 
     public void ClearAllGraphics()
@@ -153,8 +126,6 @@ public class RVRComp : ThingComp
         masks = [];
         renderableIndexes = [];
         sets = [];
-        defList = [];
-        defListRenderable = [];
         defListRenderableDefs = [];
     }
 
@@ -223,13 +194,7 @@ public class RVRComp : ThingComp
 
     public void GenAllDefs(RVRGraphicsComp comp, Pawn pawn)
     {
-        defList.Clear();
-
-        if (defList.NullOrEmpty() && !comp.renderableDefs.NullOrEmpty())
-        {
-            defList = [.. comp.renderableDefs];
-        }
-
+        
         foreach (RenderableDef rDef in comp.renderableDefs)
         {
             GenerateRenderableDef(rDef, pawn);

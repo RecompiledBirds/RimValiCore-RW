@@ -197,7 +197,7 @@ public class ShapeshifterComp : ThingComp
         if (comp == null) return;
         RVRGraphicsComp targetGraphics = def.GetCompProperties<RVRGraphicsComp>();
         LoadCompsFromForm();
-        comp.RenderableDefs.Clear();
+        comp.ClearAllGraphics();
         if (targetGraphics != null)
         {
 
