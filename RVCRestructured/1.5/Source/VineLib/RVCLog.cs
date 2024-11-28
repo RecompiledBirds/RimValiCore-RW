@@ -1,4 +1,6 @@
-﻿namespace RVCRestructured;
+﻿using System.Runtime.CompilerServices;
+
+namespace RVCRestructured;
 
 public enum RVCLogType
 {
@@ -21,7 +23,7 @@ public static class RVCLog
     {
         Log(o, RVCLogType.Error, condition, debugOnly);
     }
-    public static void Log(object o, RVCLogType type = RVCLogType.Message, bool condition = true, bool debugOnly = false)
+    public static void Log(object o, RVCLogType type = RVCLogType.Message, bool condition = true, bool debugOnly = false, [CallerMemberName] string name="")
     {
         if (debugOnly && !VineSettings.debugMode)
             return;
@@ -31,16 +33,16 @@ public static class RVCLog
         switch (type)
         {
             case RVCLogType.Message:
-                Verse.Log.Message($"[RVC]: {o}");
+                Verse.Log.Message($"[Vine{(VineSettings.debugMode? $"/{name}]":"]")}: {o}");
                 break;
             case RVCLogType.Error:
-                Verse.Log.Error($"[RVC]: {o}");
+                Verse.Log.Error($"[Vine{(VineSettings.debugMode ? $"/{name}]" : "]")}: {o}");
                 break;
             case RVCLogType.Warning:
-                Verse.Log.Warning($"[RVC]: {o}");
+                Verse.Log.Warning($"[Vine{(VineSettings.debugMode ? $"/{name}]" : "]")}: {o}");
                 break;
             case RVCLogType.ErrorOnce:
-                Verse.Log.ErrorOnce($"[RVC]: {o}", o.GetHashCode());
+                Verse.Log.ErrorOnce($"[Vine{(VineSettings.debugMode ? $"/{name}]" : "]")}: {o}", o.GetHashCode());
                 break;
         }
     }

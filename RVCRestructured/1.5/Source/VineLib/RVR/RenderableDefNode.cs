@@ -12,10 +12,10 @@ public class RenderableDefNodeProperties : PawnRenderNodeProperties
 public class RNodeWorker : PawnRenderNodeWorker
 {
 
-
+    
     public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
     {
-        return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait) && base.CanDrawNow(node, parms);
+        return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
     }
 }
 public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree) : PawnRenderNode(pawn, props, tree)

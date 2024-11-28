@@ -136,7 +136,6 @@ public class DefRestrictionManager
 
                     defNode.TryGetMayRequireAttributeValues(out string? mayRequireMod, out string? mayRequireAnyMod);
                     DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(instructions, nameof(instructions.def), defNode.Name, mayRequireMod, mayRequireAnyMod, typeToDefType[restrictionType]);
-
                     defInstructions.Add(instructions);
                 }
             }
@@ -198,16 +197,12 @@ public class DefRestrictionManager
 
     private void ResolveDefReferences(ThingDef parentDef)
     {
-        int count = defInstructions.Count;
-        for (int i = 0; i < count; i++)
+        foreach ((RestrictionType type, RestrictionHow how, Def def) in defInstructions)
         {
-            (RestrictionType type, RestrictionHow how, Def def) = defInstructions[i];
             AddRestrictionInfo(parentDef, def, how, out DefRestrictionInfo? info);
             if (info == null) continue;
-
             typeToDefSet[type].Add(info);
         }
-
         defInstructions.Clear();
     }
 

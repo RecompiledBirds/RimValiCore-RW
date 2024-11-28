@@ -47,11 +47,10 @@ public class RenderableDef : Def
         bool shownByBody = BodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == BodyPart.ToLower() || x.Label.ToLower() == BodyPart.ToLower());
         return (portrait || NotInBedOrShouldShowBody(pawn)) && shownByBody;
     }
-    public bool NotInBedOrShouldShowBody(Pawn pawn) => ((!pawn.InBed() || showsInBed) || pawn.CurrentBed().def.building.bed_showSleeperBody);
+
+    public bool NotInBedOrShouldShowBody(Pawn pawn) => !pawn.InBed() || pawn.CurrentBed().def.building.bed_showSleeperBody || showsInBed;
 
 
-    
-    
 
 
     public string GetTexPath(Pawn pawn)

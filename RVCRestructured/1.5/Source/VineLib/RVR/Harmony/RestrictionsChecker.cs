@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using System.Runtime.CompilerServices;
+using Verse;
 
 namespace RVCRestructured.RVR;
 
@@ -8,6 +9,7 @@ public static class RestrictionsChecker
 
     public static void MarkRestricted(Def def)
     {
+        RVCLog.Log($"Restricted {def}.",debugOnly:true);
         restrictedDefs.Add(def);
     }
 
