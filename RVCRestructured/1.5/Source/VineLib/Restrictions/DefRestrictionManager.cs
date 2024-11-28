@@ -136,6 +136,7 @@ public class DefRestrictionManager
 
                     defNode.TryGetMayRequireAttributeValues(out string? mayRequireMod, out string? mayRequireAnyMod);
                     DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(instructions, nameof(instructions.def), defNode.Name, mayRequireMod, mayRequireAnyMod, typeToDefType[restrictionType]);
+                    RVCLog.Log(defNode.Name);
                     defInstructions.Add(instructions);
                 }
             }

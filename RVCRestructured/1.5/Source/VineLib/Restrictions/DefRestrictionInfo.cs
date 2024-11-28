@@ -33,7 +33,7 @@ public record DefRestrictionInfo
     {
         User = def;
         UserWhitelisted = true;
-        RestrictionsChecker.MarkRestricted(def);
+        RestrictionsChecker.MarkRestricted(Def);
     }
 
     public void BlackListUser(Def def)
