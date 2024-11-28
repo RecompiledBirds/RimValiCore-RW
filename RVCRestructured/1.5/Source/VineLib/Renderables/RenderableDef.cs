@@ -24,6 +24,7 @@ public class RenderableDef : Def, IRenderable
     private readonly string? colorSet = null;
     private readonly string? bodyPart = null;
 
+    private readonly bool flipXPos = true;
     private readonly bool flipLayerEastWest = true;
     private readonly bool showsInBed = true;
     private readonly bool flipYPos = false;
@@ -40,7 +41,8 @@ public class RenderableDef : Def, IRenderable
 
     public string? BodyPart => bodyPart;
     public bool FlipLayerEastWest => flipLayerEastWest;
-    private bool FlipYPos => flipYPos;
+    public bool FlipYPos => flipYPos;
+    public bool FlipXPos => flipXPos;
 
     public BodyPartGraphicPos this[int i] => GetBodyPartGraphicPosFromIntRot(i);
 
@@ -107,21 +109,25 @@ public class RenderableDef : Def, IRenderable
         throw new ArgumentOutOfRangeException(nameof(rot), "Parameter has to be either 0, 1, 2, 3");
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public BodyPartGraphicPos GetPos(Rot4 rot, bool inBed = false, bool portrait = false) 
-        => GetBodyPartGraphicPosFromIntRot(rot.AsInt, inBed, portrait);
+    public BodyPartGraphicPos GetPos(Pawn pawn, bool lyingDown = false, bool portrait = false)
+    {
+        
+        return GetPos(pawn.Rotation, lyingDown, portrait);
+    }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public BodyPartGraphicPos GetPos(Rot4 rot, bool lyingdown = false, bool portrait = false) 
+        => GetBodyPartGraphicPosFromIntRot(rot.AsInt, lyingdown, portrait);
 
     private BodyPartGraphicPos GenerateWest()
     {
+
         BodyPartGraphicPos graphicPos = new()
         {
-            position = -East.position,
+            
+            position = new Vector3(FlipXPos ? -East.position.x : East.position.x, FlipLayerEastWest ? -East.position.y : East.position.y, FlipYPos ? -East.position.z : East.position.z),
             size = East.size,
-            offsetInBed = East.offsetInBed
+            offsetInBed = new Vector2(FlipXPos ? -East.offsetInBed.x : East.offsetInBed.x, FlipYPos ? -East.offsetInBed.y : East.offsetInBed.y)
         };
-
-        if (!FlipLayerEastWest) graphicPos.position.y = East.position.y;
-        if (!FlipYPos) graphicPos.position.z = East.position.z;
-
         return graphicPos;
     }
 
@@ -138,14 +144,14 @@ public class RenderableDef : Def, IRenderable
 
         Vector3 recursizePos = (LinkPosWith != null ? LinkPosWith.GetPosRecursively(rot, inBed, pair, portrait) : Vector3.zero);
 
-
+        
 
         BodyPartGraphicPos? graphicPos = null;
         graphicPos = rot switch
         {
             1 => East,
             2 => South,
-            3 => West,
+            3 =>West,
             _ => North,
         };
         float scalar = useScalingForPos ? graphicPos.size.x : 1;
@@ -161,20 +167,20 @@ public class RenderableDef : Def, IRenderable
     }
     private readonly Dictionary<(bool inBed, int rot), BodyPartGraphicPos> partCache = [];
 
-    private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, bool inBed=false, bool portrait = false)
+    private BodyPartGraphicPos GetBodyPartGraphicPosFromIntRot(int rot, bool lyingDown=false, bool portrait = false)
     {
         
         (bool inBed, int rot) key;
         if (portrait)
         {
             rot = 2;
-            inBed = false;
+            lyingDown = false;
         }
 
-        key = (inBed, rot);
+        key = (lyingDown, rot);
 
         if (partCache.TryGetValue(key, out BodyPartGraphicPos graphicPos)) return graphicPos;
-        Vector3 pos = GetPosRecursively(rot, inBed, key, portrait);
+        Vector3 pos = GetPosRecursively(rot, lyingDown, key, portrait);
 
 
         BodyPartGraphicPos? newPos = null;
@@ -206,12 +212,14 @@ public class RenderableDef : Def, IRenderable
                 break;
             case 3:
 
+
                     newPos = new BodyPartGraphicPos
                     {
                         position = pos,
                         size = West.size,
                         offsetInBed = West.offsetInBed
                     };
+                
                 
                 break;
 
