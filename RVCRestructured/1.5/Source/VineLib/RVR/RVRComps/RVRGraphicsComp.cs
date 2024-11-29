@@ -5,17 +5,12 @@ namespace RVCRestructured;
 
 public class RVRGraphicsComp : CompProperties
 {
-    public readonly bool hasUniqueHeadApparel = false;
+
     public readonly bool throwApparelError = false;
     public readonly bool useEmptyApparelIfNoDefault = true;
-    public readonly bool hasHair = false;
     public readonly List<RaceColors> colorGenerators = [];
     public readonly List<RenderableDef> renderableDefs = [];
     public readonly string skinColorSet = string.Empty;
-
-
-    public Vector2 apparelScaleBody = Vector2.one;
-    public Vector2 apparelScaleHead = Vector2.one;
     public Dictionary<string, RaceColors> cachedColors = [];
     public RaceColors? this[string name]
     {

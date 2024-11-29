@@ -8,7 +8,7 @@ public static class ApparelEquipping
     {
         if (!__result) return;
         if (!thing.def.IsApparel) return;
-
+ 
         __result = pawn.CanUse(thing.def);
         if (!__result) cantReason = "RVC_CannotWear".Translate(pawn.def.label.Named("RACE"));
     }
