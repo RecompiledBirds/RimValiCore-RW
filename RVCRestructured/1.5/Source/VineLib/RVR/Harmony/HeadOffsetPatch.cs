@@ -11,36 +11,21 @@ public static class HeadOffsetPatch
     public static void Postfix(ref Vector3 __result, Rot4 rotation, PawnRenderer __instance)
     {
         Pawn pawn = __instance.renderTree.pawn;
-        GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
-        ShapeshifterComp shapeshifterComp;
-        if (comp == null)
-        {
-            shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-            if (shapeshifterComp == null) { return; }
 
-            __result = ShiftedHeadOffset(shapeshifterComp, __result, rotation);
-            return;
-        }
+        ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+        if (shapeshifterComp == null) { return; }
 
-        shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-        if (shapeshifterComp != null)
-        {
-            __result = ShiftedHeadOffset(shapeshifterComp, __result, rotation);
-            return;
-        }
+        __result = ShiftedHeadOffset(pawn,shapeshifterComp, rotation);
+        return;
 
 
-        
-        shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-        if (shapeshifterComp == null) return;
-        __result= ShiftedHeadOffset(shapeshifterComp,__result,rotation);
 
     }
 
-    public static Vector3 ShiftedHeadOffset(ShapeshifterComp shapeshifterComp, Vector3 __result,Rot4 rotation)
+    public static Vector3 ShiftedHeadOffset(Pawn pawn,ShapeshifterComp shapeshifterComp,Rot4 rotation)
     {
         
-        Pawn pawn = (Pawn)shapeshifterComp.parent;
+      
 
         Vector2 vector = shapeshifterComp.MimickedBodyType.headOffset * Mathf.Sqrt(pawn.ageTracker.CurLifeStage.bodySizeFactor);
         switch (rotation.AsInt)
