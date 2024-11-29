@@ -1,5 +1,7 @@
-﻿using RimWorld;
+﻿using LudeonTK;
+using RimWorld;
 using RVCRestructured.RVR;
+using System.Text;
 using System.Xml;
 using Verse;
 
@@ -130,13 +132,12 @@ public class DefRestrictionManager
                     RestrictionType restrictionType = ParseHelper.FromString<RestrictionType>(restriction.Name);
                     DefRestrictInstructions instructions = new()
                     {
+                        defName = defNode.Name,
                         type = restrictionType,
                         how = ParseHelper.FromString<RestrictionHow>(defNode.InnerText)
                     };
 
                     defNode.TryGetMayRequireAttributeValues(out string? mayRequireMod, out string? mayRequireAnyMod);
-                    DirectXmlCrossRefLoader.RegisterObjectWantsCrossRef(instructions, nameof(instructions.def), defNode.Name, mayRequireMod, mayRequireAnyMod, typeToDefType[restrictionType]);
-                    RVCLog.Log(defNode.Name);
                     defInstructions.Add(instructions);
                 }
             }
@@ -198,8 +199,9 @@ public class DefRestrictionManager
 
     private void ResolveDefReferences(ThingDef parentDef)
     {
-        foreach ((RestrictionType type, RestrictionHow how, Def def) in defInstructions)
+        foreach ((RestrictionType type, RestrictionHow how, string defName) in defInstructions)
         {
+            Def def = GenDefDatabase.GetDef(typeToDefType[type], defName, false);
             AddRestrictionInfo(parentDef, def, how, out DefRestrictionInfo? info);
             if (info == null) continue;
             typeToDefSet[type].Add(info);
@@ -274,17 +276,17 @@ public class DefRestrictionManager
         restrictionInfos.Add(def, info);
     }
 
-    private class DefRestrictInstructions
+    public class DefRestrictInstructions
     {
-        internal RestrictionType type;
-        internal RestrictionHow how;
-        internal Def def = null!;
+        public RestrictionType type;
+        public RestrictionHow how;
+        [AllowNull] public string defName;
 
-        internal void Deconstruct(out RestrictionType type, out RestrictionHow how, out Def def)
+        public void Deconstruct(out RestrictionType type, out RestrictionHow how, out string defName)
         {
             type = this.type;
             how = this.how;
-            def = this.def;
+            defName = this.defName;
         }
     }
 
@@ -297,6 +299,47 @@ public class DefRestrictionManager
         {
             restrictions = this.restrictions;
             pack = this.pack;
+        }
+    }
+
+    [DebugAction("Vine", "Log Def Restrictions for pawn", actionType = DebugActionType.ToolMapForPawns, allowedGameStates = AllowedGameStates.PlayingOnMap)]
+    public static void LogDefRestrictions(Pawn pawn)
+    {
+        StringBuilder result = new($"Results for race of def: {pawn.kindDef.race.defName}\n");
+        AggregateDefRestrictionsForPawn(pawn, result);
+
+        Log.Message(result);
+        Log.TryOpenLogWindow();
+    }
+
+    private static void AggregateDefRestrictionsForPawn(Pawn pawn, StringBuilder result)
+    {
+        if (pawn.def.GetCompProperties<RVRRestrictionComp>() is RVRRestrictionComp comp)
+        {
+            foreach ((Def def, DefRestrictionInfo info) in comp.restrictions.restrictionInfos)
+            {
+                if (info.CanUse)
+                {
+                    result.AppendLine($"[Allowed|{def.GetType().Name}] {def.defName}");
+                    continue;
+                }
+
+                result.AppendLine($"[Forbidden|{def.GetType().Name}] {def.defName}");
+            }
+            
+            return;
+        }
+
+        result.AppendLine("[Info] The selected pawns race does not have a restrictioncomp.");
+        foreach (Def def in GenDefDatabase.AllDefTypesWithDatabases().SelectMany(defType => GenDefDatabase.GetAllDefsInDatabaseForDef(defType).Where(def => def.IsRestricted())))
+        {
+            if (!def.IsRestricted())
+            {
+                result.AppendLine($"[Allowed|{def.GetType().Name}] {def.defName}");
+                continue;
+            }
+
+            result.AppendLine($"[Forbidden|{def.GetType().Name}] {def.defName}");
         }
     }
 }
