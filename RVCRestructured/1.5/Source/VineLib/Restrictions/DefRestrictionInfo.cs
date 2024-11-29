@@ -1,9 +1,11 @@
-﻿using RVCRestructured.RVR;
+﻿using LudeonTK;
+using NesGUI;
+using RVCRestructured.RVR;
 namespace RVCRestructured;
 
 public record DefRestrictionInfo
 {
-    public static DefRestrictionInfo Empty => new();
+    public static DefRestrictionInfo Empty { get; } = new();
 
     public Def Def { get; } = null!;
 
@@ -29,22 +31,22 @@ public record DefRestrictionInfo
         Def = def;
     }
 
-    public void WhiteListUser(Def def)
+    public void WhiteListUser(Def userDef)
     {
-        User = def;
+        User = userDef;
         UserWhitelisted = true;
         RestrictionsChecker.MarkRestricted(Def);
     }
 
-    public void BlackListUser(Def def)
+    public void BlackListUser(Def userDef)
     {
-        User = def;
+        User = userDef;
         UserBlacklisted = true;
     }
 
-    public void SetRequired(Def def)
+    public void SetRequired(Def userDef)
     {
-        User = def;
+        User = userDef;
         IsRequired = true;
     }
 }

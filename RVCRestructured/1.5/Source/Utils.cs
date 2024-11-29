@@ -59,6 +59,6 @@ public static class Utils
         RVRRestrictionComp? props = pawn.GetRelevantRestrictionComp();
         if (props == null) return !RestrictionsChecker.IsRestricted(def);
         
-        return (props[def]?.CanUse ?? false) || !def.IsRestricted() || props.IsAlwaysAllowed(def);
+        return props.IsAlwaysAllowed(def) || (props[def]?.CanUse ?? false);
     }
 }
