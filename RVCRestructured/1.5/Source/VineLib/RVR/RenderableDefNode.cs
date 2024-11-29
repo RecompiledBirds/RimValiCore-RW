@@ -6,13 +6,11 @@ namespace RVCRestructured.RVR;
 
 public class RenderableDefNodeProperties : PawnRenderNodeProperties
 {
-    public readonly RenderableDef def = null!;
+    [AllowNull] public readonly RenderableDef def;
 }
 
 public class RNodeWorker : PawnRenderNodeWorker
 {
-
-    
     public override bool CanDrawNow(PawnRenderNode node, PawnDrawParms parms)
     {
         return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
