@@ -32,30 +32,37 @@ public static class RVRHarmony
             harmony.Patch(AccessTools.Method(typeof(RestUtility), "CanUseBedEver"), postfix: new HarmonyMethod(typeof(BedPatch), nameof(BedPatch.CanUseBed)));
             harmony.Patch(AccessTools.Method(typeof(WorkGiver_Researcher), "ShouldSkip"), postfix: new HarmonyMethod(typeof(ResearchPatch), nameof(ResearchPatch.ResearchPostfix)));
             harmony.Patch(AccessTools.Method(typeof(EquipmentUtility), "CanEquip", [typeof(Thing), typeof(Pawn), typeof(string).MakeByRefType(), typeof(bool)]), postfix: new HarmonyMethod(typeof(EquipingPatch), nameof(EquipingPatch.EquipingPostfix)));
-            
-            
+            harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanConstruct", [typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool), typeof(JobDef)]), postfix: new HarmonyMethod(typeof(ConstructionPatch), nameof(ConstructionPatch.Constructable)));
+
+
             //Thoughts
-            harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "GetFirstMemoryOfDef"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
-            harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "NumMemoriesOfDef"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
-            harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "OldestMemoryOfDef"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
-            harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "RemoveMemoriesOfDef"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
-            harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "RemoveMemoriesOfDefIf"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatch)));
-            harmony.Patch(AccessTools.Method(typeof(SituationalThoughtHandler), "TryCreateThought"), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatchSIT)));
-            harmony.Patch(AccessTools.Method(typeof(MemoryThoughtHandler), "TryGainMemory", [typeof(Thought_Memory), typeof(Pawn)]), prefix: new HarmonyMethod(typeof(ThoughtReplacerPatch), nameof(ThoughtReplacerPatch.ReplacePatchCreateMemoryPrefix)));
+            Type thoughtReplacer = typeof(ThoughtReplacerPatch);
+            string replacerPatchName = nameof(ThoughtReplacerPatch.ReplacePatch);
+            Type memoryHandler = typeof(MemoryThoughtHandler);
+            harmony.Patch(AccessTools.Method(memoryHandler, "GetFirstMemoryOfDef"), prefix: new HarmonyMethod(thoughtReplacer,replacerPatchName));
+            harmony.Patch(AccessTools.Method(memoryHandler, "NumMemoriesOfDef"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
+            harmony.Patch(AccessTools.Method(memoryHandler, "OldestMemoryOfDef"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
+            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDef"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
+            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDefIf"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
+            harmony.Patch(AccessTools.Method(memoryHandler, "TryGainMemory", [typeof(Thought_Memory), typeof(Pawn)]), prefix: new HarmonyMethod(thoughtReplacer, nameof(ThoughtReplacerPatch.ReplacePatchCreateMemoryPrefix)));
+            harmony.Patch(AccessTools.Method(typeof(SituationalThoughtHandler), "TryCreateThought"), prefix: new HarmonyMethod(thoughtReplacer, nameof(ThoughtReplacerPatch.ReplacePatchSIT)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "CanGetThought"), postfix: new HarmonyMethod(typeof(CanGetThoughtPatch), nameof(CanGetThoughtPatch.CanGetPatch)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "GiveThoughtsForPawnOrganHarvested"), prefix: new HarmonyMethod(typeof(OrganPatch), nameof(OrganPatch.OrganHarvestPrefix)));
             
+
             //Max health
             harmony.Patch(AccessTools.Method(typeof(BodyPartDef), "GetMaxHealth"), postfix: new HarmonyMethod(typeof(BodyPartHealthPatch), nameof(BodyPartHealthPatch.HealthPostfix)));
            
+
             //Factions
             harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"), postfix: new HarmonyMethod(typeof(FactionStartRelations), nameof(FactionStartRelations.Postfix)));
+
 
             //Body Type Patches
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "GenerateBodyType"), postfix: new HarmonyMethod(typeof(BodyTypeGenPatch), nameof(BodyTypeGenPatch.Posfix)));
             harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)), postfix: new HarmonyMethod(typeof(ApparelGraphicPatch), nameof(ApparelGraphicPatch.Postfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnRenderer), "BaseHeadOffsetAt"), postfix: new HarmonyMethod(typeof(HeadOffsetPatch), nameof(HeadOffsetPatch.Postfix)));
-            harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanConstruct", [typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool), typeof(JobDef)]), postfix: new HarmonyMethod(typeof(ConstructionPatch), nameof(ConstructionPatch.Constructable)));
+
 
             //Pawn Generation Patches
             harmony.Patch(AccessTools.Method(typeof(TraitSet), "GainTrait"), prefix: new HarmonyMethod(typeof(TraitPatch), nameof(TraitPatch.TraitPrefix)));
