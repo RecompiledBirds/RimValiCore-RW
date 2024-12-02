@@ -25,9 +25,10 @@ public static class PawnBlenderPatches
 
     internal static void ModifyPawnGenerationRequest(ref PawnGenerationRequest request)
     {
+        if (!VineMod.VineSettings.RaceBlender) return;
+        if (request.KindDef.race == null) return;
         ThingDef def = request.KindDef.race;
 
-        if (!VineMod.VineSettings.RaceBlender) return;
 
         //safety check for scenario pawns
         if (!CanModify(in request)) return;
@@ -54,16 +55,12 @@ public static class PawnBlenderPatches
 
     private static bool IsValidRaceDef(ThingDef def)
     {
-        if (!(def.race?.Humanlike ?? false)) return false;
-        return !def.IsCorpse;
+        return (def.race?.Humanlike ?? false) && !def.IsCorpse;
     }
 
     private static bool CanModify(ref readonly PawnGenerationRequest request)
     {
-        if (request.Context.HasFlag(PawnGenerationContext.PlayerStarter)) return false;
-        if (!request.KindDef.RaceProps.Humanlike) return false;
-
-        return true;
+        return !request.Context.HasFlag(PawnGenerationContext.PlayerStarter) && request.KindDef.RaceProps.Humanlike;
     }
 
     private static bool ShouldSwitchPawnkindBased(ref readonly PawnGenerationRequest request)

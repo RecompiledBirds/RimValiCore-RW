@@ -13,15 +13,14 @@ public static class ApparelGraphicPatch
             return;
         BodyTypeDef typeDef = bodyType;
         Pawn pawn = apparel.Wearer;
-        string path;
+        string path="RVC/Empty";
         GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
         ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-        GraphicsComp rVRGraphicsComp = pawn.TryGetComp<GraphicsComp>();
-        if(shapeshifterComp != null)
+        if (shapeshifterComp != null)
         {
             typeDef = shapeshifterComp.MimickedBodyType;
         }
-       
+
         Graphic graphic;
         string altPath = $"{apparel.WornGraphicPath}_{typeDef.defName}";
         if (ContentFinder<Texture2D>.Get($"{altPath}_north", false))
@@ -32,18 +31,9 @@ public static class ApparelGraphicPatch
         {
             path = apparel.WornGraphicPath;
         }
-        else if (comp?.Props.useEmptyApparelIfNoDefault ?? false)
-        {
-            path = "RVC/Empty";
-        }
-        else if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
+        else if ((comp==null||!comp.Props.useEmptyApparelIfNoDefault) && ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
         {
             path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
-        }
-        else
-        {
-            RVCLog.Log($"Could not find texture for {apparel.def} using bodytype {typeDef.defName}, no bodytype, or thin bodytype. Returning an empty texture...", condition: comp != null && comp.Props.throwApparelError);
-            path = "RVC/Empty";
         }
 
         Shader shader = ShaderDatabase.Cutout;

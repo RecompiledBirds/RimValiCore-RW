@@ -21,7 +21,8 @@ public static class GetNotMissingPartsPatch
         {
             foreach (BodyPartRecord entry in __result)
             {
-                yield return entry;
+                if(!Rand.Chance(0.3f))
+                    yield return entry;
             }
             yield break;
         }

@@ -1,4 +1,6 @@
-﻿/*
+﻿
+using RVCRestructured.RVR.HarmonyPatches;
+
 namespace RVCRestructured.Shifter
 {
     public  static class PawnChanger
@@ -17,11 +19,9 @@ namespace RVCRestructured.Shifter
         public static void ChangePawnRace(Pawn pawn, ThingDef toDef)
         {
             RegionListersUpdater.DeregisterInRegions(pawn, pawn.Map);
-            ThingDef oldDef = pawn.def;
             bool isHumanLike = pawn.def.race.Humanlike;
             pawn.Strip();
             pawn.def = toDef;
-            RegionListersUpdater.RegisterInRegions(pawn, pawn.Map);
             if (!isHumanLike)
             {
                 PawnComponentsUtility.CreateInitialComponents(pawn);
@@ -30,18 +30,17 @@ namespace RVCRestructured.Shifter
                 pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);
                 pawn.story.TryGetRandomHeadFromSet(from x in DefDatabase<HeadTypeDef>.AllDefs where x.randomChosen select x);
                 pawn.Name = PawnBioAndNameGenerator.GeneratePawnName(pawn);
-                NameTriple name = null;
-                NamePatch.GenName(ref name, pawn);
+                NamePatch.GenName(out NameTriple name, pawn);
                 PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo(pawn,Faction.OfPlayer.def,new PawnGenerationRequest() { Faction=Faction.OfPlayer});
                 pawn.Name = name;
             }
+            RegionListersUpdater.RegisterInRegions(pawn, pawn.Map);
             RebuildComps(pawn);
             StopPathingAndRender(pawn);
         }
 
         public static void ChangePawnRaceUnspawned(Pawn pawn, ThingDef toDef)
         {
-            ThingDef oldDef = pawn.def;
             bool isHumanLike = pawn.def.race.Humanlike;
             pawn.def = toDef;
             if (!isHumanLike)
@@ -52,9 +51,8 @@ namespace RVCRestructured.Shifter
                 pawn.story.bodyType = PawnGenerator.GetBodyTypeFor(pawn);
                 pawn.story.TryGetRandomHeadFromSet(from x in DefDatabase<HeadTypeDef>.AllDefs where x.randomChosen select x);
                 pawn.Name = PawnBioAndNameGenerator.GeneratePawnName(pawn);
-                NameTriple name = null;
-                NamePatch.GenName(ref name, pawn);
-                PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo(pawn, oldDef.label, pawn.kindDef.defaultFactionType);
+                NamePatch.GenName(out NameTriple name, pawn);
+                PawnBioAndNameGenerator.GiveAppropriateBioAndNameTo(pawn,pawn.Faction.def,new PawnGenerationRequest() { KindDef=PawnKindDefOf.WildMan, AllowDead=false, AllowDowned=false, Faction=pawn.Faction});
                 pawn.Name = name;
             }
             RebuildComps(pawn);
@@ -64,18 +62,16 @@ namespace RVCRestructured.Shifter
         {
             pawn.jobs.StopAll();
             pawn.pather.StopDead();
-            pawn.Drawer.renderer.graphics.ResolveAllGraphics();
-            pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
+            pawn.Drawer.renderer.SetAllGraphicsDirty();
+            pawn.jobs.EndCurrentJob(Verse.AI.JobCondition.InterruptForced);
         }
 
         public static void ChangePawnRaceNonHumanlike(Pawn pawn, ThingDef toDef)
         {
             RegionListersUpdater.DeregisterInRegions(pawn, pawn.Map);
-            ThingDef oldDef = pawn.def;
             bool isHumanLike = pawn.def.race.Humanlike;
             pawn.Strip();
             pawn.def = toDef;
-            RegionListersUpdater.RegisterInRegions(pawn, pawn.Map);
             if (isHumanLike)
             {
                 pawn.skills = null;
@@ -87,6 +83,7 @@ namespace RVCRestructured.Shifter
                 pawn.genes = null;
                 pawn.surroundings = null;
             }
+            RegionListersUpdater.RegisterInRegions(pawn, pawn.Map);
             RebuildComps(pawn);
             StopPathingAndRender(pawn);
         }
@@ -104,4 +101,3 @@ namespace RVCRestructured.Shifter
         }
     }
 }
-*/
