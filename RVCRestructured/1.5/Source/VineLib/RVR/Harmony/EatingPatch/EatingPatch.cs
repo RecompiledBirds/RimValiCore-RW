@@ -25,7 +25,7 @@ public static class EatingPatch
             return;
         }
 
-        __result = comp.IsAlwaysAllowed(RestrictionType.FoodDef) || (comp[def]?.CanUse ?? false) || !def.IsRestricted();
+        __result = comp.IsAlwaysAllowed(RestrictionType.FoodDef) || (comp[def].CanUse) || !def.IsRestricted();
 
         if(!__result) JobFailReason.Is($"{def.label} {"CannotEatRVR".Translate(def.label.Named("RACE"))}");
     }

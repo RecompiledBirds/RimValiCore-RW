@@ -13,7 +13,7 @@ public static class ConstructionPatch
 
         GetLabelAndRestrictionsFor(p, out string label, out RVRRestrictionComp? restrictions);
 
-        __result = (restrictions?[t.def]?.CanUse ?? false) || !t.def.IsRestricted() || (restrictions?.IsAlwaysAllowed(t.def) ?? false);
+        __result = (restrictions?[t.def].CanUse??false ) || !t.def.IsRestricted() || (restrictions?.IsAlwaysAllowed(t.def) ?? false);
         if (!__result) JobFailReason.Is(label + " " + "RVC_CannotBuild".Translate(label.Named("RACE")));
     }
 

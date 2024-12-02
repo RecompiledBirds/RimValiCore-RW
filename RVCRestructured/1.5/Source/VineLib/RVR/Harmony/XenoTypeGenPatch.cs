@@ -23,18 +23,17 @@ public static class XenoTypeGenPatch
         }
 
         XenotypeDef[] onlyAllowedXenoTypes = comp.restrictions[RestrictionType.XenotypeDef].Where(info => info.IsRequired).Select(info => (XenotypeDef)info.Def).ToArray();
-        RVCLog.Log(onlyAllowedXenoTypes.Count());
         if (onlyAllowedXenoTypes?.Length > 0)
         {
             __result = onlyAllowedXenoTypes.Contains(__result) ? __result : onlyAllowedXenoTypes.RandomElement();
             return;
         }
-        if (comp.restrictions[__result]?.CanUse??false)
+        if (comp.restrictions[__result].CanUse)
         {
             return;
         }
 
-        if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => (comp.restrictions[x.Key]?.CanUse ?? false) || !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp))
+        if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => (comp.restrictions[x.Key].CanUse) || !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp))
             __result = kvp.Key;
     }
 }
