@@ -211,13 +211,14 @@ public static class FloorConstructor
         ThingDef frameDef = new()
         {
             isFrameInt = true,
-            category = ThingCategory.Building,
-            label = "Unspecified building frame",
             thingClass = typeof(Frame),
             altitudeLayer = AltitudeLayer.Building,
-            useHitPoints = true,
             selectable = true,
-            building = new BuildingProperties(),
+            building = new BuildingProperties()
+            {
+                artificialForMeditationPurposes = false,
+                isEdifice=false
+            },
             comps =
                      {
                          new CompProperties_Forbiddable()
@@ -226,19 +227,15 @@ public static class FloorConstructor
             leaveResourcesWhenKilled = true,
 
 
-            building.artificialForMeditationPurposes = false,
             defName = ThingDefGenerator_Buildings.BuildingFrameDefNamePrefix + output.defName,
             label = output.label + "FrameLabelExtra".Translate(),
-            entityDefToBuild = output,
             useHitPoints = false,
             fillPercent = 0f,
             description = "Terrain building in progress.",
             passability = Traversability.Standable,
-            selectable = true,
             constructEffect = output.constructEffect,
-            building.isEdifice = false,
-            constructionSkillPrerequisite = output.constructionSkillPrerequisite;
-            artisticSkillPrerequisite = output.artisticSkillPrerequisite;
+            constructionSkillPrerequisite = output.constructionSkillPrerequisite,
+            artisticSkillPrerequisite = output.artisticSkillPrerequisite,
             clearBuildingArea = false,
             modContentPack = output.modContentPack,
             category = ThingCategory.Ethereal,
@@ -254,7 +251,6 @@ public static class FloorConstructor
         ThingDef blueprintDef = new()
         {
             category = ThingCategory.Ethereal,
-            label = "Unspecified blueprint",
             altitudeLayer = AltitudeLayer.Blueprint,
             useHitPoints = false,
             selectable = true,
@@ -266,7 +262,7 @@ public static class FloorConstructor
             drawerType = DrawerType.MapMeshAndRealTime,
             ignoreIllegalLabelCharacterConfigError = true,
             thingClass = typeof(Blueprint_Build),
-            defName = ThingDefGenerator_Buildings.BlueprintDefNamePrefix + output.defName
+            defName = ThingDefGenerator_Buildings.BlueprintDefNamePrefix + output.defName,
 
 
             label = output.label + "BlueprintLabelExtra".Translate(),
