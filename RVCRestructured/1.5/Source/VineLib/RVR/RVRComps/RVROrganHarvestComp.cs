@@ -5,9 +5,9 @@ namespace RVCRestructured
 {
     public class OrganThought
     {
-        public ThingDef race;
-        public ThoughtDef guest;
-        public ThoughtDef colonist;
+        public ThingDef? race;
+        public ThoughtDef? guest;
+        public ThoughtDef? colonist;
     }
     public class RVROrganHarvestComp : CompProperties
     {
@@ -18,7 +18,7 @@ namespace RVCRestructured
         public List<OrganThought> harvestThoughts = new List<OrganThought>();
         public bool careAboutUndefinedRaces = true;
 
-        public ThoughtDef myOrganHarvested = null;
+        public ThoughtDef? myOrganHarvested = null;
         public bool caresAboutHarvestsFromSelf = true;
 
         public ThoughtDef? GetHarvestedSelfThought()
@@ -69,7 +69,7 @@ namespace RVCRestructured
         {
             get
             {
-                return props as RVROrganHarvestComp;
+                return (RVROrganHarvestComp)props;
             }
         }
     }

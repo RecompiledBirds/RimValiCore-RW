@@ -16,7 +16,7 @@ public static class OrganPatch
             victim.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.MyOrganHarvested, null);
         else
         {
-            ThoughtDef thought = comp.Props.GetHarvestedSelfThought();
+            ThoughtDef? thought = comp.Props.GetHarvestedSelfThought();
             if(thought != null)
                 victim.needs.mood.thoughts.memories.TryGainMemory(thought, null);
 
@@ -37,7 +37,7 @@ public static class OrganPatch
                 continue;
             }
 
-            ThoughtDef thought = secondComp.Props.GetHarvestedThought(victim.def, victim.IsColonist);
+            ThoughtDef? thought = secondComp.Props.GetHarvestedThought(victim.def, victim.IsColonist);
             if (thought != null)
                 pawn.needs.mood.thoughts.memories.TryGainMemory(thought, null);
             
