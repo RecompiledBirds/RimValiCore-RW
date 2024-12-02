@@ -12,28 +12,29 @@ public static class XenoTypeGenPatch
         RVRRestrictionComp comp = raceDef.GetCompProperties<RVRRestrictionComp>();
 
         bool restricted = __result.IsRestricted();
-        if (comp is null)
+        if (comp == null)
         {
             if (restricted)
             {
-                if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp)) return;
-                __result = kvp.Key;
+                if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> keyvp)) return;
+                __result = keyvp.Key;
             }
             return;
         }
 
         XenotypeDef[] onlyAllowedXenoTypes = comp.restrictions[RestrictionType.XenotypeDef].Where(info => info.IsRequired).Select(info => (XenotypeDef)info.Def).ToArray();
+        RVCLog.Log(onlyAllowedXenoTypes.Count());
         if (onlyAllowedXenoTypes?.Length > 0)
         {
             __result = onlyAllowedXenoTypes.Contains(__result) ? __result : onlyAllowedXenoTypes.RandomElement();
             return;
         }
-
-        if (!(comp.restrictions[__result]?.CanUse ?? false) || restricted)
+        if (comp.restrictions[__result]?.CanUse??false)
         {
-            if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => (comp.restrictions[x.Key]?.CanUse ?? false) || !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp)) return;
-            __result = kvp.Key;
             return;
         }
+
+        if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => (comp.restrictions[x.Key]?.CanUse ?? false) || !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp))
+            __result = kvp.Key;
     }
 }

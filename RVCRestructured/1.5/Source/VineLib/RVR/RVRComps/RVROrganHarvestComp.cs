@@ -1,4 +1,6 @@
-﻿/*
+﻿
+using RVCRestructured.VineLib.Defs.DefOfs;
+
 namespace RVCRestructured
 {
     public class OrganThought
@@ -19,14 +21,14 @@ namespace RVCRestructured
         public ThoughtDef myOrganHarvested = null;
         public bool caresAboutHarvestsFromSelf = true;
 
-        public ThoughtDef GetHarvestedSelfThought()
+        public ThoughtDef? GetHarvestedSelfThought()
         {
             if (!caresAboutHarvestsFromSelf)
                 return null;
-            return myOrganHarvested != null ? myOrganHarvested : ThoughtDefOf.MyOrganHarvested;
+            return myOrganHarvested ?? ThoughtDefOf.MyOrganHarvested;
         }
 
-        public ThoughtDef GetHarvestedThought(ThingDef race, bool colonist)
+        public ThoughtDef? GetHarvestedThought(ThingDef race, bool colonist)
         {
             bool guest = !colonist;
             for (int i = 0; i < harvestThoughts.Count; i++)
@@ -49,11 +51,11 @@ namespace RVCRestructured
             if (!careAboutUndefinedRaces)
                 return null;
             if (colonist)
-                return ThoughtDefOf.KnowColonistOrganHarvested;
+                return Vine_ThoughtDefOf.KnowColonistOrganHarvested;
 
             if (guest)
             {
-                return ThoughtDefOf.KnowGuestOrganHarvested;
+                return Vine_ThoughtDefOf.KnowGuestOrganHarvested;
             }
 
             return null;
@@ -72,4 +74,4 @@ namespace RVCRestructured
         }
     }
 }
-*/
+

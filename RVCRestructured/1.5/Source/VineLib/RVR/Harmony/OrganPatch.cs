@@ -1,4 +1,5 @@
-﻿using Verse;
+﻿using RVCRestructured.VineLib.Defs.DefOfs;
+using Verse;
 
 namespace RVCRestructured.RVR.HarmonyPatches;
 
@@ -8,7 +9,7 @@ public static class OrganPatch
     {
         if (!victim.RaceProps.Humanlike)
             return true;
-        /*
+        
         OrganComp comp = victim.TryGetComp<OrganComp>();
         
         if (comp==null)
@@ -28,11 +29,11 @@ public static class OrganPatch
 
             if (pawn == victim)
                 continue;
-            /*
+            
             OrganComp secondComp=pawn.TryGetComp<OrganComp>();
             if (secondComp == null)
             {
-                victim.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.KnowColonistOrganHarvested, null);
+                victim.needs.mood.thoughts.memories.TryGainMemory(Vine_ThoughtDefOf.KnowColonistOrganHarvested, null);
                 continue;
             }
 
@@ -41,7 +42,7 @@ public static class OrganPatch
                 pawn.needs.mood.thoughts.memories.TryGainMemory(thought, null);
             
 
-        }*/
+        }
 
         return true;
     }

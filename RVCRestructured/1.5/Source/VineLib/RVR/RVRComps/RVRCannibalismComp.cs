@@ -29,17 +29,17 @@ public class RVRCannibalismComp : CompProperties
 
         if (!caresAboutUndefinedRaces)
             return Vine_ThoughtDefOf.Vine_ThoughtDidntCare;
-        /*
+       
+        
          if (cannibal)
          {
              if (cooked)
-                 return ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal;
-             return ThoughtDefOf.AteHumanlikeMeatDirectCannibal;
+                 return Vine_ThoughtDefOf.AteHumanlikeMeatAsIngredientCannibal;
+             return Vine_ThoughtDefOf.AteHumanlikeMeatDirectCannibal;
          }
          if (cooked)
-             return ThoughtDefOf.AteHumanlikeMeatAsIngredient;
-         return ThoughtDefOf.AteHumanlikeMeatDirect;*/
-        return null;
+             return Vine_ThoughtDefOf.AteHumanlikeMeatAsIngredient;
+         return Vine_ThoughtDefOf.AteHumanlikeMeatDirect;
     }
 
     public RVRCannibalismComp()

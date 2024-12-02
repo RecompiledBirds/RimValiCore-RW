@@ -1,4 +1,6 @@
-﻿/*
+﻿
+using RVCRestructured.VineLib.Defs.DefOfs;
+
 namespace RVCRestructured.RVR.HarmonyPatches
 {
     public static class ButcherPatch
@@ -13,19 +15,15 @@ namespace RVCRestructured.RVR.HarmonyPatches
             }
             if (isButcher)
             {
-                butcher.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.ButcheredHumanlikeCorpse, null);
+                butcher.needs.mood.thoughts.memories.TryGainMemory(Vine_ThoughtDefOf.ButcheredHumanlikeCorpse, null);
                 return;
             }
-            butcher.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.KnowButcheredHumanlikeCorpse, null);
+            butcher.needs.mood.thoughts.memories.TryGainMemory(Vine_ThoughtDefOf.KnowButcheredHumanlikeCorpse, null);
         }
 
         public static bool ButcherPrefix(Pawn butcher, float efficiency, ref IEnumerable<Thing> __result, Corpse __instance)
         {
-            if (HarmonyLib.Harmony.HasAnyPatches("rimworld.erdelf.alien_race.main"))
-            {
-                return true;
-            }
-            TaleRecorder.RecordTale(TaleDefOf.ButcheredHumanlikeCorpse, new object[] { butcher });
+            TaleRecorder.RecordTale(TaleDefOf.ButcheredHumanlikeCorpse, [butcher]);
             Pawn deadPawn = __instance.InnerPawn;
             __result = deadPawn.ButcherProducts(butcher, efficiency);
             if (!deadPawn.RaceProps.Humanlike)
@@ -46,4 +44,4 @@ namespace RVCRestructured.RVR.HarmonyPatches
         }
     }
 }
-*/
+
