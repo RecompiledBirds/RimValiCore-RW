@@ -29,6 +29,10 @@ public class VineMod : Mod
         listing_Standard.CheckboxLabeled("Enable VGUI editor: ", ref settings.VGUIEnabled);
         listing_Standard.CheckboxLabeled("Race blending enabled: ", ref settings.RaceBlender);
         listing_Standard.CheckboxLabeled("Debug mode: ", ref VineSettings.debugMode);
+        if (VineSettings.debugMode)
+        {
+            listing_Standard.CheckboxLabeled("Harmony debuggers: ", ref VineSettings.harmonyDebuggers);
+        }
         listing_Standard.End();
         base.DoSettingsWindowContents(inRect);
     }

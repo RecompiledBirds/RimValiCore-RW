@@ -10,7 +10,9 @@ public class VineSettings : ModSettings
 
     public static List<Color> savedColors = [Color.black];
     public static bool debugMode = false;
+    public static bool harmonyDebuggers = false;
 
+    public static bool DebugHarmony => debugMode && harmonyDebuggers;
     public VineSettings() { }
     public override void ExposeData()
     {
