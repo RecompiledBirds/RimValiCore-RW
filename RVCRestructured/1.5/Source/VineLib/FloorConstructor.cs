@@ -223,27 +223,29 @@ public static class FloorConstructor
                          new CompProperties_Forbiddable()
                      },
             scatterableOnMapGen = false,
-            leaveResourcesWhenKilled = true
+            leaveResourcesWhenKilled = true,
+
+
+            building.artificialForMeditationPurposes = false,
+            defName = ThingDefGenerator_Buildings.BuildingFrameDefNamePrefix + output.defName,
+            label = output.label + "FrameLabelExtra".Translate(),
+            entityDefToBuild = output,
+            useHitPoints = false,
+            fillPercent = 0f,
+            description = "Terrain building in progress.",
+            passability = Traversability.Standable,
+            selectable = true,
+            constructEffect = output.constructEffect,
+            building.isEdifice = false,
+            constructionSkillPrerequisite = output.constructionSkillPrerequisite;
+            artisticSkillPrerequisite = output.artisticSkillPrerequisite;
+            clearBuildingArea = false,
+            modContentPack = output.modContentPack,
+            category = ThingCategory.Ethereal,
+            entityDefToBuild = output,
+            ignoreIllegalLabelCharacterConfigError = true,
         };
-        frameDef.building.artificialForMeditationPurposes = false;
-        frameDef.defName = ThingDefGenerator_Buildings.BuildingFrameDefNamePrefix + output.defName;
-        frameDef.label = output.label + "FrameLabelExtra".Translate();
-        frameDef.entityDefToBuild = output;
-        frameDef.useHitPoints = false;
-        frameDef.fillPercent = 0f;
-        frameDef.description = "Terrain building in progress.";
-        frameDef.passability = Traversability.Standable;
-        frameDef.selectable = true;
-        frameDef.constructEffect = output.constructEffect;
-        frameDef.building.isEdifice = false;
-        frameDef.constructionSkillPrerequisite = output.constructionSkillPrerequisite;
-        frameDef.artisticSkillPrerequisite = output.artisticSkillPrerequisite;
-        frameDef.clearBuildingArea = false;
-        frameDef.modContentPack = output.modContentPack;
-        frameDef.category = ThingCategory.Ethereal;
-        frameDef.entityDefToBuild = output;
         output.frameDef = frameDef;
-        frameDef.ignoreIllegalLabelCharacterConfigError = true;
         return frameDef;
     }
 
@@ -265,54 +267,59 @@ public static class FloorConstructor
             ignoreIllegalLabelCharacterConfigError = true,
             thingClass = typeof(Blueprint_Build),
             defName = ThingDefGenerator_Buildings.BlueprintDefNamePrefix + output.defName
+
+
+            label = output.label + "BlueprintLabelExtra".Translate(),
+            entityDefToBuild = output,
+            graphicData = new GraphicData
+            {
+                shaderType = ShaderTypeDefOf.MetaOverlay,
+                texPath = "Things/Special/TerrainBlueprint",
+                graphicClass = typeof(Graphic_Single)
+            },
+            constructionSkillPrerequisite = output.constructionSkillPrerequisite,
+            artisticSkillPrerequisite = output.artisticSkillPrerequisite,
+            clearBuildingArea = false,
+            modContentPack = output.modContentPack
         };
-        blueprintDef.label = output.label + "BlueprintLabelExtra".Translate();
-        blueprintDef.entityDefToBuild = output;
-        blueprintDef.graphicData = new GraphicData
-        {
-            shaderType = ShaderTypeDefOf.MetaOverlay,
-            texPath = "Things/Special/TerrainBlueprint",
-            graphicClass = typeof(Graphic_Single)
-        };
-        blueprintDef.constructionSkillPrerequisite = output.constructionSkillPrerequisite;
-        blueprintDef.artisticSkillPrerequisite = output.artisticSkillPrerequisite;
-        blueprintDef.clearBuildingArea = false;
-        blueprintDef.modContentPack = output.modContentPack;
         output.blueprintDef = blueprintDef;
+        
         return blueprintDef;
     }
 
     private static TerrainDef GetOutputTerrain(TerrainDef def, ThingDef thingDef, ushort id)
     {
-        TerrainDef output = new();
-        output.color = def.GetColorForStuff(thingDef);
-        output.defName = $"{def.defName}_{thingDef.defName}";
-        output.label = string.Format(def.label, thingDef.label);
-        output.debugRandomId = id;
-        output.index = id;
-        output.shortHash = id;
-        output.costList = ((Func<List<ThingDefCountClass>>)delegate
-            {
-                List<ThingDefCountClass> costList = [];
-                int amount = 0;
-                foreach (ThingDefCountClass thingDefCountClass in def.costList)
+        TerrainDef output = new()
+        {
+            color = def.GetColorForStuff(thingDef),
+            defName = $"{def.defName}_{thingDef.defName}",
+            label = string.Format(def.label, thingDef.label),
+            debugRandomId = id,
+            index = id,
+            shortHash = id,
+            costList = ((Func<List<ThingDefCountClass>>)delegate
                 {
-                    amount += thingDefCountClass.count;
-                }
-                costList.Add(new ThingDefCountClass()
-                {
-                    thingDef = thingDef,
-                    count = amount
-                });
-                return costList;
-            })();
-        output.renderPrecedence = renderPres++;
-        output.designationCategory = def.designationCategory;
-        output.designatorDropdown = def.designatorDropdown;
-        output.ignoreIllegalLabelCharacterConfigError = def.ignoreIllegalLabelCharacterConfigError;
-        output.pollutionColor = new Color(1f, 1f, 1f, 0.8f);
-        output.pollutionOverlayScale = new Vector2(0.75f, 0.75f);
-        output.pollutionOverlayTexturePath = "Terrain/Surfaces/PollutionFloorSmooth";
+                    List<ThingDefCountClass> costList = [];
+                    int amount = 0;
+                    foreach (ThingDefCountClass thingDefCountClass in def.costList)
+                    {
+                        amount += thingDefCountClass.count;
+                    }
+                    costList.Add(new ThingDefCountClass()
+                    {
+                        thingDef = thingDef,
+                        count = amount
+                    });
+                    return costList;
+                })(),
+            renderPrecedence = renderPres++,
+            designationCategory = def.designationCategory,
+            designatorDropdown = def.designatorDropdown,
+            ignoreIllegalLabelCharacterConfigError = def.ignoreIllegalLabelCharacterConfigError,
+            pollutionColor = new Color(1f, 1f, 1f, 0.8f),
+            pollutionOverlayScale = new Vector2(0.75f, 0.75f),
+            pollutionOverlayTexturePath = "Terrain/Surfaces/PollutionFloorSmooth"
+        };
         return output;
     }
 
