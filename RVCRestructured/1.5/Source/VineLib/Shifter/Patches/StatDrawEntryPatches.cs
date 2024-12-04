@@ -103,8 +103,8 @@ public static class StatDrawEntryPatches
     /// <returns></returns>
     public static IEnumerable<StatDrawEntry> SourcePostFix(IEnumerable<StatDrawEntry> __result, StatRequest req, Def __instance)
     {
-        if ((req.Pawn ?? req.Thing) is not Pawn pawn) return __result;
-
+        if (req.Pawn==null) return __result;
+        Pawn pawn = req.Pawn;
         ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
         if (comp == null) return __result;
 

@@ -19,7 +19,7 @@ public static class Patcher
         
         harmony.Patch(AccessTools.Method(typeof(StatWorker), nameof(StatWorker.GetValueUnfinalized)), postfix: new HarmonyMethod(typeof(StatValuePatch), nameof(StatValuePatch.StatPostfix)));
         harmony.Patch(AccessTools.Method(typeof(RaceProperties), nameof(RaceProperties.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.RacePostfix)));
-     //   harmony.Patch(AccessTools.Method(typeof(Def), nameof(Def.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.SourcePostFix)));
+        harmony.Patch(AccessTools.Method(typeof(Def), nameof(Def.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.SourcePostFix)));
         harmony.Patch(AccessTools.Method(typeof(Pawn), nameof(Def.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.PawnPostfix)));
         harmony.Patch(AccessTools.Method(typeof(Pawn), "get_RaceProps"), prefix: new HarmonyMethod(typeof(RacePropsPatch), nameof(RacePropsPatch.RacePropsPrefix)));
 
