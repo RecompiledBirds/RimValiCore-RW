@@ -20,4 +20,5 @@
 	<loadAfter>
 		<li>erdelf.HumanoidAlienRaces</li>
 	</loadAfter>
+	<modVersion IgnoreIfNoMatchingField="True">2.0.1</modVersion>
 </ModMetaData>
