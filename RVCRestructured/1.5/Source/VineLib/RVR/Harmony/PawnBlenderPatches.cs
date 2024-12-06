@@ -18,6 +18,7 @@ public static class PawnBlenderPatches
 
     public static void ModifyThingMaker(ref ThingDef def)
     {
+        if (!VineMod.VineSettings.RaceBlender) return;
         if (modifyThingMakerDef == null) return;
         def = modifyThingMakerDef;
         modifyThingMakerDef = null;

@@ -21,6 +21,7 @@ public class VineSettings : ModSettings
         Scribe_Values.Look(ref VGUIEnabled, nameof(VGUIEnabled));
         Scribe_Values.Look(ref RaceBlender, nameof(RaceBlender));
         Scribe_Values.Look(ref debugMode, nameof(debugMode));
+        Scribe_Values.Look(ref harmonyDebuggers, nameof(harmonyDebuggers));
         base.ExposeData();
     }
 
