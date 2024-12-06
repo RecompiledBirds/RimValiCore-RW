@@ -39,11 +39,12 @@ public static class RVRHarmony
             Type thoughtReplacer = typeof(ThoughtReplacerPatch);
             string replacerPatchName = nameof(ThoughtReplacerPatch.ReplacePatch);
             Type memoryHandler = typeof(MemoryThoughtHandler);
-            harmony.Patch(AccessTools.Method(memoryHandler, "GetFirstMemoryOfDef"), prefix: new HarmonyMethod(thoughtReplacer,replacerPatchName));
-            harmony.Patch(AccessTools.Method(memoryHandler, "NumMemoriesOfDef"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
-            harmony.Patch(AccessTools.Method(memoryHandler, "OldestMemoryOfDef"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
-            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDef"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
-            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDefIf"), prefix: new HarmonyMethod(thoughtReplacer, replacerPatchName));
+            HarmonyMethod thoughtPatchMethod = new HarmonyMethod(thoughtReplacer, replacerPatchName);
+            harmony.Patch(AccessTools.Method(memoryHandler, "GetFirstMemoryOfDef"), prefix: thoughtPatchMethod);
+            harmony.Patch(AccessTools.Method(memoryHandler, "NumMemoriesOfDef"), prefix: thoughtPatchMethod);
+            harmony.Patch(AccessTools.Method(memoryHandler, "OldestMemoryOfDef"), prefix: thoughtPatchMethod);
+            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDef"), prefix: thoughtPatchMethod);
+            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDefIf"), prefix:thoughtPatchMethod);
             harmony.Patch(AccessTools.Method(memoryHandler, "TryGainMemory", [typeof(Thought_Memory), typeof(Pawn)]), prefix: new HarmonyMethod(thoughtReplacer, nameof(ThoughtReplacerPatch.ReplacePatchCreateMemoryPrefix)));
             harmony.Patch(AccessTools.Method(typeof(SituationalThoughtHandler), "TryCreateThought"), prefix: new HarmonyMethod(thoughtReplacer, nameof(ThoughtReplacerPatch.ReplacePatchSIT)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "CanGetThought"), postfix: new HarmonyMethod(typeof(CanGetThoughtPatch), nameof(CanGetThoughtPatch.CanGetPatch)));
