@@ -4,27 +4,38 @@ using Verse;
 
 namespace RVCRestructured.Plants;
 
-
+[HarmonyPatch(typeof(PlantUtility), "GrowthSeasonNow")]
 public static class CanGrowPrefix
 {
-    public static void PostFix(IntVec3 c, Map map, ref bool __result, bool forSowing)
+    public static bool Prefix(IntVec3 c, Map map, ref bool __result, bool forSowing)
     {
         Plant plant = (Plant)map.thingGrid.ThingAt(c, ThingCategory.Plant);
-        __result = CanGrow(plant.def, c, map, forSowing)||__result;
+        if (plant == null)
+        {
+            return true;
+        }
+        __result = CanGrow(plant.def, c, map, forSowing);
+        return false;
     }
-    
+
     public static bool CanGrow(ThingDef plant, IntVec3 c, Map map, bool forSowing = false)
     {
-        if(plant == null) return false;
         RVCPlantCompProperties props = (RVCPlantCompProperties)plant.comps.Find(x => x.GetType() == typeof(RVCPlantCompProperties));
         float temperature = c.GetTemperature(map);
-        return props!=null && temperature > props.MinPreferredTemp && temperature < props.MaxPreferredTemp;
-    }
-    public static bool CanGrowWithDefault(ThingDef plant, IntVec3 c, Map map, bool forSowing = false)
-    {
-        if (plant == null) return PlantUtility.GrowthSeasonNow(c,map,forSowing);
-        RVCPlantCompProperties props = (RVCPlantCompProperties)plant.comps.Find(x => x.GetType() == typeof(RVCPlantCompProperties));
-        float temperature = c.GetTemperature(map);
-        return props != null && temperature > props.MinPreferredTemp && temperature < props.MaxPreferredTemp;
+        if (props != null)
+        {
+            return temperature > props.MinPreferredTemp && temperature < props.MaxPreferredTemp;
+        }
+
+        Room roomOrAdjacent = c.GetRoomOrAdjacent(map, RegionType.Set_All);
+        if (roomOrAdjacent == null)
+        {
+            return false;
+        }
+        if (!roomOrAdjacent.UsesOutdoorTemperature)
+        {
+            return temperature > 0f && temperature < 58f;
+        }
+        return forSowing ? map.weatherManager.growthSeasonMemory.GrowthSeasonOutdoorsNowForSowing : map.weatherManager.growthSeasonMemory.GrowthSeasonOutdoorsNow;
     }
 }
