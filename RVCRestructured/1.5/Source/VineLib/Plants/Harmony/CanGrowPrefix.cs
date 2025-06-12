@@ -36,6 +36,7 @@ public static class CanGrowPrefix
         {
             return temperature > 0f && temperature < 58f;
         }
-        return forSowing ? map.weatherManager.growthSeasonMemory.GrowthSeasonOutdoorsNowForSowing : map.weatherManager.growthSeasonMemory.GrowthSeasonOutdoorsNow;
+        return true;
+      //  return forSowing ? map.weatherManager.growthSeasonMemory.GrowthSeasonOutdoorsNowForSowing : map.weatherManager.growthSeasonMemory.GrowthSeasonOutdoorsNow;
     }
 }

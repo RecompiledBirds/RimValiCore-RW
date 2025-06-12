@@ -90,7 +90,7 @@ public static class RaceIcons
         {
             race = thingDef,
             useFactionXenotypes = false,
-            defaultFactionType = factionDef,
+            defaultFactionDef = factionDef,
             canStrip = true,
             defName = "VineInternal",
             apparelMoney = new FloatRange(0f, 0f),
