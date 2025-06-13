@@ -13,7 +13,7 @@ public class RVRThoughtComp : CompProperties
 {
     public List<ReplaceThought> thoughtReplacers = [];
     private readonly Dictionary<ThoughtDef, ThoughtDef> cachedReplacer = [];
-    public bool Replace(ref ThoughtDef def)
+    public bool  Replace(ref ThoughtDef def)
     {
         if (cachedReplacer.ContainsKey(def))
         {

@@ -19,8 +19,9 @@ public static class ThoughtReplacerPatch
 
     private static void ReplaceThought(ref ThoughtDef thought, Pawn pawn)
     {
-        ThoughtComp comp = GetCached(pawn);
-        if (comp == null) return;
+        ThoughtComp? comp = GetCached(pawn);
+        if (comp == null) return; 
+        RVCLog.Log("Test 2", RVCLogType.Message);
         comp.Props.Replace(ref thought);
     }
 
@@ -33,8 +34,11 @@ public static class ThoughtReplacerPatch
     public static bool ReplacePatchCreateMemoryPrefix(Thought_Memory newThought, MemoryThoughtHandler __instance)
     {
         Pawn pawn = __instance.pawn;
-        ReplaceThought(ref newThought.def, pawn); 
-        newThought = ThoughtMaker.MakeThought(newThought.def, newThought.CurStageIndex);
+        ThoughtDef def = newThought.def;
+        
+        ReplaceThought(ref def, pawn);
+        if (def == newThought.def) return false;
+        __instance.Memories.Add(ThoughtMaker.MakeThought(def, newThought.CurStageIndex));
         return true;
     }
 

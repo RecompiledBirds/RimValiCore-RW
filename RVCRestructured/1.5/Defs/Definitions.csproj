@@ -6,7 +6,7 @@
 		<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		<OutputPath>$(BaseOutputPath)\</OutputPath>
+		<!--<OutputPath>$(BaseOutputPath)\</OutputPath>-->
 		<PackageOutputPath>$(OutputPath)\..\</PackageOutputPath>
 		<CleanPath>$(OutputPath)</CleanPath>
 	</PropertyGroup>

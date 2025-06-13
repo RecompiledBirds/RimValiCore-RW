@@ -8,7 +8,30 @@ namespace RVCRestructured;
 
 public class RVRCP : CompProperties
 {
+    public bool linkHumanRecipes = true;
     public RVRCP() => compClass = typeof(RVRComp);
+
+    public override void ResolveReferences(ThingDef parentDef)
+    {
+        ThingDef human = ThingDefOf.Human;
+        bool containsHumanRecipes = human.recipes.All(parentDef.recipes.Contains);
+        if (!linkHumanRecipes || containsHumanRecipes)
+        {
+            base.ResolveReferences(parentDef);
+            return;
+        }
+        foreach (RecipeDef recipeDef in human.recipes)
+        {
+            recipeDef.recipeUsers?.Add(parentDef);
+            parentDef.recipes.Add(recipeDef);
+        }
+
+        foreach(RecipeDef recipe in DefDatabase<RecipeDef>.AllDefs.Where(x => x.recipeUsers?.Contains(human)??false))
+        {
+            recipe.recipeUsers.Add(parentDef);
+        }
+        base.ResolveReferences(parentDef);
+    }
 }
 
 public class RVRComp : ThingComp

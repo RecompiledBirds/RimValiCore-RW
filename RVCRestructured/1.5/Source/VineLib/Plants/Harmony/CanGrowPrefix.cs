@@ -7,14 +7,21 @@ namespace RVCRestructured.Plants;
 [HarmonyPatch(typeof(PlantUtility), "GrowthSeasonNow")]
 public static class CanGrowPrefix
 {
-    public static bool Prefix(IntVec3 c, Map map, ref bool __result, bool forSowing)
+    public static bool Prefix_IntVec(IntVec3 c, Map map, ThingDef plantDef, ref bool __result)
     {
-        Plant plant = (Plant)map.thingGrid.ThingAt(c, ThingCategory.Plant);
-        if (plant == null)
-        {
-            return true;
-        }
-        __result = CanGrow(plant.def, c, map, forSowing);
+        RVCPlantCompProperties comp = plantDef.GetCompProperties<RVCPlantCompProperties>();
+        if (comp == null) return true;
+        float temperature = c.GetTemperature(map);
+        __result = temperature > comp.MinPreferredTemp && temperature < comp.MaxPreferredTemp;
+        return false;
+    }
+
+    public static bool Prefix_MapOnly(Map map, ThingDef plantDef, ref bool __result)
+    {
+        RVCPlantCompProperties comp = plantDef.GetCompProperties<RVCPlantCompProperties>();
+        if (comp == null) return true;
+        float temperature = map.mapTemperature.OutdoorTemp;
+        __result = temperature > comp.MinPreferredTemp && temperature < comp.MaxPreferredTemp;
         return false;
     }
 
