@@ -1,4 +1,5 @@
-﻿using RVCRestructured.Defs;
+﻿using RimWorld.QuestGen;
+using RVCRestructured.Defs;
 using RVCRestructured.Graphics;
 using UnityEngine;
 
@@ -16,6 +17,17 @@ public class RNodeWorker : PawnRenderNodeWorker
         return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
     }
 
+    public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
+    {
+        Pawn pawn = parms.pawn;
+        if (ModsConfig.BiotechActive && pawn.ageTracker.CurLifeStage.headSizeFactor is float num)
+        {
+            return base.OffsetFor(node, parms, out pivot) * num;
+        }
+        return base.OffsetFor(node, parms, out pivot);
+    }
+
+    
 }
 public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree) : PawnRenderNode(pawn, props, tree)
 {
@@ -27,6 +39,9 @@ public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRe
         return RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(RProps.def.GetTexPath(pawn),Vector2.one, set[0], set[1], set[2], RProps.def.GetMaskPath(pawn));
     }
 
-   
-    
+    public override GraphicMeshSet MeshSetFor(Pawn pawn)
+    {
+        return base.MeshSetFor(pawn);
+    }
+
 }

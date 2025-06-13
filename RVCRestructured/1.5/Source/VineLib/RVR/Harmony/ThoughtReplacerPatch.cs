@@ -21,7 +21,6 @@ public static class ThoughtReplacerPatch
     {
         ThoughtComp? comp = GetCached(pawn);
         if (comp == null) return; 
-        RVCLog.Log("Test 2", RVCLogType.Message);
         comp.Props.Replace(ref thought);
     }
 
