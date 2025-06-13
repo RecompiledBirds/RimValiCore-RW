@@ -1,4 +1,5 @@
 ﻿using Verse;
+using Verse.AI;
 
 namespace RVCRestructured.RVR.HarmonyPatches;
 
@@ -15,5 +16,16 @@ public static class EquipingPatch
         {
             cantReason = "RVC_CannotUse".Translate(pawn.def.label.Named("RACE"));
         }
+    }
+
+    public static bool JobDriver_EquipPrefix(bool errorOnFailed, ref bool __result, JobDriver_Equip __instance)
+    {
+        if (!__instance.pawn.CanUse(__instance.job.targetA.Thing.def))
+        {
+
+            __result = false;
+            return true;
+        }
+        return false;
     }
 }
