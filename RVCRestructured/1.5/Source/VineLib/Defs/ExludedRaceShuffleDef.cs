@@ -8,3 +8,7 @@ public class ExcludedRaceShuffleDef : Def
     public List<PawnKindDef> ExcludedPawnKinds => excludedPawnKinds;
     public List<ThingDef> ExcludedRaces => excludedRaces;
 }
+public class ExcludedRaceFactionShuffleDef : Def
+{
+    public List<FactionDef> excludedFactions = [];
+}

@@ -4,6 +4,7 @@ namespace RVCRestructured.RVR.HarmonyPatches;
 
 public static class PawnBlenderPatches
 {
+    private static List<ExcludedRaceFactionShuffleDef> ExcludedFactions = DefDatabase<ExcludedRaceFactionShuffleDef>.AllDefsListForReading;
     private static List<ExcludedRaceShuffleDef> ExcludedDefs => DefDatabase<ExcludedRaceShuffleDef>.AllDefsListForReading;
     private static List<RaceSwapDef> ShuffleDefs => DefDatabase<RaceSwapDef>.AllDefsListForReading;
 
@@ -29,8 +30,11 @@ public static class PawnBlenderPatches
         if (!VineMod.VineSettings.RaceBlender) return;
         if (request.KindDef.race == null) return;
         ThingDef def = request.KindDef.race;
-
-
+        FactionDef factionDef = request.Faction.def;
+        if (ExcludedFactions.All(x => x.excludedFactions.Contains(factionDef)))
+        {
+            return;
+        }
         //safety check for scenario pawns
         if (!CanModify(in request)) return;
         if (!CanSwapRace(def)) return;
