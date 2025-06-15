@@ -10,6 +10,10 @@
 		<LangVersion>12.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
+
+		<GenerateRelease>True</GenerateRelease>
+
+		<Configurations>Debug;Release;Publish</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -46,4 +50,8 @@
 		<Message Text="Deleting empty definition Folders:%0A@(DirectoryWrites, '%0D')" Importance="high" />
 		<RemoveDir Directories="@(DirectoryWrites)" />
 	</Target>
+	<PropertyGroup>
+		<CustomBuildAfterTargets>ClCompile</CustomBuildAfterTargets>
+		<CustomBuildBeforeTargets>Link</CustomBuildBeforeTargets>
+	</PropertyGroup>
 </Project>
