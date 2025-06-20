@@ -8,10 +8,16 @@ namespace RVCRestructured;
 
 public class FactionRestrictionsDef : Def
 {
-    public List<ResearchProjectDef> disAllowedResearch = [];
+    [AllowNull]
+    public FactionDef factionDef;
+    public List<ResearchProjectDef> disallowedResearch = [];
 
     public override void PostLoad()
     {
+        foreach(ResearchProjectDef def in disallowedResearch)
+        {
+            RVR.HarmonyPatches.ResearchPatch.DisallowResearch(factionDef, def);
+        }
         base.PostLoad();
     }
 }
