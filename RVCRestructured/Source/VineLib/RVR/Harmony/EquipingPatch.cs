@@ -22,10 +22,10 @@ public static class EquipingPatch
     {
         if (!__instance.pawn.CanUse(__instance.job.targetA.Thing.def))
         {
-
+            
             __result = false;
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 }

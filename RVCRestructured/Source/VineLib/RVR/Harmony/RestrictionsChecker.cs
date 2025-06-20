@@ -7,6 +7,7 @@ public static class RestrictionsChecker
 {
     private static readonly HashSet<Def> restrictedDefs = [];
 
+    
     public static void MarkRestricted(Def def)
     {
         RVCLog.Log($"Restricted {def}.",debugOnly:true);

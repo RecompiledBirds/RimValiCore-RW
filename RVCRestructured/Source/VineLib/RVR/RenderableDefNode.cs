@@ -39,9 +39,4 @@ public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRe
         return RVG_GraphicDataBase.Get<RVG_Graphic_Multi>(RProps.def.GetTexPath(pawn),Vector2.one, set[0], set[1], set[2], RProps.def.GetMaskPath(pawn));
     }
 
-    public override GraphicMeshSet MeshSetFor(Pawn pawn)
-    {
-        return base.MeshSetFor(pawn);
-    }
-
 }

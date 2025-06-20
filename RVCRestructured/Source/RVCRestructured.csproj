@@ -6,7 +6,7 @@
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RootNamespace>RVCRestructured</RootNamespace>
-		<OutputPath>../../../1.6/Assemblies</OutputPath>
+		<OutputPath>../../1.6/Assemblies</OutputPath>
 		<LangVersion>12.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
