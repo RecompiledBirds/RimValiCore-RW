@@ -9,12 +9,12 @@ public static class ResearchPatch
     
     public static void DisallowResearch(FactionDef faction, ResearchProjectDef researchProject)
     {
-        if(!disallowedResearch.TryGetValue(faction,out List<ResearchProjectDef> researchList))
+        RVCLog.Log(faction.defName);
+        if (!disallowedResearch.ContainsKey(faction))
         {
-            researchList = [];
-            disallowedResearch[faction] = researchList;
+            disallowedResearch[faction] = [];
         }
-        researchList.Add(researchProject);
+        disallowedResearch[faction].Add(researchProject);
     }
     
     public static void ResearchPostfix(Pawn pawn, ref bool __result)
@@ -35,6 +35,11 @@ public static class ResearchPatch
         Faction faction = Find.FactionManager.OfPlayer;
         List<Pawn> pawns = [];
         Find.Maps.ForEach(x => pawns.AddRange(PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive.Where(x => x.Faction == faction)));
-        __result.RemoveAll(def => !pawns.Any(pawn => pawn.CanUse(def)) || disallowedResearch.ContainsKey(faction.def) && disallowedResearch[faction.def].Contains(def));
+        __result.RemoveAll(def => !pawns.Any(pawn => pawn.CanUse(def)) || FactionCantUseResearch(def, faction));
+    }
+
+    private static bool FactionCantUseResearch(ResearchProjectDef def, Faction faction)
+    {
+        return disallowedResearch.ContainsKey(faction.def) && disallowedResearch[faction.def].Contains(def);
     }
 }

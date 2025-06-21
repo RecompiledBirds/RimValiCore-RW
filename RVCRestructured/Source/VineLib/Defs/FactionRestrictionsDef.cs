@@ -11,13 +11,11 @@ public class FactionRestrictionsDef : Def
     [AllowNull]
     public FactionDef factionDef;
     public List<ResearchProjectDef> disallowedResearch = [];
-
-    public override void PostLoad()
+    public override void ResolveReferences()
     {
-        foreach(ResearchProjectDef def in disallowedResearch)
+        foreach (ResearchProjectDef def in disallowedResearch)
         {
             RVR.HarmonyPatches.ResearchPatch.DisallowResearch(factionDef, def);
         }
-        base.PostLoad();
     }
 }

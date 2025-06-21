@@ -30,15 +30,13 @@ public static class ThoughtReplacerPatch
         ReplaceThought(ref def, pawn); 
     }
 
-    public static bool ReplacePatchCreateMemoryPrefix(Thought_Memory newThought, MemoryThoughtHandler __instance)
+    public static void ReplacePatchCreateMemoryPrefix(Thought_Memory newThought, MemoryThoughtHandler __instance)
     {
         Pawn pawn = __instance.pawn;
         ThoughtDef def = newThought.def;
         
         ReplaceThought(ref def, pawn);
-        if (def == newThought.def) return false;
-        __instance.Memories.Add(ThoughtMaker.MakeThought(def, newThought.CurStageIndex));
-        return true;
+        newThought.def = def;
     }
 
     public static void ReplacePatchSIT(ref ThoughtDef def, SituationalThoughtHandler __instance)
