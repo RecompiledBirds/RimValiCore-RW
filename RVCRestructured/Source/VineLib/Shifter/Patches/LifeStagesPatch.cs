@@ -11,10 +11,10 @@ public static class LifeStagesPatch
     {
         if (!didCECheck)
         {
-            RVCLog.Log("Doing character editor check!");
+            VineLog.Log("Doing character editor check!");
             didCECheck = true;
             isCELoaded = ModLister.HasActiveModWithName("Character Editor");
-            RVCLog.Log("Found character editor was loaded. Using simple logic.", RVCLogType.Message, isCELoaded);
+            VineLog.Log("Found character editor was loaded. Using simple logic.", RVCLogType.Message, isCELoaded);
         }
 
         Pawn pawn = (Pawn)typeof(Pawn_AgeTracker).GetField("pawn", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(__instance);

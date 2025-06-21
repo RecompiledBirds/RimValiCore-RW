@@ -35,6 +35,6 @@ public class RimValiCore : Mod
             Directory.CreateDirectory(DataPath);
         }
 
-        RVCLog.Log("Initalized mod.");
+        VineLog.Log("Initalized mod.");
     }
 }

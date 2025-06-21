@@ -24,6 +24,6 @@ public static class HealableMats
             mats.Add(def, def.GetCompProperties<HealableMaterialCompProperties>());
         }
 
-        RVCLog.Log($"Initalized {mats.Count} healable materials");
+        VineLog.Log($"Initalized {mats.Count} healable materials");
     }
 }

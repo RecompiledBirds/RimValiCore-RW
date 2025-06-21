@@ -14,13 +14,13 @@ public static class RVRHarmony
 
     private static void RVRPatcher()
     {
-        RVCLog.Log("Staring RVR patches.");
+        VineLog.Log("Staring RVR patches.");
         HarmonyLib.Harmony.DEBUG = VineSettings.DebugHarmony;
         HarmonyLib.Harmony harmony = new("RecompiledBirds.RVC.RVR");
         try
         {
             //Rendering patches
-            harmony.Patch(AccessTools.Constructor(typeof(PawnTextureAtlas)), transpiler: new HarmonyMethod(typeof(RenderTextureTranspiler), nameof(RenderTextureTranspiler.Transpile)));
+           // harmony.Patch(AccessTools.Constructor(typeof(PawnTextureAtlas)), transpiler: new HarmonyMethod(typeof(RenderTextureTranspiler), nameof(RenderTextureTranspiler.Transpile)));
 
 
             //Restriction patches
@@ -75,13 +75,13 @@ public static class RVRHarmony
             }
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.GraphicsGenPostfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)), postfix: new HarmonyMethod(typeof(XenoTypeGenPatch), nameof(XenoTypeGenPatch.Postfix)));
-            RVCLog.Log("Completed all RVR patches with no issues!");
+            VineLog.Log("Completed all RVR patches with no issues!");
         }
         catch (Exception e)
         {
-            RVCLog.Error(e.ToString());
+            VineLog.Error(e.ToString());
         }
 
-        RVCLog.Log($"{harmony.GetPatchedMethods().Count()} RVR Patches completed.");
+        VineLog.Log($"{harmony.GetPatchedMethods().Count()} RVR Patches completed.");
     }
 }

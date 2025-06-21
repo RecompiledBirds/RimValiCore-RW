@@ -26,7 +26,7 @@ public static class Patcher
         harmony.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "get_CurKindLifeStage"), prefix: new HarmonyMethod(typeof(LifeStagesPatch), nameof(LifeStagesPatch.PrefixCurKindLifeStage)));
         //INCOMPATIBLE WITH CHARACTER EDITOR.
         harmony.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "get_CurLifeStageIndex"), postfix: new HarmonyMethod(typeof(LifeStagesPatch), nameof(LifeStagesPatch.PostfixLifeStageIndex)));
-        RVCLog.Log("Ran shifter patches.");
+        VineLog.Log("Ran shifter patches.");
     }
 
 }

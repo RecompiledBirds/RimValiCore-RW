@@ -98,8 +98,8 @@ public static class FloorConstructor
             def.ResolveReferences();
         }
         //   Log.Message(builder.ToString());
-        RVCLog.Log($"Updated {toUpdateDesignationCatDefs.Count} designation categories & {toUpdateDropdownDesDefs.Count} dropdown designations.");
-        RVCLog.Log($"Built  {floorsMade.Count} floors from {materials.Count} materials.");
+        VineLog.Log($"Updated {toUpdateDesignationCatDefs.Count} designation categories & {toUpdateDropdownDesDefs.Count} dropdown designations.");
+        VineLog.Log($"Built  {floorsMade.Count} floors from {materials.Count} materials.");
         //We need to do this or RW has a fit
         WealthWatcher.ResetStaticData();
         

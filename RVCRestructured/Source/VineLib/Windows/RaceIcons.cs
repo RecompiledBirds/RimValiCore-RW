@@ -67,7 +67,7 @@ public static class RaceIcons
         }
         catch (Exception ex)
         {
-            RVCLog.Error($"Failed to generate preview pawn with key: ThingDef: {key.thingDef.defName}, XenoDef {key.xenoDef?.defName}, ex: {ex.Message}");
+            VineLog.Error($"Failed to generate preview pawn with key: ThingDef: {key.thingDef.defName}, XenoDef {key.xenoDef?.defName}, ex: {ex.Message}");
             return null;
         }
 

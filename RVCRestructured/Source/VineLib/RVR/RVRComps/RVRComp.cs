@@ -117,7 +117,7 @@ public class RVRComp : ThingComp
             if (sets.TryGetValue(name, out TriColorSet set)) return set;
 
             Pawn pawn = (Pawn)parent;
-            RVCLog.Log($"ColorSet {name} is not on {pawn.Name.ToStringShort}!", RVCLogType.Error);
+            VineLog.Log($"ColorSet {name} is not on {pawn.Name.ToStringShort}!", RVCLogType.Error);
             return TriColorSet.Empty;
         }
         set
@@ -181,7 +181,7 @@ public class RVRComp : ThingComp
         }
         catch (Exception ex)
         {
-            RVCLog.Log($"Hit an exception {ex} trying to generate graphics from {callerMemberName}!", RVCLogType.Error);
+            VineLog.Log($"Hit an exception {ex} trying to generate graphics from {callerMemberName}!", RVCLogType.Error);
         }
     }
 
@@ -256,7 +256,7 @@ public class RVRComp : ThingComp
 
         if (rDef.Textures.Count == 0)
         {
-            RVCLog.Warn($"Textures count for {rDef.defName} is 0!");
+            VineLog.Warn($"Textures count for {rDef.defName} is 0!");
             return;
         }
 
@@ -266,7 +266,7 @@ public class RVRComp : ThingComp
 
         int maskCount = tex.GetMasks(pawn).Count;
 
-        RVCLog.Warn($"Mask count for def: {rDef.defName}, path: {tex.TexPath}, index: ({index}) is 0!",condition:maskCount== 0,debugOnly: true);
+        VineLog.Warn($"Mask count for def: {rDef.defName}, path: {tex.TexPath}, index: ({index}) is 0!",condition:maskCount== 0,debugOnly: true);
 
 
         masks.Add(rDef.defName, Rand.Range(0, maskCount));

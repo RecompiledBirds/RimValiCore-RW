@@ -64,7 +64,7 @@ public class RVG_MaterialPool
                 int c = req.ShaderParameters.Count;
                 for (int i = 0; i < c; i++)
                 {
-                    RVCLog.Log(req.ShaderParameters[i]);
+                    VineLog.Log(req.ShaderParameters[i]);
                     req.ShaderParameters[i].Apply(material);
                 }
             }

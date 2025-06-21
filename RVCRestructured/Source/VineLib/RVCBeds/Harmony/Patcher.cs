@@ -13,7 +13,7 @@ public static class Patcher
     static Patcher()
     {
         {
-            RVCLog.Log($"{moduleName} Patching started");
+            VineLog.Log($"{moduleName} Patching started");
             Harmony harmony = new("Fluxic.Beds2DPatch");
 
             harmony.Patch(AccessTools.PropertyGetter(typeof(Building_Bed), nameof(Building_Bed.SleepingSlotsCount)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_SleepingSlotsCount)));
@@ -21,7 +21,7 @@ public static class Patcher
             harmony.Patch(AccessTools.Method(typeof(CompAffectedByFacilities), nameof(CompAffectedByFacilities.CanPotentiallyLinkTo_Static), [typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(Map)]), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_CanPotentiallyLinkTo_Static)));
             harmony.Patch(AccessTools.Method(typeof(CompProperties_AssignableToPawn), nameof(CompProperties_AssignableToPawn.PostLoadSpecial)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_PostLoadSpecial)));
 
-            RVCLog.Log($"{moduleName} Patching success");
+            VineLog.Log($"{moduleName} Patching success");
         }
     }
 

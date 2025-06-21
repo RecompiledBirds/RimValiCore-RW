@@ -39,7 +39,7 @@ public static class HeadOffsetPatch
             case 3:
                 return new Vector3(-vector.x, 0f, vector.y);
             default:
-                RVCLog.Error("Shifted-BaseHeadOffsetAt error in " + pawn);
+                VineLog.Error("Shifted-BaseHeadOffsetAt error in " + pawn);
                 return Vector3.zero;
         }
 

@@ -41,7 +41,7 @@ internal static class Extensions
 
         if (index < 0 || index >= sleepingSlotsCount)
         {
-            RVCLog.Log(string.Concat(new object[]
+            VineLog.Log(string.Concat(new object[]
             {
                 "Tried to get sleeping slot pos with index ",
                 index,

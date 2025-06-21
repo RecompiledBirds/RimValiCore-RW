@@ -9,7 +9,7 @@ public enum RVCLogType
     Warning,
     ErrorOnce
 }
-public static class RVCLog
+public static class VineLog
 {
     public static void MSG(object o, bool condition = true, bool debugOnly = false)
     {

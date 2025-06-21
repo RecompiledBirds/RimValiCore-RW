@@ -191,7 +191,7 @@ public class ShapeshifterComp : ThingComp
         Pawn pawn = (Pawn)parent;
         
         if(log)
-            RVCLog.MSG($"{pawn.Name.ToStringShort} became {currentForm}",debugOnly:true);
+            VineLog.MSG($"{pawn.Name.ToStringShort} became {currentForm}",debugOnly:true);
         if(bodyTypeDef!=null)mimickedBody=bodyTypeDef;
         RVRComp comp = pawn.TryGetComp<RVRComp>();
         if (comp == null) return;

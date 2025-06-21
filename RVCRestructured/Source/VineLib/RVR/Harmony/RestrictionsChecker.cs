@@ -10,7 +10,7 @@ public static class RestrictionsChecker
     
     public static void MarkRestricted(Def def)
     {
-        RVCLog.Log($"Restricted {def}.",debugOnly:true);
+        VineLog.Log($"Restricted {def}.",debugOnly:true);
         restrictedDefs.Add(def);
     }
 

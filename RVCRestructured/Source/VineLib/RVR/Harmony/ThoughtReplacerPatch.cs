@@ -15,6 +15,7 @@ public static class ThoughtReplacerPatch
         {
             return result;
         }
+        cache[pawn] = pawn.TryGetComp<ThoughtComp>();
         return cache[pawn];
     }
 

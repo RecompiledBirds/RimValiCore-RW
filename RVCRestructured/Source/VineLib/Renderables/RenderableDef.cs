@@ -36,7 +36,7 @@ public class RenderableDef : Def
     public override IEnumerable<string> ConfigErrors()
     {
 
-        RVCLog.Log($"{defName} has no textures.", RVCLogType.Error, Textures.EnumerableNullOrEmpty());
+        VineLog.Log($"{defName} has no textures.", RVCLogType.Error, Textures.EnumerableNullOrEmpty());
         return base.ConfigErrors();
     }
 

@@ -232,13 +232,13 @@ public static class RectExtensions
     {
         if (prevBarPercentage < bar.percentage)
         {
-            RVCLog.Log($"Bar with tooltip: {bar.tooltip.ToStringSafe()} is specified larger than previous bar and will be skipped.", RVCLogType.Error, debugOnly: true);
+            VineLog.Log($"Bar with tooltip: {bar.tooltip.ToStringSafe()} is specified larger than previous bar and will be skipped.", RVCLogType.Error, debugOnly: true);
             return true;
         }
 
         if (bar.percentage < 0 || bar.percentage > 1)
         {
-            RVCLog.Log($"Bar with tooltip: {bar.tooltip.ToStringSafe()} is larger than 1 or smaller than 0 (has barPercentage of: {bar.percentage}", RVCLogType.Error, debugOnly: true);
+            VineLog.Log($"Bar with tooltip: {bar.tooltip.ToStringSafe()} is larger than 1 or smaller than 0 (has barPercentage of: {bar.percentage}", RVCLogType.Error, debugOnly: true);
             return true;
         }
 
