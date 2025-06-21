@@ -10,56 +10,57 @@ public static class ApparelGraphicPatch
     {
         if (ContentFinder<Texture2D>.Get($"{defaultPath}_north", false))
         {
-            path = defaultPath;
+            return $"{defaultPath}";
         }
-        else if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_north", false))
+        if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_north", false))
         {
-            path = apparel.WornGraphicPath;
+            return apparel.WornGraphicPath;
         }
-        else if ((comp == null || !comp.Props.useEmptyApparelIfNoDefault) && ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
+        if ((comp == null || !comp.Props.useEmptyApparelIfNoDefault) && ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
         {
-            path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
-        }
-        else
-        {
-            string newPath = apparel.WornGraphicPath.Replace(apparel.StyleDef.defName, "");
-            if (ContentFinder<Texture2D>.Get($"{newPath}_north", false))
-            {
-                path = apparel.WornGraphicPath;
-            }
-            else if ((comp == null || !comp.Props.useEmptyApparelIfNoDefault) && ContentFinder<Texture2D>.Get($"{newPath}_{BodyTypeDefOf.Thin}_north", false))
-            {
-                path = $"{newPath}_{BodyTypeDefOf.Thin}_north";
-            }
+            return $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}";
         }
 
-            return path;
+        string newPath = apparel.def.apparel.wornGraphicPath;
+        if (ContentFinder<Texture2D>.Get($"{newPath}_north", false))
+        {
+            return $"{newPath}";
+        }
+        else if ((comp == null || !comp.Props.useEmptyApparelIfNoDefault) && ContentFinder<Texture2D>.Get($"{newPath}_{BodyTypeDefOf.Thin}_north", false))
+        {
+            return $"{newPath}_{BodyTypeDefOf.Thin}";
+        }
+
+        return path;
     }
-    public static void Postfix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec)
+
+    public static bool Prefix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec, ref bool __result)
     {
         if (apparel.def.apparel.wornGraphicPath.NullOrEmpty())
-            return;
-        BodyTypeDef typeDef = bodyType;
+            return true;
+        if (apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead || apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover || apparel.RenderAsPack() || apparel.WornGraphicPath == BaseContent.PlaceholderImagePath || apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath) return true;
+        if (bodyType == null) return true;
+        Graphic resultGraphic;
         Pawn pawn = apparel.Wearer;
+        BodyTypeDef copyBodyType = bodyType;
         string path = "RVC/Empty";
         GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
         ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
+        if (comp == null)
+        {
+            return true;
+        }
         if (shapeshifterComp != null)
         {
-            typeDef = shapeshifterComp.MimickedBodyType;
+            copyBodyType = shapeshifterComp.MimickedBodyType;
         }
-        
-        Graphic graphic;
-        string altPath = $"{apparel.WornGraphicPath}_{typeDef.defName}";
-        path = FindPath(path, altPath, apparel, comp);
-
-        Shader shader = ShaderDatabase.Cutout;
-        if (apparel.def.apparel.useWornGraphicMask)
-        {
-            shader = ShaderDatabase.CutoutComplex;
-        }
-        graphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.DrawSize, apparel.DrawColor);
-
-        rec = new ApparelGraphicRecord(graphic, apparel);
+        string defaultPath = $"{apparel.WornGraphicPath}_{copyBodyType.defName}";
+        path = FindPath(path, defaultPath, apparel, comp);
+        VineLog.Log(path);
+        Shader shader = ShaderDatabase.CutoutComplex;
+        resultGraphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.def.graphicData.drawSize, apparel.DrawColor);
+        rec = new ApparelGraphicRecord(resultGraphic, apparel);
+        __result = true;
+        return false;
     }
 }
