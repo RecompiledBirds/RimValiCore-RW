@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using RVCRestructured.RVR.Harmony;
-using RVCRestructured.RVR.Harmony;
 using Verse.AI;
 
 namespace RVCRestructured.RVR.HarmonyPatches;
