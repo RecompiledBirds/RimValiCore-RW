@@ -2,7 +2,7 @@
 using RVCRestructured.RVR;
 using Verse;
 
-namespace RVCRestructured.Source.RVR.Harmony;
+namespace RVCRestructured.RVR.Harmony;
 
 public static class XenoTypeGenPatch
 {

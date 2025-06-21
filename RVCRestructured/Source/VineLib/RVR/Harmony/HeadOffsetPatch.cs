@@ -4,7 +4,7 @@ using RVCRestructured.Shifter;
 using UnityEngine;
 using Verse;
 
-namespace RVCRestructured.Source.RVR.Harmony;
+namespace RVCRestructured.RVR.Harmony;
 
 public static class HeadOffsetPatch
 {

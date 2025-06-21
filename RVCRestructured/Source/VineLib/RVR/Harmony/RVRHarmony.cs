@@ -1,8 +1,6 @@
 ﻿using HarmonyLib;
-using RimWorld;
-using RVCRestructured.Source.RVR.Harmony;
-using RVCRestructured.VineLib.RVR.Harmony;
-using Verse;
+using RVCRestructured.RVR.Harmony;
+using RVCRestructured.RVR.Harmony;
 using Verse.AI;
 
 namespace RVCRestructured.RVR.HarmonyPatches;
@@ -18,14 +16,14 @@ public static class RVRHarmony
     private static void RVRPatcher()
     {
         RVCLog.Log("Staring RVR patches.");
-        HarmonyLib.Harmony.DEBUG =VineSettings.DebugHarmony;
+        HarmonyLib.Harmony.DEBUG = VineSettings.DebugHarmony;
         HarmonyLib.Harmony harmony = new("RecompiledBirds.RVC.RVR");
         try
         {
             //Rendering patches
             //harmony.Patch(AccessTools.Constructor(typeof(PawnTextureAtlas)), transpiler: new HarmonyMethod(typeof(RenderTextureTranspiler), nameof(RenderTextureTranspiler.Transpile)));
-            
-            
+
+
             //Restriction patches
             harmony.Patch(AccessTools.Method(typeof(RaceProperties), "CanEverEat", [typeof(ThingDef)]), postfix: new HarmonyMethod(typeof(EatingPatch), nameof(EatingPatch.CanEverEatPostFix)));
             harmony.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "CanUsePair"), postfix: new HarmonyMethod(typeof(ApparelGenPatch), nameof(ApparelGenPatch.CanUsePairPatch)));
@@ -47,16 +45,16 @@ public static class RVRHarmony
             harmony.Patch(AccessTools.Method(memoryHandler, "NumMemoriesOfDef"), prefix: thoughtPatchMethod);
             harmony.Patch(AccessTools.Method(memoryHandler, "OldestMemoryOfDef"), prefix: thoughtPatchMethod);
             harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDef"), prefix: thoughtPatchMethod);
-            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDefIf"), prefix:thoughtPatchMethod);
+            harmony.Patch(AccessTools.Method(memoryHandler, "RemoveMemoriesOfDefIf"), prefix: thoughtPatchMethod);
             harmony.Patch(AccessTools.Method(memoryHandler, "TryGainMemory", [typeof(Thought_Memory), typeof(Pawn)]), prefix: new HarmonyMethod(thoughtReplacer, nameof(ThoughtReplacerPatch.ReplacePatchCreateMemoryPrefix)));
             harmony.Patch(AccessTools.Method(typeof(SituationalThoughtHandler), "TryCreateThought"), prefix: new HarmonyMethod(thoughtReplacer, nameof(ThoughtReplacerPatch.ReplacePatchSIT)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "CanGetThought"), postfix: new HarmonyMethod(typeof(CanGetThoughtPatch), nameof(CanGetThoughtPatch.CanGetPatch)));
             harmony.Patch(AccessTools.Method(typeof(ThoughtUtility), "GiveThoughtsForPawnOrganHarvested"), prefix: new HarmonyMethod(typeof(OrganPatch), nameof(OrganPatch.OrganHarvestPrefix)));
-            
+
 
             //Max health
             harmony.Patch(AccessTools.Method(typeof(BodyPartDef), "GetMaxHealth"), postfix: new HarmonyMethod(typeof(BodyPartHealthPatch), nameof(BodyPartHealthPatch.HealthPostfix)));
-           
+
 
             //Factions
             harmony.Patch(AccessTools.Method(typeof(Faction), "TryMakeInitialRelationsWith"), postfix: new HarmonyMethod(typeof(FactionStartRelations), nameof(FactionStartRelations.Postfix)));
@@ -71,7 +69,7 @@ public static class RVRHarmony
             //Pawn Generation Patches
             harmony.Patch(AccessTools.Method(typeof(TraitSet), "GainTrait"), prefix: new HarmonyMethod(typeof(TraitPatch), nameof(TraitPatch.TraitPrefix)));
             harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
-            if (VineMod.VineSettings.RaceBlender&&!ModLister.HasActiveModWithName("Faction Blender"))
+            if (VineMod.VineSettings.RaceBlender && !ModLister.HasActiveModWithName("Faction Blender"))
             {
                 harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), prefix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ModifyPawnGenerationRequest)));
                 harmony.Patch(AccessTools.Method(typeof(ThingMaker), nameof(ThingMaker.MakeThing)), prefix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ModifyThingMaker)));
