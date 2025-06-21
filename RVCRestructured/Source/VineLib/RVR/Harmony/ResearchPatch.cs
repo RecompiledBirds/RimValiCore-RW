@@ -1,22 +1,18 @@
-﻿using RimWorld;
-using Verse;
-
-namespace RVCRestructured.RVR.HarmonyPatches;
+﻿namespace RVCRestructured.RVR.HarmonyPatches;
 
 public static class ResearchPatch
 {
     private static Dictionary<FactionDef, List<ResearchProjectDef>> disallowedResearch = [];
-    
+
     public static void DisallowResearch(FactionDef faction, ResearchProjectDef researchProject)
     {
-        RVCLog.Log(faction.defName);
         if (!disallowedResearch.ContainsKey(faction))
         {
             disallowedResearch[faction] = [];
         }
         disallowedResearch[faction].Add(researchProject);
     }
-    
+
     public static void ResearchPostfix(Pawn pawn, ref bool __result)
     {
         if (__result) return; //Should skip was true

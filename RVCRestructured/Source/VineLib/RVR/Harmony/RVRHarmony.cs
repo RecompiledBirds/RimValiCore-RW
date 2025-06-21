@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using RimWorld;
-using RVCRestructured.RVR.Harmony;
 using RVCRestructured.Source.RVR.Harmony;
+using RVCRestructured.VineLib.RVR.Harmony;
 using Verse;
 using Verse.AI;
 

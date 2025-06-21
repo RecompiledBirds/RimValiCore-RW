@@ -1,14 +1,16 @@
-﻿using RimWorld;
-using Verse;
-
-namespace RVCRestructured.RVR.HarmonyPatches;
+﻿namespace RVCRestructured.RVR.HarmonyPatches;
 
 public static class ThoughtReplacerPatch
 {
     private static readonly Dictionary<Pawn, ThoughtComp> cache = [];
-
+    private static bool subscribedToCacheReset = false;
     private static ThoughtComp GetCached(Pawn pawn)
     {
+        if (!subscribedToCacheReset)
+        {
+            WorldSpecificCacheSignaler.signalCachesReset += ResetCache;
+            subscribedToCacheReset = true;
+        }
         if (!cache.ContainsKey(pawn))
         {
             cache[pawn] = pawn.TryGetComp<ThoughtComp>();
@@ -16,25 +18,28 @@ public static class ThoughtReplacerPatch
         return cache[pawn];
     }
 
-
+    private static void ResetCache()
+    {
+        cache.Clear();
+    }
     private static void ReplaceThought(ref ThoughtDef thought, Pawn pawn)
     {
         ThoughtComp? comp = GetCached(pawn);
-        if (comp == null) return; 
+        if (comp == null) return;
         comp.Props.Replace(ref thought);
     }
 
     public static void ReplacePatch(ref ThoughtDef def, MemoryThoughtHandler __instance)
     {
         Pawn pawn = __instance.pawn;
-        ReplaceThought(ref def, pawn); 
+        ReplaceThought(ref def, pawn);
     }
 
     public static void ReplacePatchCreateMemoryPrefix(Thought_Memory newThought, MemoryThoughtHandler __instance)
     {
         Pawn pawn = __instance.pawn;
         ThoughtDef def = newThought.def;
-        
+
         ReplaceThought(ref def, pawn);
         newThought.def = def;
     }

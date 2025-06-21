@@ -1,7 +1,5 @@
-﻿using RimWorld;
-using RVCRestructured.Shifter;
+﻿using RVCRestructured.Shifter;
 using UnityEngine;
-using Verse;
 
 namespace RVCRestructured.RVR.Harmony;
 
@@ -13,7 +11,7 @@ public static class ApparelGraphicPatch
             return;
         BodyTypeDef typeDef = bodyType;
         Pawn pawn = apparel.Wearer;
-        string path="RVC/Empty";
+        string path = "RVC/Empty";
         GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
         ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
         if (shapeshifterComp != null)
@@ -31,7 +29,7 @@ public static class ApparelGraphicPatch
         {
             path = apparel.WornGraphicPath;
         }
-        else if ((comp==null||!comp.Props.useEmptyApparelIfNoDefault) && ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
+        else if ((comp == null || !comp.Props.useEmptyApparelIfNoDefault) && ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north", false))
         {
             path = $"{apparel.WornGraphicPath}_{BodyTypeDefOf.Thin}_north";
         }
