@@ -11,9 +11,9 @@ public static class ThoughtReplacerPatch
             WorldSpecificCacheSignaler.signalCachesReset += ResetCache;
             subscribedToCacheReset = true;
         }
-        if (!cache.ContainsKey(pawn))
+        if(cache.TryGetValue(pawn, out ThoughtComp result))
         {
-            cache[pawn] = pawn.TryGetComp<ThoughtComp>();
+            return result;
         }
         return cache[pawn];
     }

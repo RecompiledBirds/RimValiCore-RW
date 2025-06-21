@@ -15,9 +15,9 @@ public class RVRThoughtComp : CompProperties
     private readonly Dictionary<ThoughtDef, ThoughtDef> cachedReplacer = [];
     public bool  Replace(ref ThoughtDef def)
     {
-        if (cachedReplacer.ContainsKey(def))
+        if (cachedReplacer.TryGetValue(def, out ThoughtDef value))
         {
-            def = cachedReplacer[def];
+            def = value;
             return true;
         }
 

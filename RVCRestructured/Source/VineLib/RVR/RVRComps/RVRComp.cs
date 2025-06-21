@@ -58,8 +58,7 @@ public class RVRComp : ThingComp
 
     public void SendRenderableDefToNextTexture(RenderableDef def)
     {
-        if (!renderableIndexes.ContainsKey(def.defName)) return;
-        int index = renderableIndexes[def.defName];
+        if (!renderableIndexes.TryGetValue(def.defName, out int index)) return;
         index++;
         if (def.Textures.Count == index)
         {
@@ -69,8 +68,7 @@ public class RVRComp : ThingComp
     }
     public void SendRenderableDefToPreviousTexture(RenderableDef def)
     {
-        if (!renderableIndexes.ContainsKey(def.defName)) return;
-        int index = renderableIndexes[def.defName];
+        if (!renderableIndexes.TryGetValue(def.defName, out int index)) return;;
         index--;
         if (index == -1)
         {
@@ -81,10 +79,8 @@ public class RVRComp : ThingComp
 
     public void SendRenderableDefToNextMask(RenderableDef def)
     {
-        if (!renderableIndexes.ContainsKey(def.defName)) return;
-        if (!masks.ContainsKey(def.defName)) return;
-        int texIndex = renderableIndexes[def.defName];
-        int maskIndex = masks[def.defName];
+        if (!renderableIndexes.TryGetValue(def.defName, out int texIndex)) return;
+        if (!masks.TryGetValue(def.defName, out int maskIndex)) return;
         maskIndex--;
         List<string> maskList = def.Textures[texIndex].GetMasks((Pawn)parent);
         if (maskIndex == maskList.Count)
@@ -95,10 +91,8 @@ public class RVRComp : ThingComp
     }
     public void SendRenderableDefToPreviousMask(RenderableDef def)
     {
-        if (!renderableIndexes.ContainsKey(def.defName)) return;
-        if (!masks.ContainsKey(def.defName)) return;
-        int texIndex = renderableIndexes[def.defName];
-        int maskIndex = masks[def.defName];
+        if (!renderableIndexes.TryGetValue(def.defName, out int texIndex)) return;
+        if (!masks.TryGetValue(def.defName, out int maskIndex)) return;
         maskIndex--;
         List<string> maskList = def.Textures[texIndex].GetMasks((Pawn)parent);
         if (maskIndex == -1)
@@ -109,9 +103,11 @@ public class RVRComp : ThingComp
     }
     public string GetMaskPath(RenderableDef def, Pawn pawn)
     {
-        if (masks.ContainsKey(def.defName) && !def.Textures[renderableIndexes[def.defName]].GetMasks(pawn).NullOrEmpty())
-            return def.Textures[renderableIndexes[def.defName]].GetMasks(pawn)[masks[def.defName]];
-        return def.Textures[renderableIndexes[def.defName]].TexPath;
+        int cachedRenderableIndex = renderableIndexes[def.defName];
+        BaseTex cachedTex = def.Textures[cachedRenderableIndex];
+        if (masks.TryGetValue(def.defName, out int maskValue) && !cachedTex.GetMasks(pawn).NullOrEmpty())
+            return cachedTex.GetMasks(pawn)[maskValue];
+        return cachedTex.TexPath;
     }
 
     public TriColorSet this[string name]
@@ -250,10 +246,10 @@ public class RVRComp : ThingComp
         if (renderableIndexes.ContainsKey(rDef.defName)) return;
 
         bool hasLink = rDef.LinkTexWith != null;
-        if (hasLink && renderableIndexes.ContainsKey(rDef.LinkTexWith!.defName))
+        if (hasLink && renderableIndexes.TryGetValue(rDef.LinkTexWith!.defName, out int linkedIndex))
         {
             string linkString = rDef.LinkTexWith.defName;
-            renderableIndexes[rDef.defName] = renderableIndexes[linkString];
+            renderableIndexes[rDef.defName] = linkedIndex;
             masks[rDef.defName] = masks[linkString];
             return;
         }

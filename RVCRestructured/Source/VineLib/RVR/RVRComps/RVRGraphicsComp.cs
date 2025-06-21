@@ -16,7 +16,7 @@ public class RVRGraphicsComp : CompProperties
     {
         get
         {
-            if (cachedColors.ContainsKey(name)) return cachedColors[name];
+            if (cachedColors.TryGetValue(name, out RaceColors colors)) return colors;
 
             for (int i = 0; i < colorGenerators.Count; i++)
             {
