@@ -39,7 +39,6 @@ public static class BodyTypeGenPatch
             
         }
         List<BodyTypeDef> defs = [.. DefDatabase<BodyTypeDef>.AllDefs.Where(x => !RestrictionsChecker.IsRestricted(x))];
-        foreach(BodyTypeDef def in defs) { VineLog.Log(def.defName); }
         defs.Remove(BodyTypeDefOf.Child);
         defs.Remove(BodyTypeDefOf.Baby);
         if (pawn.gender == Gender.Male) defs.Remove(BodyTypeDefOf.Female);
