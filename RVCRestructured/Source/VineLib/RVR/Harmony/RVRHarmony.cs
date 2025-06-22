@@ -68,12 +68,8 @@ public static class RVRHarmony
             //Pawn Generation Patches
             harmony.Patch(AccessTools.Method(typeof(TraitSet), "GainTrait"), prefix: new HarmonyMethod(typeof(TraitPatch), nameof(TraitPatch.TraitPrefix)));
             harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
-            if (VineMod.VineSettings.RaceBlender && !ModLister.HasActiveModWithName("Faction Blender"))
-            {
-                harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), prefix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ModifyPawnGenerationRequest)));
-                harmony.Patch(AccessTools.Method(typeof(ThingMaker), nameof(ThingMaker.MakeThing)), prefix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.ModifyThingMaker)));
-            }
-            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(PawnBlenderPatches), nameof(PawnBlenderPatches.GraphicsGenPostfix)));
+
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(PawnGenerationPatches), nameof(PawnGenerationPatches.GraphicsGenPostfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)), postfix: new HarmonyMethod(typeof(XenoTypeGenPatch), nameof(XenoTypeGenPatch.Postfix)));
             VineLog.Log("Completed all RVR patches with no issues!");
         }

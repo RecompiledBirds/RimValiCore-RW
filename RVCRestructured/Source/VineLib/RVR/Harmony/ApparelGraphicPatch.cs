@@ -56,7 +56,6 @@ public static class ApparelGraphicPatch
         }
         string defaultPath = $"{apparel.WornGraphicPath}_{copyBodyType.defName}";
         path = FindPath(path, defaultPath, apparel, comp);
-        VineLog.Log(path);
         Shader shader = ShaderDatabase.CutoutComplex;
         resultGraphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.def.graphicData.drawSize, apparel.DrawColor);
         rec = new ApparelGraphicRecord(resultGraphic, apparel);
