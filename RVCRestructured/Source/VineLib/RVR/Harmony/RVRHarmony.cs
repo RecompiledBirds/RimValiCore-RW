@@ -60,8 +60,8 @@ public static class RVRHarmony
 
 
             //Body Type Patches
-            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "GenerateBodyType"), postfix: new HarmonyMethod(typeof(BodyTypeGenPatch), nameof(BodyTypeGenPatch.Posfix)));
-            harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)), postfix: new HarmonyMethod(typeof(ApparelGraphicPatch), nameof(ApparelGraphicPatch.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "GenerateBodyType"), postfix: new HarmonyMethod(typeof(BodyTypeGenPatch), nameof(BodyTypeGenPatch.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel)), prefix: new HarmonyMethod(typeof(ApparelGraphicPatch), nameof(ApparelGraphicPatch.Prefix)));
             harmony.Patch(AccessTools.Method(typeof(PawnRenderer), "BaseHeadOffsetAt"), postfix: new HarmonyMethod(typeof(HeadOffsetPatch), nameof(HeadOffsetPatch.Postfix)));
 
 
