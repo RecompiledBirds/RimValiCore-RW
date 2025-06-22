@@ -13,6 +13,12 @@ public static class BodyTypeGenPatch
             bodyGetter.GenBody();
             return false;
         }
-        return true;
+
+        IEnumerable<BodyTypeDef> defs = DefDatabase<BodyTypeDef>.AllDefs.Where(x => !RestrictionsChecker.IsRestricted(x));
+
+        if (pawn.story.bodyType != null && defs.Contains(pawn.story.bodyType))
+            return;
+
+        pawn.story.bodyType = defs.RandomElement();
     }
 }
