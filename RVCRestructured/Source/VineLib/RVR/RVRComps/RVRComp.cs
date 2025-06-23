@@ -33,7 +33,6 @@ public class RVRCP : CompProperties
         base.ResolveReferences(parentDef);
     }
 }
-
 public class RVRComp : ThingComp
 {
     private Dictionary<string, int> renderableIndexes = [];
