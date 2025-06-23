@@ -23,6 +23,6 @@ public class RenderableDefNodeProperties_Head : RenderableDefNodeProperties
 
     public RenderableDefNodeProperties_Head()
     {
-        this.nodeClass = typeof(RNodeWorker_Head);
+        this.workerClass = typeof(RNodeWorker_Head);
     }
 }
