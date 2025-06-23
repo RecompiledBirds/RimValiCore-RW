@@ -20,4 +20,9 @@ public class RNodeWorker_Head : RNodeWorker
 public class RenderableDefNodeProperties_Head : RenderableDefNodeProperties
 {
     public readonly Vector3 extraOffset;
+
+    public RenderableDefNodeProperties_Head()
+    {
+        this.nodeClass = typeof(RNodeWorker_Head);
+    }
 }
