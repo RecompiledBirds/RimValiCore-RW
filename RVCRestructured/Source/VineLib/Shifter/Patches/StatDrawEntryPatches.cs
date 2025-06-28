@@ -1,4 +1,6 @@
-﻿namespace RVCRestructured.Shifter;
+﻿using Verse;
+
+namespace RVCRestructured.Shifter;
 
 /// <summary>
 /// Changes some of the display UI elements to better fit shapeshifters.
@@ -15,9 +17,8 @@ public static class StatDrawEntryPatches
     /// <returns></returns>
     public static IEnumerable<StatDrawEntry> RacePostfix(IEnumerable<StatDrawEntry> __result, ThingDef parentDef, StatRequest req, RaceProperties __instance)
     {
-        Pawn pawn = req.Pawn ?? ((Pawn)req.Thing);
-        ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
-        if (comp == null)
+        if (req.Thing is not Pawn pawn) yield break;
+        if (!pawn.TryGetComp(out ShapeshifterComp comp))
         {
             foreach (StatDrawEntry entry in __result)
             {
@@ -26,6 +27,7 @@ public static class StatDrawEntryPatches
             yield break;
 
         }
+        VineLog.Log($"{comp.IsParentDef()}");
         if (comp.IsParentDef())
         {
             foreach (StatDrawEntry entry in __result)
@@ -59,8 +61,7 @@ public static class StatDrawEntryPatches
     /// <returns></returns>
     public static IEnumerable<StatDrawEntry> PawnPostfix(IEnumerable<StatDrawEntry> __result, Pawn __instance)
     {
-        ShapeshifterComp comp = __instance.TryGetComp<ShapeshifterComp>();
-        if (comp == null)
+        if (!__instance.TryGetComp(out ShapeshifterComp comp))
         {
             foreach (StatDrawEntry entry in __result)
             {
@@ -105,8 +106,7 @@ public static class StatDrawEntryPatches
     {
         if (req.Pawn==null) return __result;
         Pawn pawn = req.Pawn;
-        ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
-        if (comp == null) return __result;
+        if (!pawn.TryGetComp(out ShapeshifterComp comp)) return __result;
 
         if (comp.IsParentDef()) return __result;
 
@@ -138,8 +138,7 @@ public static class StatDrawEntryPatches
     public static IEnumerable<StatDrawEntry> DescPostFix(IEnumerable<StatDrawEntry> __result, StatRequest req, Def __instance)
     {
         Pawn pawn = req.Pawn ?? ((Pawn)req.Thing);
-        ShapeshifterComp comp = pawn.TryGetComp<ShapeshifterComp>();
-        if (comp == null)
+        if (!pawn.TryGetComp(out ShapeshifterComp comp))
         {
             foreach (StatDrawEntry entry in __result)
             {

@@ -38,7 +38,7 @@ public class ShapeshifterComp : ThingComp
 
     public XenotypeDef BaseXenoTypeDef => baseXenoTypeDef ?? throw new NullReferenceException();
 
-    private RaceProperties raceProperties = null!;
+    private RaceProperties? raceProperties = null!;
     public virtual RaceProperties RaceProperties
     {
         get
@@ -49,7 +49,7 @@ public class ShapeshifterComp : ThingComp
                 FieldInfo fieldInfo = typeof(RaceProperties).GetField("intelligence", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                 fieldInfo.SetValue(raceProperties, Intelligence.Humanlike);
             }
-
+            Log.Message(raceProperties.renderTree.defName);
             return raceProperties;
         }
     }
@@ -187,7 +187,7 @@ public class ShapeshifterComp : ThingComp
     public virtual void SetForm(ThingDef def, BodyTypeDef? bodyTypeDef = null, bool log = true, bool generating = false)
     {
         currentForm = def;
-
+        raceProperties = null;
         Pawn pawn = (Pawn)parent;
         
         if(log)
@@ -197,15 +197,20 @@ public class ShapeshifterComp : ThingComp
         if (comp == null) return;
         RVRGraphicsComp targetGraphics = def.GetCompProperties<RVRGraphicsComp>();
         LoadCompsFromForm();
-        comp.ClearAllGraphics();
-        if (targetGraphics != null)
-        {
+        //comp.ClearAllGraphics();
+        pawn.Drawer.renderer.renderTree = new PawnRenderTree(pawn);
+        pawn.Drawer.renderer.EnsureGraphicsInitialized();
+        pawn.Drawer.renderer.SetAllGraphicsDirty();
 
-            comp.GenAllDefs(targetGraphics, pawn);
-            comp.GenColors(targetGraphics, pawn);
-        }
+        //if (targetGraphics != null)
+        //{
+
+        //    comp.GenAllDefs(targetGraphics, pawn);
+        //    comp.GenColors(targetGraphics, pawn);
+        //}
         
         comp.InformGraphicsDirty();
+        
       /*  if(!generating)
             pawn.Drawer.renderer.graphics.ResolveAllGraphics();*/
     }

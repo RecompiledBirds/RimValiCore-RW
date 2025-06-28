@@ -15,9 +15,9 @@ public static class NamePatch
         __result = GenName(out NameTriple name, pawn);
 
 
-        if (Rand.Chance(0.2f) && SteamUtility.SteamPersonaName != "???")
+        if (Rand.Chance(0.1f) && SteamUtility.SteamPersonaName != "???")
         {
-            __result = new NameTriple(UnityEngine.Random.Range(1, 100) < 5 ? name.First : SteamUtility.SteamPersonaName, name.Nick ?? name.First, name.Last);
+            __result = new NameTriple(Rand.Chance(0.05f)? name.First : SteamUtility.SteamPersonaName, name.Nick ?? name.First, name.Last);
         }
         return false;
     }

@@ -5,6 +5,7 @@ namespace RVCRestructured;
 public class RVRRestrictionComp : CompProperties
 {
     public DefRestrictionManager restrictions = new();
+    public DefRestrictionManager Restrictions => restrictions;
 
     public bool IsAlwaysAllowed(RestrictionType type) => restrictions.IsAlwaysAllowed(type);
 

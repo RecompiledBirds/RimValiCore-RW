@@ -40,12 +40,24 @@ public static class Utils
         return true;
     }
 
-    public static RVRRestrictionComp? GetRelevantRestrictionComp(this Pawn pawn)
+    public static DefRestrictionManager? GetRelevantRestrictionComp(this Pawn pawn)
     {
         ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
         RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
+        DefRestrictionManager? manager = shapeshifterComp?.GetCompProperties<RVRRestrictionComp>().Restrictions ?? comp?.Props.Restrictions;
+        if (!ModsConfig.BiotechActive || pawn.genes==null || pawn.genes.GenesListForReading==null) return manager;
 
-        return shapeshifterComp?.GetCompProperties<RVRRestrictionComp>() ?? comp?.Props;
+        //foreach(Gene gene in pawn.genes.GenesListForReading)
+        //{
+        //    if (gene.def.HasModExtension<RestrictionModExtension>())
+        //    {
+        //        if (manager != null)
+        //            manager = manager.MergeManagers(manager, gene.def.GetModExtension<RestrictionModExtension>().Restrictions);
+        //        else
+        //            manager = gene.def.GetModExtension<RestrictionModExtension>().Restrictions;
+        //    }
+        //}
+        return manager;
     }
 
     /// <summary>
@@ -56,9 +68,11 @@ public static class Utils
     /// <returns></returns>
     public static bool CanUse(this Pawn pawn, Def def)
     {
-        RVRRestrictionComp? props = pawn.GetRelevantRestrictionComp();
-        if (props == null) return !RestrictionsChecker.IsRestricted(def);
+        DefRestrictionManager? restrictionManager = pawn.GetRelevantRestrictionComp();
+        if (restrictionManager == null) return !RestrictionsChecker.IsRestricted(def);
         
-        return props.IsAlwaysAllowed(def) || props[def].CanUse;
+        return restrictionManager.IsAlwaysAllowed(def) || restrictionManager[def].CanUse;
     }
+
+    
 }

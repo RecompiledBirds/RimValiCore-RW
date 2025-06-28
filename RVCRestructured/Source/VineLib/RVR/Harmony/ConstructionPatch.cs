@@ -11,7 +11,7 @@ public static class ConstructionPatch
     {
         if (!__result) return; //Skip code if this already can't be done
 
-        GetLabelAndRestrictionsFor(p, out string label, out RVRRestrictionComp? restrictions);
+        GetLabelAndRestrictionsFor(p, out string label, out DefRestrictionManager? restrictions);
         __result = (restrictions?[t.def].CanUse??false ) || !t.def.IsRestricted() || (restrictions?.IsAlwaysAllowed(t.def) ?? false);
         if (!__result) JobFailReason.Is(label + " " + "RVC_CannotBuild".Translate(label.Named("RACE")));
     }
@@ -23,16 +23,16 @@ public static class ConstructionPatch
     /// <param name="pawn"></param>
     /// <param name="label"></param>
     /// <param name="restrictions"></param>
-    private static void GetLabelAndRestrictionsFor(Pawn pawn, out string label, out RVRRestrictionComp? restrictions)
+    private static void GetLabelAndRestrictionsFor(Pawn pawn, out string label, out DefRestrictionManager? restrictions)
     {
         if (pawn.TryGetComp<ShapeshifterComp>() is ShapeshifterComp shapeshifterComp)
         {
-            restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>();
+            restrictions = shapeshifterComp.GetCompProperties<RVRRestrictionComp>().Restrictions;
             label = shapeshifterComp.Label();
         }
         else
         {
-            restrictions = pawn.TryGetComp<RestrictionComp>()?.Props;
+            restrictions = pawn.TryGetComp<RestrictionComp>()?.Props.Restrictions;
             label = pawn.def.label;
         }
     }

@@ -78,6 +78,20 @@ public class DefRestrictionManager
         return false;
     }
 
+    public DefRestrictionManager MergeManagers(DefRestrictionManager a, DefRestrictionManager b)
+    {
+        DefRestrictionManager newManager = new DefRestrictionManager();
+        foreach(DefRestrictionInfo info in a.restrictionInfos.Values)
+        {
+            newManager.AddOrOverwriteRestriction(info);
+        }
+        foreach (DefRestrictionInfo info in b.restrictionInfos.Values)
+        {
+            newManager.AddOrOverwriteRestriction(info);
+        }
+        return newManager;
+    }
+
     public void AddOrOverwriteRestriction(DefRestrictionInfo info) => restrictionInfos[info.Def] = info;
 
     public bool IsUserWhitelisted(Def def) => restrictionInfos.ContainsKey(def) && restrictionInfos[def].UserWhitelisted;
@@ -191,13 +205,13 @@ public class DefRestrictionManager
         }
     }
 
-    public void ResolveReferences(ThingDef parentDef)
+    public void ResolveReferences(Def parentDef)
     {
         ResolveModReferences(parentDef);
         ResolveDefReferences(parentDef);
     }
 
-    private void ResolveDefReferences(ThingDef parentDef)
+    private void ResolveDefReferences(Def parentDef)
     {
         foreach ((RestrictionType type, RestrictionHow how, string defName) in defInstructions)
         {
@@ -209,7 +223,7 @@ public class DefRestrictionManager
         defInstructions.Clear();
     }
 
-    public void ResolveModReferences(ThingDef parentDef)
+    public void ResolveModReferences(Def parentDef)
     {
         int count = modInstructions.Count;
         for (int i = 0; i < count; i++)
@@ -232,7 +246,7 @@ public class DefRestrictionManager
         modInstructions.Clear();
     }
 
-    private void AddRestrictionInfo(ThingDef parentDef, Def? def, RestrictionHow how, out DefRestrictionInfo? info)
+    private void AddRestrictionInfo(Def parentDef, Def? def, RestrictionHow how, out DefRestrictionInfo? info)
     {
         info = null;
         if (def == null) return;

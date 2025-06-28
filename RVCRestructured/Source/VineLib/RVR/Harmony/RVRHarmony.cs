@@ -28,8 +28,9 @@ public static class RVRHarmony
             harmony.Patch(AccessTools.Method(typeof(PawnApparelGenerator), "CanUsePair"), postfix: new HarmonyMethod(typeof(ApparelGenPatch), nameof(ApparelGenPatch.CanUsePairPatch)));
             harmony.Patch(AccessTools.Method(typeof(EquipmentUtility), "CanEquip", [typeof(Thing), typeof(Pawn), typeof(string).MakeByRefType(), typeof(bool)]), postfix: new HarmonyMethod(typeof(ApparelEquipping), nameof(ApparelEquipping.EquipPatch)));
             harmony.Patch(AccessTools.Method(typeof(RestUtility), "CanUseBedEver"), postfix: new HarmonyMethod(typeof(BedPatch), nameof(BedPatch.CanUseBed)));
-            harmony.Patch(AccessTools.Method(typeof(WorkGiver_Researcher), "ShouldSkip"), postfix: new HarmonyMethod(typeof(ResearchPatch), nameof(ResearchPatch.ResearchPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(WorkGiver_Researcher), "ShouldSkip"), postfix: new HarmonyMethod(typeof(ResearchPatch), nameof(ResearchPatch.ShouldSkipPostFix)));
             harmony.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "get_VisibleResearchProjects"), postfix: new HarmonyMethod(typeof(ResearchPatch), nameof(ResearchPatch.ResearchVisiblePostFix)));
+            harmony.Patch(AccessTools.Method(typeof(ResearchProjectDef), "get_AnalyzedThingsCompleted"), prefix: new HarmonyMethod(typeof(ResearchPatch), nameof(ResearchPatch.AnalyzedThingsCompletedPrefix)));
             harmony.Patch(AccessTools.Method(typeof(JobDriver_Equip), nameof(JobDriver_Equip.TryMakePreToilReservations)), prefix: new HarmonyMethod(typeof(EquipingPatch), nameof(EquipingPatch.JobDriver_EquipPrefix)));
             harmony.Patch(AccessTools.Method(typeof(EquipmentUtility), "CanEquip", [typeof(Thing), typeof(Pawn), typeof(string).MakeByRefType(), typeof(bool)]), postfix: new HarmonyMethod(typeof(EquipingPatch), nameof(EquipingPatch.EquipingPostfix)));
             harmony.Patch(AccessTools.Method(typeof(GenConstruct), "CanConstruct", [typeof(Thing), typeof(Pawn), typeof(bool), typeof(bool), typeof(JobDef)]), postfix: new HarmonyMethod(typeof(ConstructionPatch), nameof(ConstructionPatch.Constructable)));
@@ -70,6 +71,7 @@ public static class RVRHarmony
             harmony.Patch(AccessTools.Method(typeof(PawnBioAndNameGenerator), "GeneratePawnName"), prefix: new HarmonyMethod(typeof(NamePatch), nameof(NamePatch.Prefix)));
 
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(PawnGenerationPatches), nameof(PawnGenerationPatches.GraphicsGenPostfix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), [typeof(PawnGenerationRequest)]), prefix: new HarmonyMethod(typeof(PawnGenerationPatches), nameof(PawnGenerationPatches.RequestChangePrefix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)), postfix: new HarmonyMethod(typeof(XenoTypeGenPatch), nameof(XenoTypeGenPatch.Postfix)));
             VineLog.Log("Completed all RVR patches with no issues!");
         }
