@@ -20,22 +20,13 @@ public static class Patcher
             harmony.Patch(AccessTools.Method(typeof(Building_Bed), nameof(Building_Bed.GetSleepingSlotPos)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_GetSleepingSlotPos)));
             harmony.Patch(AccessTools.Method(typeof(CompAffectedByFacilities), nameof(CompAffectedByFacilities.CanPotentiallyLinkTo_Static), [typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(ThingDef), typeof(IntVec3), typeof(Rot4), typeof(Map)]), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_CanPotentiallyLinkTo_Static)));
             harmony.Patch(AccessTools.Method(typeof(CompProperties_AssignableToPawn), nameof(CompProperties_AssignableToPawn.PostLoadSpecial)), prefix: new HarmonyMethod(typeof(Patcher), nameof(Prefix_PostLoadSpecial)));
-
+            RenderPatch.Patch(harmony);
             VineLog.Log($"{moduleName} Patching success");
         }
     }
-    public static bool Is2DBed(ThingDef thingDef)
+    public static bool Is2DBed(Thing bed,out BedComp? comp)
     {
-        return Is2DBed(thingDef, out ResizedBedCompProperties? _);
-    }
-    public static bool Is2DBed(ThingDef thingDef,out ResizedBedCompProperties? comp)
-    {
-        comp = null;
-        if (thingDef.HasComp(typeof(BedComp))){
-            comp = thingDef.GetCompProperties<ResizedBedCompProperties>();
-            return true;
-        }
-        return false;
+        return bed.TryGetComp(out comp);
     }
 
     /// <summary>

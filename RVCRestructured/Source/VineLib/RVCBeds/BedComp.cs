@@ -8,4 +8,6 @@ public class ResizedBedCompProperties : CompProperties
     public bool isPile = false;
     public FloatRange rotationRange = new(min: -180, max: 180);
 }
-public class BedComp : ThingComp { }
+public class BedComp : ThingComp {
+    public ResizedBedCompProperties Props => (ResizedBedCompProperties)props;
+}

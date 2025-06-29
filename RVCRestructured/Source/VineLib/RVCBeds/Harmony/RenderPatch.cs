@@ -1,21 +1,13 @@
 ﻿using HarmonyLib;
-using RimWorld;
-using RVCRestructured.Windows;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using Verse;
 
 namespace RVCRestructured.RVCBeds;
-    public class RenderData
-    {
-        public float angle = 0f;
-        public Vector3 pos = Vector3.zero;
-        public Rot4? rot = null;
-    }
+public class RenderData
+{
+    public float angle = 0f;
+    public Vector3 pos = Vector3.zero;
+    public Rot4? rot = null;
+}
 class RenderPatch
 {
     private static Dictionary<Pawn, RenderData> renderDatas = new Dictionary<Pawn, RenderData>();
@@ -38,7 +30,7 @@ class RenderPatch
 
         // Postfixes
         harmony.Patch(
-            AccessTools.Method(typeof(PawnRenderer), nameof(PawnRenderer.RenderPawnAt)),
+            AccessTools.Method(typeof(PawnRenderer), "GetBodyPos"),
             postfix: new HarmonyMethod(patchType, nameof(PawnRenderer_GetBodyPos_Postfix)));
 
         harmony.Patch(
@@ -51,10 +43,11 @@ class RenderPatch
     }
 
     // PREFIX
-    public static void PawnRenderer_RenderPawnAt_Prefix(PawnRenderer __instance, Pawn ___pawn, ref Vector3 drawLoc, Rot4? rotOverride = null, bool neverAimWeapon = false)
+    public static void PawnRenderer_RenderPawnAt_Prefix(PawnRenderer __instance, Pawn ___pawn, ref Vector3 drawLoc, Rot4? rotOverride, bool neverAimWeapon)
     {
         try
         {
+
             if (___pawn.Dead ||
                 ___pawn.GetPosture() == PawnPosture.Standing ||
                 ___pawn.CurJob == null ||
@@ -65,7 +58,8 @@ class RenderPatch
                 return;
             }
             Building_Bed bed = ___pawn.CurrentBed();
-            if (bed is null || !Patcher.Is2DBed(bed.def, out ResizedBedCompProperties? resizedBedCompProperties))
+            VineLog.Log(Patcher.Is2DBed(bed, out BedComp? _));
+            if (bed==null || !Patcher.Is2DBed(bed, out BedComp? resizedBedCompProperties))
             {
                 renderDatas.Remove(___pawn);
                 return;
@@ -74,11 +68,12 @@ class RenderPatch
             int seed = (Find.TickManager.TicksGame + ___pawn.thingIDNumber) / 20000 + ___pawn.thingIDNumber;
             if (!renderDatas.TryGetValue(___pawn, out RenderData renderData))
             {
-                renderDatas[___pawn] = new RenderData();
-                renderData = renderDatas[___pawn];
+                renderData = new RenderData();
                 // Angle
-                if (resizedBedCompProperties?.isPile ?? false)
-                    resizedBedCompProperties.rotationRange.RandomInRangeSeeded(seed + 200);
+                if (resizedBedCompProperties?.Props.isPile ?? false)
+                    renderData.angle = resizedBedCompProperties.Props.rotationRange.RandomInRangeSeeded(seed + 200);
+                renderDatas[___pawn] = renderData;
+                VineLog.Log(renderData.angle);
             }
 
 
@@ -184,6 +179,7 @@ class RenderPatch
         if (renderDatas.TryGetValue(___pawn, out RenderData renderData))
         {
             __result += renderData.angle;
+            VineLog.Log(renderData.angle);
         }
     }
 
