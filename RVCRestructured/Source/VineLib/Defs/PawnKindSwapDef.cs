@@ -9,8 +9,8 @@ namespace RVCRestructured;
 
 public class PawnKindSwapDef :Def
 {
-    [AllowNull]
-    public List<FactionDef> forFactions;
+    public List<FactionDef> forFactions = [];
+    public List<FactionDef> forAllFactionsExcept = [];
     public List<PawnKindSwapOptions> swapOptions = [];
 
 }
@@ -19,5 +19,13 @@ public class PawnKindSwapOptions
 {
     [AllowNull]
     public PawnKindDef pawnKindDef;
-    public List<PawnKindDef> swapWithOptions = [];
+    public float chanceOfSwap = 0.5f;
+    public List<SwapOption> swapWithOptions = [];
+}
+
+public class SwapOption
+{
+    [AllowNull]
+    public PawnKindDef? pawnKindDef;
+    public XenotypeDef? xenotypeDef;
 }

@@ -47,16 +47,16 @@ public static class Utils
         DefRestrictionManager? manager = shapeshifterComp?.GetCompProperties<RVRRestrictionComp>().Restrictions ?? comp?.Props.Restrictions;
         if (!ModsConfig.BiotechActive || pawn.genes==null || pawn.genes.GenesListForReading==null) return manager;
 
-        //foreach(Gene gene in pawn.genes.GenesListForReading)
-        //{
-        //    if (gene.def.HasModExtension<RestrictionModExtension>())
-        //    {
-        //        if (manager != null)
-        //            manager = manager.MergeManagers(manager, gene.def.GetModExtension<RestrictionModExtension>().Restrictions);
-        //        else
-        //            manager = gene.def.GetModExtension<RestrictionModExtension>().Restrictions;
-        //    }
-        //}
+        foreach (Gene gene in pawn.genes.GenesListForReading)
+        {
+            if (gene.def.HasModExtension<RestrictionModExtension>())
+            {
+                if (manager != null)
+                    manager = manager.MergeManagers(manager, gene.def.GetModExtension<RestrictionModExtension>().Restrictions);
+                else
+                    manager = gene.def.GetModExtension<RestrictionModExtension>().Restrictions;
+            }
+        }
         return manager;
     }
 

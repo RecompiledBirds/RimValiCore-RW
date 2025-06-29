@@ -80,7 +80,7 @@ public class DefRestrictionManager
 
     public DefRestrictionManager MergeManagers(DefRestrictionManager a, DefRestrictionManager b)
     {
-        DefRestrictionManager newManager = new DefRestrictionManager();
+        DefRestrictionManager newManager = new();
         foreach(DefRestrictionInfo info in a.restrictionInfos.Values)
         {
             newManager.AddOrOverwriteRestriction(info);

@@ -9,7 +9,7 @@ public static class ApparelScoreGainPatch
     {
         if (!pawn.CanUse(ap.def))
         {
-            __result = int.MinValue;
+            __result = float.MinValue;
             return;
         }
     }

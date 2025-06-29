@@ -12,6 +12,15 @@ public class RVRGraphicsComp : CompProperties
     public readonly List<RenderableDef> renderableDefs = [];
     public readonly string skinColorSet = string.Empty;
     public Dictionary<string, RaceColors> cachedColors = [];
+
+
+    public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
+    {
+        if (!parentDef.HasComp(typeof(RVRComp)))
+        {
+            yield return $"{parentDef.defName} does not have comp matching {nameof(RVRCP)}! {nameof(RVRGraphicsComp)} needs this to function!";
+        }
+    }
     public RaceColors? this[string name]
     {
         get
