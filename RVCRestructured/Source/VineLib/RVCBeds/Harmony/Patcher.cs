@@ -24,6 +24,10 @@ public static class Patcher
             VineLog.Log($"{moduleName} Patching success");
         }
     }
+    public static bool Is2DBed(ThingDef thingDef)
+    {
+        return thingDef.HasComp(typeof(BedComp));
+    }
 
     /// <summary>
     ///     Calculates the amount of sleeping spaces a <see cref="Building_Bed"/> provides, if it has a <see cref="BedComp"/>
@@ -145,23 +149,13 @@ public static class Patcher
         return false;
     }
 
-    private class TmpVariableContainer
+    private class TmpVariableContainer(ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot)
     {
-        public readonly ThingDef facilityDef;
-        public readonly IntVec3 facilityPos;
-        public readonly Rot4 facilityRot;
-        public readonly ThingDef myDef;
-        public readonly IntVec3 myPos;
-        public readonly Rot4 myRot;
-
-        public TmpVariableContainer(ThingDef facilityDef, IntVec3 facilityPos, Rot4 facilityRot, ThingDef myDef, IntVec3 myPos, Rot4 myRot)
-        {
-            this.facilityDef = facilityDef;
-            this.facilityPos = facilityPos;
-            this.facilityRot = facilityRot;
-            this.myDef = myDef;
-            this.myPos = myPos;
-            this.myRot = myRot;
-        }
+        public readonly ThingDef facilityDef = facilityDef;
+        public readonly IntVec3 facilityPos = facilityPos;
+        public readonly Rot4 facilityRot = facilityRot;
+        public readonly ThingDef myDef = myDef;
+        public readonly IntVec3 myPos = myPos;
+        public readonly Rot4 myRot = myRot;
     }
 }
