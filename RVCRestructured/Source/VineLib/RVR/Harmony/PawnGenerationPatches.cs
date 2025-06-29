@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RVCRestructured.VineLib.Defs.DefOfs;
+using System.Globalization;
 using Verse;
 
 namespace RVCRestructured.RVR.HarmonyPatches;
@@ -100,11 +101,21 @@ public static class PawnGenerationPatches
         cachedPawnKinds[faction] = result;
         return result;
     }
-    public static void RequestChangePrefix(ref Pawn __result, ref PawnGenerationRequest request)
+    private static int pawnsGenerated = 0;
+    public static void RequestChangePrefix(ref PawnGenerationRequest request)
     {
+        //check if caches need clearing
+        if(VineSettings.flushGenerationCaches && pawnsGenerated++ == VineSettings.flushCachesAfterHowManyPawnsGenerated)
+        {
+            cachedPawnKinds = [];
+            solvedBestPawnKinds = [];
+        }
+
         if (!request.KindDef.race.race.Humanlike) return;
-        FactionDef? factionDef = Faction.OfPlayerSilentFail?.def;
-        if (request.Faction != null) factionDef = request.Faction.def;
+
+        FactionDef? factionDef = request.Faction?.def ?? Faction.OfPlayerSilentFail?.def;
+
+        //try get vine pawnkind swap defs
         if (!TryGetSwapOptionsFor(request.KindDef, factionDef, out List<SwapOption>? options) && !options.NullOrEmpty())
         {
             SwapOption option = options.RandomElement();
@@ -112,29 +123,32 @@ public static class PawnGenerationPatches
             if (ModsConfig.BiotechActive && option.xenotypeDef != null) request.ForcedXenotype = option.xenotypeDef;
             return;
         }
+
         float ratio = VineSettings.overrideBlendDefaultRatio ? VineSettings.blendRatio : FactionData.defaultRatio;
         if (!VineSettings.factionBlender && !Rand.Chance(ratio)) return;
         if (request.IsCreepJoiner||(factionDef?.isPlayer ?? false)) return;
-        if(factionDef!=null&& factionDef.pawnGroupMakers != null && !(request.Faction?.def.modContentPack.IsOfficialMod??true
-            || (request.Faction?.def.modContentPack.IsCoreMod ?? true))&&(request.KindDef.modContentPack.IsOfficialMod||request.KindDef.modContentPack.IsCoreMod))
+        if(
+            //check faction has pawn group makers
+            factionDef?.pawnGroupMakers!=null
+            // check faction is not vanilla
+            && !factionDef.IsVanilla()
+            // check pawnkind is vanila
+            &&request.KindDef.IsVanilla())
         {
             request.KindDef=FindBestReplacementCached(factionDef, request.KindDef);
             return;
         }
-        if (factionDef==null && !request.KindDef.defName.ToLower().Contains("refugee")) return;
+        
+        if (factionDef==null && !request.KindDef.defName.Contains("refugee",StringComparison.OrdinalIgnoreCase)) return;
         int retries = 30;
         PawnKindDef? def = null;
-        HashSet<PawnKindDef>? pawnKinds = null;
-        while (retries>0&&!pawnKinds.NullOrEmpty())
+        while (retries-->0)
         {
-            retries--;
             factionDef = DefDatabase<FactionDef>.AllDefsListForReading.RandomElement();
-            if (factionDef.modContentPack.IsCoreMod || factionDef.modContentPack.IsOfficialMod) continue;
-            pawnKinds = GetCachedPawnKinds(factionDef);
-            if (pawnKinds.NullOrEmpty()) continue;
+            if (factionDef.IsVanilla()) continue;
 
             def = FindBestReplacementCached(factionDef, request.KindDef);
-            if (def != null) break;
+            if (def != request.KindDef) break;
         }
         if (def == null) return;
         request.KindDef = def;

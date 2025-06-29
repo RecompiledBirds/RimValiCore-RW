@@ -11,7 +11,10 @@ public static class FactionData
     public static float defaultRatio;
     static FactionData()
     {
-        float count = DefDatabase<FactionDef>.AllDefsListForReading.Where(faction => !(faction.modContentPack.IsCoreMod || faction.modContentPack.IsOfficialMod || faction.pawnGroupMakers.NullOrEmpty())&& !faction.isPlayer && faction.pawnGroupMakers.Any(x => x.options.Any(x => x.kind.RaceProps.Humanlike))).Count();
-        defaultRatio = 1f / (count + 1f);
+        float count = DefDatabase<FactionDef>.AllDefsListForReading.Where(faction => !(faction.IsVanilla()
+                                                                        || faction.pawnGroupMakers.NullOrEmpty())
+                                                                        && !faction.isPlayer 
+                                                                        && faction.pawnGroupMakers.Any(x => x.options.Any(x => x.kind.RaceProps.Humanlike))).Count();
+        defaultRatio = 3f / (count + 3f);
     }
 }

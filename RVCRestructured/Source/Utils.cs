@@ -1,5 +1,7 @@
-﻿using RVCRestructured.RVR;
+﻿using RimWorld;
+using RVCRestructured.RVR;
 using RVCRestructured.Shifter;
+using System.Runtime.CompilerServices;
 using System.Xml;
 
 namespace RVCRestructured;
@@ -39,6 +41,8 @@ public static class Utils
 
         return true;
     }
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsVanilla(this Def def) => def.modContentPack.IsCoreMod || def.modContentPack.IsOfficialMod;
 
     public static DefRestrictionManager? GetRelevantRestrictionComp(this Pawn pawn)
     {
