@@ -26,7 +26,16 @@ public static class Patcher
     }
     public static bool Is2DBed(ThingDef thingDef)
     {
-        return thingDef.HasComp(typeof(BedComp));
+        return Is2DBed(thingDef, out ResizedBedCompProperties? _);
+    }
+    public static bool Is2DBed(ThingDef thingDef,out ResizedBedCompProperties? comp)
+    {
+        comp = null;
+        if (thingDef.HasComp(typeof(BedComp))){
+            comp = thingDef.GetCompProperties<ResizedBedCompProperties>();
+            return true;
+        }
+        return false;
     }
 
     /// <summary>

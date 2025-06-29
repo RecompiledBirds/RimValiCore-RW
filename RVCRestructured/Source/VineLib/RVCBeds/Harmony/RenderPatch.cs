@@ -65,19 +65,22 @@ class RenderPatch
                 return;
             }
             Building_Bed bed = ___pawn.CurrentBed();
-            if (bed is null || !Patcher.Is2DBed(bed.def))
+            if (bed is null || !Patcher.Is2DBed(bed.def, out ResizedBedCompProperties? resizedBedCompProperties))
             {
                 renderDatas.Remove(___pawn);
                 return;
             }
 
+            int seed = (Find.TickManager.TicksGame + ___pawn.thingIDNumber * 600) / 20000 + ___pawn.thingIDNumber * 600;
             if (!renderDatas.TryGetValue(___pawn, out RenderData renderData))
             {
                 renderDatas[___pawn] = new RenderData();
                 renderData = renderDatas[___pawn];
+                // Angle
+                if(resizedBedCompProperties?.isPile??false)
+                    renderData.angle = Rand.RangeSeeded(resizedBedCompProperties.rotationRange.min, resizedBedCompProperties.rotationRange.max, seed + 200);
             }
 
-            int seed = (Find.TickManager.TicksGame + ___pawn.thingIDNumber * 600) / 20000 + ___pawn.thingIDNumber * 600;
 
             // Facing
             switch (Rand.RangeSeeded(0, 4, seed))
@@ -96,8 +99,7 @@ class RenderPatch
                     break;
             }
 
-            // Angle
-            renderData.angle = Rand.RangeSeeded(-180f, 180f, seed + 200);
+
 
             // Position
             int slot = bed.GetCurOccupantSlotIndex(___pawn);
