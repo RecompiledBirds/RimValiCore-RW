@@ -78,6 +78,11 @@ public static class PawnGenerationPatches
     {
         if (cachedPawnKinds.TryGetValue(faction, out HashSet<PawnKindDef> result)) return result;
         result = [];
+        if (faction.pawnGroupMakers == null)
+        {
+            cachedPawnKinds[faction] = result;
+            return result;
+        }
         foreach (PawnGroupMaker maker in faction.pawnGroupMakers)
         {
             //avoid accidentally overwriting the orignal generation list.
@@ -107,9 +112,11 @@ public static class PawnGenerationPatches
             if (ModsConfig.BiotechActive && option.xenotypeDef != null) request.ForcedXenotype = option.xenotypeDef;
             return;
         }
-        if (request.IsCreepJoiner) return;
-        if (factionDef?.isPlayer??false) return;
-        if(factionDef!=null&& factionDef.pawnGroupMakers != null && !(request.Faction?.def.modContentPack.IsOfficialMod??true|| (request.Faction?.def.modContentPack.IsCoreMod ?? true))&&(request.KindDef.modContentPack.IsOfficialMod||request.KindDef.modContentPack.IsCoreMod))
+        float ratio = VineSettings.overrideBlendDefaultRatio ? VineSettings.blendRatio : FactionData.defaultRatio;
+        if (!VineSettings.factionBlender && !Rand.Chance(ratio)) return;
+        if (request.IsCreepJoiner||(factionDef?.isPlayer ?? false)) return;
+        if(factionDef!=null&& factionDef.pawnGroupMakers != null && !(request.Faction?.def.modContentPack.IsOfficialMod??true
+            || (request.Faction?.def.modContentPack.IsCoreMod ?? true))&&(request.KindDef.modContentPack.IsOfficialMod||request.KindDef.modContentPack.IsCoreMod))
         {
             request.KindDef=FindBestReplacementCached(factionDef, request.KindDef);
             return;
@@ -117,11 +124,15 @@ public static class PawnGenerationPatches
         if (factionDef==null && !request.KindDef.defName.ToLower().Contains("refugee")) return;
         int retries = 30;
         PawnKindDef? def = null;
-        while (retries>0)
+        HashSet<PawnKindDef>? pawnKinds = null;
+        while (retries>0&&!pawnKinds.NullOrEmpty())
         {
             retries--;
             factionDef = DefDatabase<FactionDef>.AllDefsListForReading.RandomElement();
             if (factionDef.modContentPack.IsCoreMod || factionDef.modContentPack.IsOfficialMod) continue;
+            pawnKinds = GetCachedPawnKinds(factionDef);
+            if (pawnKinds.NullOrEmpty()) continue;
+
             def = FindBestReplacementCached(factionDef, request.KindDef);
             if (def != null) break;
         }

@@ -26,11 +26,25 @@ public class VineMod : Mod
 
         Listing_Standard listing_Standard = new();
         listing_Standard.Begin(inRect);
-        listing_Standard.CheckboxLabeled("Enable VGUI editor: ", ref settings.VGUIEnabled);
-        listing_Standard.CheckboxLabeled("Debug mode: ", ref VineSettings.debugMode);
+        listing_Standard.CheckboxLabeled("Vine_EnableVGUI".Translate(), ref settings.VGUIEnabled);
+        listing_Standard.CheckboxLabeled("Vine_EnableFactionBlending".Translate(), ref VineSettings.factionBlender);
+        if (VineSettings.factionBlender)
+        {
+            listing_Standard.CheckboxLabeled($"Vine_OverrideDefaultBlendingRatio".Translate(FactionData.defaultRatio.ToString().Named("DEFAULT")), ref VineSettings.overrideBlendDefaultRatio);
+            if (VineSettings.overrideBlendDefaultRatio)
+            {
+                VineSettings.blendRatio = Mathf.Round(listing_Standard.SliderLabeled("Vine_BlendingUserSetRatio".Translate(VineSettings.blendRatio.ToString().Named("RATIO")),VineSettings.blendRatio*100, 1, 100))/100;
+            }
+            listing_Standard.CheckboxLabeled("Vine_FlushCachesAfterXPawnsGenerated".Translate(VineSettings.flushCachesAfterHowManyPawnsGenerated.Named("X")), ref VineSettings.flushGenerationCaches, "Vine_FlushCachesToolTip".Translate());
+            if (VineSettings.flushGenerationCaches)
+            {
+                VineSettings.flushCachesAfterHowManyPawnsGenerated = (int)listing_Standard.Slider(VineSettings.flushCachesAfterHowManyPawnsGenerated, 1, 100);
+            }
+        }
+        listing_Standard.CheckboxLabeled("Vine_DebugMode".Translate(), ref VineSettings.debugMode);
         if (VineSettings.debugMode)
         {
-            listing_Standard.CheckboxLabeled("Harmony debuggers: ", ref VineSettings.harmonyDebuggers);
+            listing_Standard.CheckboxLabeled("Vine_HarmonyDebugger".Translate(), ref VineSettings.harmonyDebuggers);
         }
         listing_Standard.End();
         base.DoSettingsWindowContents(inRect);

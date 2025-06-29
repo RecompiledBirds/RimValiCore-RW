@@ -11,4 +11,13 @@
 	<RVC_EditPrimary>Primary</RVC_EditPrimary>
 	<RVC_EditSecondary>Secondary</RVC_EditSecondary>
 	<RVC_EditTetriary>Tetriary</RVC_EditTetriary>
+	
+	<Vine_EnableVGUI>Enable VGUI editor:</Vine_EnableVGUI>
+	<Vine_EnableFactionBlending>Enable faction blending:</Vine_EnableFactionBlending>
+	<Vine_OverrideDefaultBlendingRatio>Override default human to non-human ratio: {DEFAULT}</Vine_OverrideDefaultBlendingRatio>
+	<Vine_BlendingUserSetRatio>Ratio: {RATIO}</Vine_BlendingUserSetRatio>
+	<Vine_FlushCachesAfterXPawnsGenerated>Flush caches after {X} pawns generated</Vine_FlushCachesAfterXPawnsGenerated>
+	<Vine_FlushCachesToolTip>Flushes caches after a user-defined amount of pawns are generated. Only turn on if you have memory issues, as this setting may slightly increase pawn generation time.</Vine_FlushCachesToolTip>
+	<Vine_DebugMode>Debug Mode:</Vine_DebugMode>
+	<Vine_HarmonyDebugger>Harmony debugger enabled:</Vine_HarmonyDebugger>
 </LanguageData>
