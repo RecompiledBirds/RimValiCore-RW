@@ -71,14 +71,14 @@ class RenderPatch
                 return;
             }
 
-            int seed = (Find.TickManager.TicksGame + ___pawn.thingIDNumber * 600) / 20000 + ___pawn.thingIDNumber * 600;
+            int seed = (Find.TickManager.TicksGame + ___pawn.thingIDNumber) / 20000 + ___pawn.thingIDNumber;
             if (!renderDatas.TryGetValue(___pawn, out RenderData renderData))
             {
                 renderDatas[___pawn] = new RenderData();
                 renderData = renderDatas[___pawn];
                 // Angle
-                if(resizedBedCompProperties?.isPile??false)
-                    renderData.angle = Rand.RangeSeeded(resizedBedCompProperties.rotationRange.min, resizedBedCompProperties.rotationRange.max, seed + 200);
+                if (resizedBedCompProperties?.isPile ?? false)
+                    resizedBedCompProperties.rotationRange.RandomInRangeSeeded(seed + 200);
             }
 
 
