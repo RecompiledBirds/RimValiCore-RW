@@ -1,6 +1,7 @@
 ﻿using RimWorld.QuestGen;
 using RVCRestructured.Defs;
 using RVCRestructured.Graphics;
+using System;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 using Verse;
@@ -40,38 +41,40 @@ public class RNodeWorker : PawnRenderNodeWorker
     {
         return ((RenderableDefNode)node).RProps.def.CanDisplay(parms.pawn, parms.Portrait);
     }
-    public override Vector3 ScaleFor(PawnRenderNode node, PawnDrawParms parms)
-    {
-        if (node is not RenderableDefNode rNode) return base.ScaleFor(node, parms);
-        Pawn pawn = parms.pawn;
-        if (ModsConfig.BiotechActive)
-        {
-            LifeStageDef lifeStageDef = pawn.ageTracker.CurLifeStage;
-            if (lifeStageDef.bodySizeFactor is float scale &&rNode.RProps.lifeStageOverrides.TryGetValue(lifeStageDef, out float extraScale))
-            {
-                return base.ScaleFor(node, parms) * scale * extraScale;
-            }
-        }
-        return base.ScaleFor(node, parms);
-    }
+    //public override Vector3 ScaleFor(PawnRenderNode node, PawnDrawParms parms)
+    //{
+    //    if (node is not RenderableDefNode rNode) return base.ScaleFor(node, parms);
+    //    Pawn pawn = parms.pawn;
+    //    if (ModsConfig.BiotechActive)
+    //    {
+    //        LifeStageDef lifeStageDef = pawn.ageTracker.CurLifeStage;
+    //        if (lifeStageDef.bodySizeFactor is float scale &&rNode.RProps.lifeStageOverrides.TryGetValue(lifeStageDef, out float extraScale))
+    //        {
+    //            return base.ScaleFor(node, parms) * scale * extraScale;
+    //        }
+    //    }
+    //    return base.ScaleFor(node, parms);
+    //}
 
-    
-    public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
-    {
-        if (node is not RenderableDefNode rNode) return base.OffsetFor(node, parms, out pivot);
-        Pawn pawn = parms.pawn;
-        if (ModsConfig.BiotechActive)
-        {
-            LifeStageDef lifeStageDef = pawn.ageTracker.CurLifeStage;
-            if (lifeStageDef.bodySizeFactor is float scale && rNode.RProps.lifeStageOverrides.TryGetValue(lifeStageDef, out float extraScale))
-            {
-                return base.OffsetFor(node, parms, out pivot) * scale * extraScale;
-            }
-        }
-        return base.OffsetFor(node, parms, out pivot);
-    }
+    //public override Vector3 OffsetFor(PawnRenderNode node, PawnDrawParms parms, out Vector3 pivot)
+    //{
+    //    Vector3 baseVector = base.OffsetFor(node, parms, out pivot);
 
+    //    if (node is not RenderableDefNode rNode)
+    //    {
+    //        return baseVector;
+    //    }
 
+    //    Pawn pawn = parms.pawn;
+    //    if (!pawn.DevelopmentalStage.Child())
+    //    {
+    //        return baseVector;
+    //    }
+
+    //    rNode.RProps.
+
+    //    return baseVector;
+    //}
 }
 public class RenderableDefNode(Pawn pawn, PawnRenderNodeProperties props, PawnRenderTree tree) : PawnRenderNode(pawn, props, tree)
 {
