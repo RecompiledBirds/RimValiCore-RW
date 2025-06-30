@@ -11,7 +11,7 @@ public static class NamePatch
 
     public static bool Prefix(ref Name __result, Pawn pawn, NameStyle style = NameStyle.Full, string? forcedLastName = null)
     {
-        if (pawn.TryGetComp<RVRComp>() == null) return true;
+        if (!(pawn.TryGetComp(out VineSpeciesConfigComp comp)&&comp.Props.overrideNamerPatch)) return true;
         __result = GenName(out NameTriple name, pawn);
 
 

@@ -105,7 +105,7 @@ public static class PawnGenerationPatches
     public static void RequestChangePrefix(ref PawnGenerationRequest request)
     {
         //check if caches need clearing
-        if(VineSettings.flushGenerationCaches && pawnsGenerated++ == VineSettings.flushCachesAfterHowManyPawnsGenerated)
+        if (VineSettings.flushGenerationCaches && pawnsGenerated++ == VineSettings.flushCachesAfterHowManyPawnsGenerated)
         {
             cachedPawnKinds = [];
             solvedBestPawnKinds = [];
@@ -126,23 +126,23 @@ public static class PawnGenerationPatches
 
         float ratio = VineSettings.overrideBlendDefaultRatio ? VineSettings.blendRatio : FactionData.defaultRatio;
         if (!VineSettings.factionBlender && !Rand.Chance(ratio)) return;
-        if (request.IsCreepJoiner||(factionDef?.isPlayer ?? false)) return;
-        if(
+        if (request.IsCreepJoiner || (factionDef?.isPlayer ?? false)) return;
+        if (
             //check faction has pawn group makers
-            factionDef?.pawnGroupMakers!=null
+            factionDef?.pawnGroupMakers != null
             // check faction is not vanilla
             && !factionDef.IsVanilla()
             // check pawnkind is vanila
-            &&request.KindDef.IsVanilla())
+            && request.KindDef.IsVanilla())
         {
-            request.KindDef=FindBestReplacementCached(factionDef, request.KindDef);
+            request.KindDef = FindBestReplacementCached(factionDef, request.KindDef);
             return;
         }
-        
-        if (factionDef==null && !request.KindDef.defName.Contains("refugee",StringComparison.OrdinalIgnoreCase)) return;
+
+        if (factionDef == null && !request.KindDef.defName.Contains("refugee", StringComparison.OrdinalIgnoreCase)) return;
         int retries = 30;
         PawnKindDef? def = null;
-        while (retries-->0)
+        while (retries-- > 0)
         {
             factionDef = DefDatabase<FactionDef>.AllDefsListForReading.RandomElement();
             if (factionDef.IsVanilla()) continue;
@@ -152,6 +152,12 @@ public static class PawnGenerationPatches
         }
         if (def == null) return;
         request.KindDef = def;
+        if (!ModsConfig.BiotechActive || request.ForcedXenotype != null || !def.race.HasComp<RestrictionComp>()) return;
+        RVRRestrictionComp comp = def.race.GetCompProperties<RVRRestrictionComp>();
+        Dictionary<XenotypeDef, float> xenoTypes = (Dictionary<XenotypeDef, float>)PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => !x.Key.IsRestricted() || (comp.IsAlwaysAllowed(x.Key) || comp[x.Key].CanUse));
+        if (!xenoTypes.TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> keyvp)) return;
+        request.ForcedXenotype = keyvp.Key;
+
     }
 
 }
