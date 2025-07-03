@@ -104,6 +104,9 @@ public static class PawnGenerationPatches
     private static int pawnsGenerated = 0;
     public static void RequestChangePrefix(ref PawnGenerationRequest request)
     {
+        FactionDef? factionDef = request.Faction?.def ?? Faction.OfPlayerSilentFail?.def;
+        if (ModsConfig.RoyaltyActive && factionDef == FactionDefOf.Empire) return;
+        if (ModsConfig.AnomalyActive && factionDef == FactionDefOf.Entities) return;
         //check if caches need clearing
         if (VineSettings.flushGenerationCaches && pawnsGenerated++ == VineSettings.flushCachesAfterHowManyPawnsGenerated)
         {
@@ -113,17 +116,15 @@ public static class PawnGenerationPatches
 
         if (!request.KindDef.race.race.Humanlike) return;
 
-        FactionDef? factionDef = request.Faction?.def ?? Faction.OfPlayerSilentFail?.def;
 
         //try get vine pawnkind swap defs
-        if (!TryGetSwapOptionsFor(request.KindDef, factionDef, out List<SwapOption>? options) && !options.NullOrEmpty())
-        {
-            SwapOption option = options.RandomElement();
-            request.KindDef = option.pawnKindDef;
-            if (ModsConfig.BiotechActive && option.xenotypeDef != null) request.ForcedXenotype = option.xenotypeDef;
-            return;
-        }
-
+        //if (!TryGetSwapOptionsFor(request.KindDef, factionDef, out List<SwapOption>? options) && !options.NullOrEmpty())
+        //{
+        //    SwapOption option = options.RandomElement();
+        //    request.KindDef = option.pawnKindDef;
+        //    if (ModsConfig.BiotechActive && option.xenotypeDef != null) request.ForcedXenotype = option.xenotypeDef;
+        //    return;
+        //}
         float ratio = VineSettings.overrideBlendDefaultRatio ? VineSettings.blendRatio : FactionData.defaultRatio;
         if (!VineSettings.factionBlender && !Rand.Chance(ratio)) return;
         if (request.IsCreepJoiner || (factionDef?.isPlayer ?? false)) return;
@@ -154,7 +155,7 @@ public static class PawnGenerationPatches
         request.KindDef = def;
         if (!ModsConfig.BiotechActive || request.ForcedXenotype != null || !def.race.HasComp<RestrictionComp>()) return;
         RVRRestrictionComp comp = def.race.GetCompProperties<RVRRestrictionComp>();
-        Dictionary<XenotypeDef, float> xenoTypes = (Dictionary<XenotypeDef, float>)PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => !x.Key.IsRestricted() || (comp.IsAlwaysAllowed(x.Key) || comp[x.Key].CanUse));
+        IEnumerable<KeyValuePair<XenotypeDef, float>> xenoTypes = PawnGenerator.XenotypesAvailableFor(request.KindDef,factionDef,request.Faction);
         if (!xenoTypes.TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> keyvp)) return;
         request.ForcedXenotype = keyvp.Key;
 

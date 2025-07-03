@@ -72,7 +72,7 @@ public static class RVRHarmony
 
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), "TryGenerateNewPawnInternal"), postfix: new HarmonyMethod(typeof(PawnGenerationPatches), nameof(PawnGenerationPatches.GraphicsGenPostfix)));
             harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GeneratePawn), [typeof(PawnGenerationRequest)]), prefix: new HarmonyMethod(typeof(PawnGenerationPatches), nameof(PawnGenerationPatches.RequestChangePrefix)));
-            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.GetXenotypeForGeneratedPawn)), postfix: new HarmonyMethod(typeof(XenoTypeGenPatch), nameof(XenoTypeGenPatch.Postfix)));
+            harmony.Patch(AccessTools.Method(typeof(PawnGenerator), nameof(PawnGenerator.XenotypesAvailableFor)), postfix: new HarmonyMethod(typeof(XenoTypeGenPatch), nameof(XenoTypeGenPatch.XenotypesAvailableForPostfix)));
 
             //RenderTree
             harmony.Patch(AccessTools.Method(typeof(PawnRenderNode_Fur), nameof(PawnRenderNode_Fur.GraphicFor)), prefix: new HarmonyMethod(typeof(RenderNodeFurPatch), nameof(RenderNodeFurPatch.Prefix)));

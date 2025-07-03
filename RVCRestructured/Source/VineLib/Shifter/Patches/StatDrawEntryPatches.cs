@@ -27,7 +27,6 @@ public static class StatDrawEntryPatches
             yield break;
 
         }
-        VineLog.Log($"{comp.IsParentDef()}");
         if (comp.IsParentDef())
         {
             foreach (StatDrawEntry entry in __result)

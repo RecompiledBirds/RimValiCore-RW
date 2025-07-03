@@ -173,18 +173,6 @@ public class RVRComp : ThingComp
 
     public void GenColors(RVRGraphicsComp comp, Pawn pawn)
     {
-        if (ModsConfig.BiotechActive)
-        {
-            VineColorGene? gene = (VineColorGene?)pawn.genes.GenesListForReading.FirstOrFallback(x => x is VineColorGene);
-
-            //if (gene != null && !sets.ContainsKey(gene.channelKey))
-            //{
-            //    sets.Add(gene.channelKey, new TriColorSet(gene.color1, gene.color2, gene.color3, true));
-            //    return;
-
-            //}
-            
-        }
         foreach (RaceColors colors in comp.colorGenerators)
         {
             if (sets.ContainsKey(colors.name))

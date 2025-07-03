@@ -58,7 +58,6 @@ class RenderPatch
                 return;
             }
             Building_Bed bed = ___pawn.CurrentBed();
-            VineLog.Log(Patcher.Is2DBed(bed, out BedComp? _));
             if (bed==null || !Patcher.Is2DBed(bed, out BedComp? resizedBedCompProperties))
             {
                 renderDatas.Remove(___pawn);
@@ -73,7 +72,6 @@ class RenderPatch
                 if (resizedBedCompProperties?.Props.isPile ?? false)
                     renderData.angle = resizedBedCompProperties.Props.rotationRange.RandomInRangeSeeded(seed + 200);
                 renderDatas[___pawn] = renderData;
-                VineLog.Log(renderData.angle);
             }
 
 
@@ -179,7 +177,6 @@ class RenderPatch
         if (renderDatas.TryGetValue(___pawn, out RenderData renderData))
         {
             __result += renderData.angle;
-            VineLog.Log(renderData.angle);
         }
     }
 

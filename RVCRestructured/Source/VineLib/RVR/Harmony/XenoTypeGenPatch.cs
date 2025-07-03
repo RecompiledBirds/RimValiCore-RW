@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RVCRestructured.RVR;
+using System.Security.Cryptography;
 using Verse;
 
 namespace RVCRestructured.RVR.Harmony;
@@ -35,5 +36,17 @@ public static class XenoTypeGenPatch
 
         if (!PawnGenerator.XenotypesAvailableFor(request.KindDef).Where(x => (comp.restrictions[x.Key].CanUse) || !x.Key.IsRestricted()).TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> kvp))
             __result = kvp.Key;
+    }
+
+    public static void XenotypesAvailableForPostfix(PawnKindDef kind, FactionDef factionDef, Faction faction, ref Dictionary<XenotypeDef, float> __result)
+    {
+        List<XenotypeDef> keysCopied = [.. __result.Keys];
+        if (!kind.race.HasComp<RestrictionComp>()) return;
+        RVRRestrictionComp comp = kind.race.GetCompProperties<RVRRestrictionComp>();
+        foreach (XenotypeDef xenotypeDef in keysCopied)
+        {
+            if (!xenotypeDef.IsRestricted() || (comp.IsAlwaysAllowed(xenotypeDef) || comp[xenotypeDef].CanUse)) continue;
+            __result.Remove(xenotypeDef);
+        }
     }
 }
