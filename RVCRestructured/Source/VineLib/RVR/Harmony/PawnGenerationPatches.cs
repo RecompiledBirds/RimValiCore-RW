@@ -107,6 +107,8 @@ public static class PawnGenerationPatches
         FactionDef? factionDef = request.Faction?.def ?? Faction.OfPlayerSilentFail?.def;
         if (ModsConfig.RoyaltyActive && factionDef == FactionDefOf.Empire) return;
         if (ModsConfig.AnomalyActive && factionDef == FactionDefOf.Entities) return;
+        
+        if (request.IsCreepJoiner) return;
         //check if caches need clearing
         if (VineSettings.flushGenerationCaches && pawnsGenerated++ == VineSettings.flushCachesAfterHowManyPawnsGenerated)
         {
@@ -118,16 +120,17 @@ public static class PawnGenerationPatches
 
 
         //try get vine pawnkind swap defs
-        //if (!TryGetSwapOptionsFor(request.KindDef, factionDef, out List<SwapOption>? options) && !options.NullOrEmpty())
-        //{
-        //    SwapOption option = options.RandomElement();
-        //    request.KindDef = option.pawnKindDef;
-        //    if (ModsConfig.BiotechActive && option.xenotypeDef != null) request.ForcedXenotype = option.xenotypeDef;
-        //    return;
-        //}
+        if (!TryGetSwapOptionsFor(request.KindDef, factionDef, out List<SwapOption>? options) && !options.NullOrEmpty())
+        {
+            SwapOption option = options.RandomElement();
+            request.KindDef = option.pawnKindDef;
+            if (ModsConfig.BiotechActive && option.xenotypeDef != null) request.ForcedXenotype = option.xenotypeDef;
+            return;
+        }
+        if (factionDef?.isPlayer ?? false) return;
         float ratio = VineSettings.overrideBlendDefaultRatio ? VineSettings.blendRatio : FactionData.defaultRatio;
-        if (!VineSettings.factionBlender && !Rand.Chance(ratio)) return;
-        if (request.IsCreepJoiner || (factionDef?.isPlayer ?? false)) return;
+        if (!VineSettings.factionBlender || !Rand.Chance(ratio)) return;
+       
         if (
             //check faction has pawn group makers
             factionDef?.pawnGroupMakers != null
