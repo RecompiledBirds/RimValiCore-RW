@@ -94,7 +94,7 @@ public static class PawnGenerationPatches
             optionsCopySafely.AddRange(maker.guards);
             foreach (PawnGenOption option in optionsCopySafely)
             {
-                if (!result.Contains(option.kind)&&option.kind.RaceProps.Humanlike)
+                if (!result.Contains(option.kind)&&option.kind.RaceProps?.Humanlike??false)
                     result.Add(option.kind);
             }
         }
