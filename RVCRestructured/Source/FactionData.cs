@@ -14,7 +14,7 @@ public static class FactionData
         float count = DefDatabase<FactionDef>.AllDefsListForReading.Where(faction => !(faction.IsVanilla()
                                                                         || faction.pawnGroupMakers.NullOrEmpty())
                                                                         && !faction.isPlayer 
-                                                                        && faction.pawnGroupMakers.Any(x => x.options.Any(x => x.kind.RaceProps.Humanlike))).Count();
+                                                                        && faction.pawnGroupMakers.Any(x => x.options?.Any(x => x.kind?.RaceProps?.Humanlike??false)??false)).Count();
         defaultRatio = 3f / (count + 3f);
     }
 }

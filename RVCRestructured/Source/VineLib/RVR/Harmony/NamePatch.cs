@@ -17,7 +17,7 @@ public static class NamePatch
 
         if (Rand.Chance(0.1f) && SteamUtility.SteamPersonaName != "???")
         {
-            __result = new NameTriple(Rand.Chance(0.05f)? name.First : SteamUtility.SteamPersonaName, name.Nick ?? name.First, name.Last);
+            __result = new NameTriple(Rand.Chance(0.05f)? SteamUtility.SteamPersonaName : name.First, name.Nick ?? name.First, name.Last);
         }
         return false;
     }

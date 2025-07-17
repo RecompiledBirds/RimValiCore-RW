@@ -1,5 +1,6 @@
 ﻿using RimWorld;
 using RVCRestructured.RVR;
+using System.Linq;
 using System.Security.Cryptography;
 using Verse;
 
@@ -43,8 +44,14 @@ public static class XenoTypeGenPatch
         List<XenotypeDef> keysCopied = [.. __result.Keys];
         if (!kind.race.HasComp<RestrictionComp>()) return;
         RVRRestrictionComp comp = kind.race.GetCompProperties<RVRRestrictionComp>();
+        XenotypeDef[] onlyAllowedXenoTypes = [.. comp.restrictions[RestrictionType.XenotypeDef].Where(info => info.IsRequired).Select(info => (XenotypeDef)info.Def)];
         foreach (XenotypeDef xenotypeDef in keysCopied)
         {
+            if (onlyAllowedXenoTypes?.Length > 0 && !onlyAllowedXenoTypes.Contains(xenotypeDef))
+            {
+                __result.Remove(xenotypeDef);
+                continue;
+            }
             if (!xenotypeDef.IsRestricted() || (comp.IsAlwaysAllowed(xenotypeDef) || comp[xenotypeDef].CanUse)) continue;
             __result.Remove(xenotypeDef);
         }

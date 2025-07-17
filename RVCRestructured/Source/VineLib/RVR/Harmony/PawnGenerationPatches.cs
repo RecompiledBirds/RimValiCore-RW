@@ -26,7 +26,7 @@ public static class PawnGenerationPatches
                 foreach (PawnKindSwapOptions swapOptions in swapDef.swapOptions)
                 {
                     if (swapOptions.pawnKindDef != def || !Rand.Chance(swapOptions.chanceOfSwap)) continue;
-                    options = [];
+                    options ??= [];
                     options.AddRange(swapOptions.swapWithOptions);
                     swapOptionsFor[def] = options;
                 }
@@ -101,13 +101,22 @@ public static class PawnGenerationPatches
         cachedPawnKinds[faction] = result;
         return result;
     }
+    public static bool Validator(Pawn pawn)
+    {
+        if (pawn.apparel==null) return true;
+        foreach(Thing thing in pawn.apparel.WornApparel)
+        {
+            if (!pawn.CanUse(thing.def)) return false;
+        }
+        return true;
+    }
     private static int pawnsGenerated = 0;
     public static void RequestChangePrefix(ref PawnGenerationRequest request)
     {
         FactionDef? factionDef = request.Faction?.def ?? Faction.OfPlayerSilentFail?.def;
+        request.ValidatorPostGear += Validator;
         if (ModsConfig.RoyaltyActive && factionDef == FactionDefOf.Empire) return;
         if (ModsConfig.AnomalyActive && factionDef == FactionDefOf.Entities) return;
-        
         if (request.IsCreepJoiner) return;
         //check if caches need clearing
         if (VineSettings.flushGenerationCaches && pawnsGenerated++ == VineSettings.flushCachesAfterHowManyPawnsGenerated)
@@ -120,17 +129,25 @@ public static class PawnGenerationPatches
 
 
         //try get vine pawnkind swap defs
-        if (!TryGetSwapOptionsFor(request.KindDef, factionDef, out List<SwapOption>? options) && !options.NullOrEmpty())
+        if (TryGetSwapOptionsFor(request.KindDef, factionDef, out List<SwapOption>? options) && !options.NullOrEmpty())
         {
             SwapOption option = options.RandomElement();
             request.KindDef = option.pawnKindDef;
-            if (ModsConfig.BiotechActive && option.xenotypeDef != null) request.ForcedXenotype = option.xenotypeDef;
+            if (ModsConfig.BiotechActive)
+            {
+                if (option.xenotypeDef == null)
+                {
+                    request.ForcedXenotype = option.xenotypeDef;
+                    return;
+                }
+                GetRandomXenoTypeIfNeeded(ref request, factionDef);
+            }
             return;
         }
         if (factionDef?.isPlayer ?? false) return;
         float ratio = VineSettings.overrideBlendDefaultRatio ? VineSettings.blendRatio : FactionData.defaultRatio;
         if (!VineSettings.factionBlender || !Rand.Chance(ratio)) return;
-       
+
         if (
             //check faction has pawn group makers
             factionDef?.pawnGroupMakers != null
@@ -143,6 +160,7 @@ public static class PawnGenerationPatches
             return;
         }
 
+        if (ModsConfig.BiotechActive && request.KindDef == PawnKindDefOf.Mechanitor_Basic) return;
         if (factionDef == null && !request.KindDef.defName.Contains("refugee", StringComparison.OrdinalIgnoreCase)) return;
         int retries = 30;
         PawnKindDef? def = null;
@@ -158,10 +176,13 @@ public static class PawnGenerationPatches
         request.KindDef = def;
         if (!ModsConfig.BiotechActive || request.ForcedXenotype != null || !def.race.HasComp<RestrictionComp>()) return;
         RVRRestrictionComp comp = def.race.GetCompProperties<RVRRestrictionComp>();
-        IEnumerable<KeyValuePair<XenotypeDef, float>> xenoTypes = PawnGenerator.XenotypesAvailableFor(request.KindDef,factionDef,request.Faction);
-        if (!xenoTypes.TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> keyvp)) return;
-        request.ForcedXenotype = keyvp.Key;
-
+        GetRandomXenoTypeIfNeeded(ref request, factionDef);
     }
 
+    private static void GetRandomXenoTypeIfNeeded(ref PawnGenerationRequest request, FactionDef? factionDef)
+    {
+        IEnumerable<KeyValuePair<XenotypeDef, float>> xenoTypes = PawnGenerator.XenotypesAvailableFor(request.KindDef, factionDef, request.Faction);
+        if (!xenoTypes.TryRandomElementByWeight(x => x.Value, out KeyValuePair<XenotypeDef, float> keyvp)) return;
+        request.ForcedXenotype = keyvp.Key;
+    }
 }

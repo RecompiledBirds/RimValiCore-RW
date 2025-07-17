@@ -12,7 +12,7 @@ public class RVRGraphicsComp : CompProperties
     public readonly List<RenderableDef> renderableDefs = [];
     public readonly string skinColorSet = string.Empty;
     public Dictionary<string, RaceColors> cachedColors = [];
-    public readonly bool useBodyTypedApparel = true;
+    public readonly bool useBodyTypedHeadApparel = true;
 
 
     public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
