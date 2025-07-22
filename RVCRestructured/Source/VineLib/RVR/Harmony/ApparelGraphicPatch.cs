@@ -56,7 +56,7 @@ public static class ApparelGraphicPatch
             copyBodyType = shapeshifterComp.MimickedBodyType;
         }
         string defaultPath = $"{apparel.WornGraphicPath}_{copyBodyType.defName}";
-        string path = FindPath(path, defaultPath,copyBodyType, apparel, comp);
+        string path = FindPath(defaultPath, copyBodyType, apparel, comp);
         Shader shader = ShaderDatabase.CutoutComplex;
         resultGraphic = GraphicDatabase.Get<Graphic_Multi>(path, shader, apparel.def.graphicData.drawSize, apparel.DrawColor);
         rec = new ApparelGraphicRecord(resultGraphic, apparel);
