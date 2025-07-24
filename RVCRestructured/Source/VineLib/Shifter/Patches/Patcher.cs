@@ -16,7 +16,7 @@ public static class Patcher
     private static void ShifterPatches()
     {
         Harmony harmony = new("Vine.Shifter");
-        
+
         //harmony.Patch(AccessTools.Method(typeof(StatWorker), nameof(StatWorker.GetValueUnfinalized)), postfix: new HarmonyMethod(typeof(StatValuePatch), nameof(StatValuePatch.StatPostfix)));
         //harmony.Patch(AccessTools.Method(typeof(RaceProperties), nameof(RaceProperties.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.RacePostfix)));
         //harmony.Patch(AccessTools.Method(typeof(Def), nameof(Def.SpecialDisplayStats)), postfix: new HarmonyMethod(typeof(StatDrawEntryPatches), nameof(StatDrawEntryPatches.SourcePostFix)));
@@ -25,7 +25,10 @@ public static class Patcher
 
         //harmony.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "get_CurKindLifeStage"), prefix: new HarmonyMethod(typeof(LifeStagesPatch), nameof(LifeStagesPatch.PrefixCurKindLifeStage)));
         ////INCOMPATIBLE WITH CHARACTER EDITOR.
-        //harmony.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "get_CurLifeStageIndex"), postfix: new HarmonyMethod(typeof(LifeStagesPatch), nameof(LifeStagesPatch.PostfixLifeStageIndex)));
+        //if (!ModLister.HasActiveModWithName("Character Editor")) {
+        //    VineLog.Log("Character editor was not loaded, doing CurLifeStageIndex Patch");
+        //    harmony.Patch(AccessTools.Method(typeof(Pawn_AgeTracker), "get_CurLifeStageIndex"), postfix: new HarmonyMethod(typeof(LifeStagesPatch), nameof(LifeStagesPatch.PostfixLifeStageIndex)));
+        //}
         VineLog.Log("Ran shifter patches.");
     }
 

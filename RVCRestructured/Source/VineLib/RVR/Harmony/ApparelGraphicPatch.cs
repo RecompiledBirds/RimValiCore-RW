@@ -32,11 +32,7 @@ public static class ApparelGraphicPatch
         {
             return $"{newPath}_{bodyTypeDef}";
         }
-        if (!defaultUseApparelIfNoTexture)
-        {
-            return $"{apparel.WornGraphicPath}_{bodyTypeDef}";
-        }
-        return emptyPath;
+        return path;
     }
 
     public static bool Prefix(ref Apparel apparel, ref BodyTypeDef bodyType, ref ApparelGraphicRecord rec, ref bool __result)
@@ -78,7 +74,7 @@ public static class ApparelGraphicPatch
         if (shouldTryToFindNewPath)
         {
             string defaultPath = $"{apparel.WornGraphicPath}_{copyBodyType.defName}";
-            finalPath = FindPath(finalPath, defaultPath, copyBodyType, apparel, comp);
+            finalPath = FindPath(defaultPath, copyBodyType, apparel, comp);
         }
         Shader shader = ShaderDatabase.CutoutComplex;
         resultGraphic = GraphicDatabase.Get<Graphic_Multi>(finalPath, shader, apparel.def.graphicData.drawSize, apparel.DrawColor);
