@@ -6,9 +6,9 @@ namespace RVCRestructured.RVR.Harmony;
 
 public static class ApparelGraphicPatch
 {
-    public static string FindPath(string emptyPath, string defaultPath,BodyTypeDef bodyTypeDef, Apparel apparel, GraphicsComp comp)
+    public static string FindPath(string defaultPath,BodyTypeDef bodyTypeDef, Apparel apparel, GraphicsComp comp)
     {
-       
+        string path ="RVC/Empty";
         if (ContentFinder<Texture2D>.Get($"{defaultPath}_north", false))
         {
             return $"{defaultPath}";
@@ -17,8 +17,8 @@ public static class ApparelGraphicPatch
         {
             return apparel.WornGraphicPath;
         }
-        bool defaultUseApparelIfNoTexture = (comp?.Props.useEmptyApparelIfNoDefault ?? false);
-        if (ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{bodyTypeDef}_north", false))
+        bool dontUseEmpty=comp == null || !comp.Props.useEmptyApparelIfNoDefault;
+        if (dontUseEmpty && ContentFinder<Texture2D>.Get($"{apparel.WornGraphicPath}_{bodyTypeDef}_north", false))
         {
             return $"{apparel.WornGraphicPath}_{bodyTypeDef}";
         }
@@ -28,7 +28,7 @@ public static class ApparelGraphicPatch
         {
             return $"{newPath}";
         }
-        else if (ContentFinder<Texture2D>.Get($"{newPath}_{bodyTypeDef}_north", false))
+        else if (dontUseEmpty && ContentFinder<Texture2D>.Get($"{newPath}_{bodyTypeDef}_north", false))
         {
             return $"{newPath}_{bodyTypeDef}";
         }
