@@ -11,11 +11,27 @@ public static class TriColorShader
     {
         //Get the path to the shader bundle
         string path = Path.Combine(RimValiCore.ModDir, "RimValiAssetBundles", "shader");
+        if (path == null)
+        {
+            VineLog.Error("Failure to resolve path for tricolor shader asset bundle! Defaulting it to CutoutComplex.");
+            tricolorshader = ShaderDatabase.CutoutComplex;
+            return;
+        }
         //load bundle
-        FileStream stream = new(path, FileMode.Open, FileAccess.Read);
-        AssetBundle assetBundle = AssetBundle.LoadFromStream(stream);
-        stream.Close();
+        AssetBundle assetBundle = AssetBundle.LoadFromFile(path);
+        if (assetBundle == null)
+        {
+            VineLog.Error("Failure to load assetbundle for tricolor shader! Defaulting it to CutoutComplex.");
+            tricolorshader = ShaderDatabase.CutoutComplex;
+            return;
+        }
         //load shader
         tricolorshader = (Shader)assetBundle.LoadAllAssets()[0];
+        if (tricolorshader == null)
+        {
+            VineLog.Error("Failure to load tricolor shader! Defaulting it to CutoutComplex.");
+            tricolorshader = ShaderDatabase.CutoutComplex;
+            return;
+        }
     }
 }

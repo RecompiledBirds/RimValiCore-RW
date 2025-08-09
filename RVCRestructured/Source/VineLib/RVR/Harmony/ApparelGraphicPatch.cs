@@ -54,7 +54,6 @@ public static class ApparelGraphicPatch
         BodyTypeDef copyBodyType = bodyType;
         GraphicsComp comp = pawn.TryGetComp<GraphicsComp>();
         ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-        bool shouldTryToFindNewPath = true;
         if (comp == null)
         {
             return true;
@@ -65,16 +64,14 @@ public static class ApparelGraphicPatch
             {
                 return true;
             }
-            shouldTryToFindNewPath = false;
         }
         if (shapeshifterComp != null)
         {
             copyBodyType = shapeshifterComp.MimickedBodyType;
         }
         string defaultPath = $"{apparel.WornGraphicPath}_{copyBodyType.defName}";
-        string path = FindPath(defaultPath, copyBodyType, apparel, comp);
         Shader shader = ShaderDatabase.CutoutComplex;
-        resultGraphic = GraphicDatabase.Get<Graphic_Multi>(finalPath, shader, apparel.def.graphicData.drawSize, apparel.DrawColor);
+        resultGraphic = GraphicDatabase.Get<Graphic_Multi>(FindPath(defaultPath, copyBodyType, apparel, comp), shader, apparel.def.graphicData.drawSize, apparel.DrawColor);
         rec = new ApparelGraphicRecord(resultGraphic, apparel);
         __result = true;
         return false;
