@@ -22,7 +22,7 @@ public class RenderableDef : Def
 
     private readonly bool showsInBed = true;
 
-
+    private readonly bool hideWhenDessicated = false;
 
     public List<BaseTex> Textures => textures;
     public RenderableDef? LinkTexWith => linkTexWith;
@@ -45,7 +45,7 @@ public class RenderableDef : Def
     {
         IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
         bool shownByBody = BodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == BodyPart.ToLower() || x.Label.ToLower() == BodyPart.ToLower());
-        bool hiddenByDessication = pawn.Dead && pawn.IsDessicated() && pawn.TryGetComp(out RVRComp comp) && textures[comp.GetTexIndex(this)].HiddenWhenDessicated;
+        bool hiddenByDessication = pawn.Dead && pawn.IsDessicated() && hideWhenDessicated;
         return !hiddenByDessication && (portrait || NotInBedOrShouldShowBody(pawn)) && shownByBody;
     }
 
@@ -133,11 +133,14 @@ public class BaseTex
     private readonly string? femaleTexPath = null;
     private readonly string? dessicatedPath = null;
 
-    private readonly bool hideWhenDessicated = false; 
     public List<string> alternateMaskPaths = [];
     public List<string> alternateFemaleMaskPaths = [];
     public List<string> alternateMaleMaskPaths = [];
-    public bool HiddenWhenDessicated => hideWhenDessicated;
+  
+    
+    
+    
+    
     public bool HasDessicatedPath => dessicatedPath != null;
     public string TexPath => texPath ?? throw new NullReferenceException();
     public string FemaleTexPath => femaleTexPath ?? throw new NullReferenceException();
