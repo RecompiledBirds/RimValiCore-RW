@@ -32,9 +32,17 @@ public class RVRComp : ThingComp
 
     public string GetTexPath(RenderableDef def)
     {
+        int texIndex = renderableIndexes[def.defName];
+        if(parent.IsDessicated() && def.Textures[texIndex].HasDessicatedPath)
+        {
+            return def.Textures[texIndex].DessicatedPath;
+        }
         return def.Textures[renderableIndexes[def.defName]].TexPath;
     }
-
+    public int GetTexIndex(RenderableDef def)
+    {
+        return renderableIndexes[def.defName];
+    }
     public void SendRenderableDefToNextTexture(RenderableDef def)
     {
         if (!renderableIndexes.TryGetValue(def.defName, out int index)) return;

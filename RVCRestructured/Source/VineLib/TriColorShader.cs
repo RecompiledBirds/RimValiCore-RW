@@ -9,6 +9,11 @@ public static class TriColorShader
 
     static TriColorShader()
     {
+        if (tricolorshader != null)
+        {
+            VineLog.Warn("Tricolor shader already loaded, aborting.. (Why are you loading this twice?)");
+            return;
+        }
         //Get the path to the shader bundle
         string path = Path.Combine(RimValiCore.ModDir, "RimValiAssetBundles", "shader");
         if (path == null)

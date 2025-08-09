@@ -45,7 +45,8 @@ public class RenderableDef : Def
     {
         IEnumerable<BodyPartRecord> bodyParts = pawn.health.hediffSet.GetNotMissingParts();
         bool shownByBody = BodyPart == null || bodyParts.Any(x => x.def.defName.ToLower() == BodyPart.ToLower() || x.Label.ToLower() == BodyPart.ToLower());
-        return (portrait || NotInBedOrShouldShowBody(pawn)) && shownByBody;
+        bool hiddenByDessication = pawn.Dead && pawn.IsDessicated() && pawn.TryGetComp(out RVRComp comp) && textures[comp.GetTexIndex(this)].HiddenWhenDessicated;
+        return !hiddenByDessication && (portrait || NotInBedOrShouldShowBody(pawn)) && shownByBody;
     }
 
     public bool NotInBedOrShouldShowBody(Pawn pawn) => !pawn.InBed() || pawn.CurrentBed().def.building.bed_showSleeperBody || showsInBed;
@@ -58,7 +59,7 @@ public class RenderableDef : Def
         RVRComp comp = pawn.TryGetComp<RVRComp>();
         return comp.GetTexPath(this);
     }
-
+  
     public string GetMaskPath(Pawn pawn)
     {
         RVRComp comp = pawn.TryGetComp<RVRComp>();
@@ -130,14 +131,17 @@ public class BaseTex
 {
     private readonly string? texPath = null;
     private readonly string? femaleTexPath = null;
+    private readonly string? dessicatedPath = null;
 
+    private readonly bool hideWhenDessicated = false; 
     public List<string> alternateMaskPaths = [];
     public List<string> alternateFemaleMaskPaths = [];
     public List<string> alternateMaleMaskPaths = [];
-
+    public bool HiddenWhenDessicated => hideWhenDessicated;
+    public bool HasDessicatedPath => dessicatedPath != null;
     public string TexPath => texPath ?? throw new NullReferenceException();
     public string FemaleTexPath => femaleTexPath ?? throw new NullReferenceException();
-
+    public string DessicatedPath => dessicatedPath ?? throw new NullReferenceException();
     public List<string> MaskPaths(Pawn pawn)
     {
         //TODO: Make sure that this never returns an empty list
