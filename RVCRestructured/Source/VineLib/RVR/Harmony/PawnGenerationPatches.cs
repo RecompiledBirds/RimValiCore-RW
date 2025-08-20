@@ -94,10 +94,12 @@ public static class PawnGenerationPatches
             optionsCopySafely.AddRange(maker.guards);
             foreach (PawnGenOption option in optionsCopySafely)
             {
-                // Option can appear as null fsr until we check it? What kind of quantum nonsense is this???
-                if (option != null)
-                    if (!result.Contains(option.kind) && (option.kind.RaceProps?.Humanlike ?? false))
-                        result.Add(option.kind);
+                // Option and its children can appear as null fsr until we check it? What kind of quantum nonsense is this???
+                if (option == null || option.kind == null)
+					continue;
+				
+                if (!result.Contains(option.kind) && (option.kind.RaceProps?.Humanlike ?? false))
+                    result.Add(option.kind);
             }
         }
         cachedPawnKinds[faction] = result;
