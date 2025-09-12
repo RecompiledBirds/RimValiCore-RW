@@ -106,6 +106,8 @@ class RenderPatch
             float maxx = MAX_OFFSET;
             float minz = -MAX_OFFSET;
             float maxz = MAX_OFFSET;
+            bool isXNarrow = bedSize.x == 1;
+            bool isZNarrow = bedSize.z == 1;
             bool isEdge1 = slot % bedSize.x == 0;
             bool isEdge2 = (slot + 1) % bedSize.x == 0;
             bool isEdge3 = slot / bedSize.x == 0;
@@ -114,35 +116,32 @@ class RenderPatch
 
             if (bed.Rotation == Rot4.North) // Bottom row is at top
             {
-                isLeft = isEdge1;
-                isRight = isEdge2;
-                isTop = isEdge4;
-                isBottom = isEdge3;
+                isLeft = isEdge1 || isXNarrow;
+                isRight = isEdge2 || isXNarrow;
+                isTop = isEdge4 || isZNarrow;
+                isBottom = isEdge3 || isZNarrow;
             }
             else if (bed.Rotation == Rot4.East) // Bottom row is on right
             {
-                isLeft = isEdge3;
-                isRight = isEdge4;
-                isTop = isEdge1;
-                isBottom = isEdge2;
+                isLeft = isEdge3 || isZNarrow;
+                isRight = isEdge4 || isZNarrow;
+                isTop = isEdge1 || isXNarrow;
+                isBottom = isEdge2 || isXNarrow;
             }
             else if (bed.Rotation == Rot4.South) // Bottom row on bottom
             {
-                isLeft = isEdge1;
-                isRight = isEdge2;
-                isTop = isEdge3;
-                isBottom = isEdge4;
+                isLeft = isEdge1 || isXNarrow;
+                isRight = isEdge2 || isXNarrow;
+                isTop = isEdge3 || isZNarrow;
+                isBottom = isEdge4 || isZNarrow;
             }
             else // West - Bottom row on left
             {
-                isLeft = isEdge4;
-                isRight = isEdge3;
-                isTop = isEdge1;
-                isBottom = isEdge2;
+                isLeft = isEdge4 || isZNarrow;
+                isRight = isEdge3 || isZNarrow;
+                isTop = isEdge1 || isXNarrow;
+                isBottom = isEdge2 || isXNarrow;
             }
-
-            if (bedSize.x == 1) isLeft = isRight = true; // 1xN bed
-            if (bedSize.z == 1) isTop = isBottom = true; // Nx1 bed
 
 #pragma warning disable CS0162 // Unreachable code detected
             // Left/Right
