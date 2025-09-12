@@ -98,59 +98,94 @@ class RenderPatch
             int slot = bed.GetCurOccupantSlotIndex(___pawn);
             IntVec2 bedSize = bed.def.size;
 
-            const float maxOffset = 0.35f,  // Random placement inward to bed
-                edgeShift = 0.5f,           // Shift the bottom row inward
-                maxEdgeOffset = 0.2f;       // Random placement relative to bed edges
-            float minx = -maxOffset,
-                maxx = maxOffset,
-                minz = -maxOffset,
-                maxz = maxOffset;
-            bool zIsOne = bedSize.z == 1;
-            bool otherFlag = slot / bedSize.x == bedSize.z - 1;
-            bool flag = zIsOne || otherFlag;
-            bool thirdFlag = (slot + 1) % bedSize.x == 0;
-            bool fourthFlag = slot % bedSize.x == 0;
-            bool fithFlag = slot / bedSize.x == 0;
-            float negativeEdgeMinusMaxEdge = -edgeShift - maxEdgeOffset;
-            float negativeEdgePlusMaxEdge = -edgeShift + maxEdgeOffset;
-            float edgeShiftMinusMaxEdge = edgeShift - maxEdgeOffset;
-            float edgePlusMaxEdge = edgeShift + maxEdgeOffset;
-            if (bed.Rotation == Rot4.North)
+            const float MAX_OFFSET = 0.35f; // Random shift
+            const float MAX_TOP_EDGE_OFFSET = -0.05f; // Max top edge outward shift
+            const float MAX_BOTTOM_EDGE_OFFSET = -0.05f; // Max bottom edge outward shift
+            const float MAX_SIDE_EDGE_OFFSET = -0.05f; // Max left/right edge outward shift
+            float minx = -MAX_OFFSET;
+            float maxx = MAX_OFFSET;
+            float minz = -MAX_OFFSET;
+            float maxz = MAX_OFFSET;
+            bool isXNarrow = bedSize.x == 1;
+            bool isZNarrow = bedSize.z == 1;
+            bool isEdge1 = slot % bedSize.x == 0;
+            bool isEdge2 = (slot + 1) % bedSize.x == 0;
+            bool isEdge3 = slot / bedSize.x == 0;
+            bool isEdge4 = slot / bedSize.x == bedSize.z - 1;
+            bool isLeft, isRight, isTop, isBottom;
+
+            if (bed.Rotation == Rot4.North) // Bottom row is at top
             {
-                minx = fourthFlag ? -maxEdgeOffset : -maxOffset;
-                maxx = thirdFlag ? maxEdgeOffset : maxOffset;
-
-                minz = flag ? negativeEdgeMinusMaxEdge : fithFlag ? -maxEdgeOffset : -maxOffset;
-                maxz = flag ? negativeEdgePlusMaxEdge : maxOffset; maxz = -edgeShift + maxEdgeOffset;
+                isLeft = isEdge1 || isXNarrow;
+                isRight = isEdge2 || isXNarrow;
+                isTop = isEdge4 || isZNarrow;
+                isBottom = isEdge3 || isZNarrow;
             }
-            else if (bed.Rotation == Rot4.East)
+            else if (bed.Rotation == Rot4.East) // Bottom row is on right
             {
-                minx = flag ? negativeEdgeMinusMaxEdge : fithFlag ? -maxEdgeOffset : minx;
-                maxx = flag ? negativeEdgePlusMaxEdge : maxx;
-
-                minx = otherFlag ? negativeEdgeMinusMaxEdge : minx;
-                maxx = otherFlag ? negativeEdgePlusMaxEdge : maxx;
-
-                minz = otherFlag ? -maxEdgeOffset : minz;
-                maxz = fourthFlag ? maxEdgeOffset : maxz;
+                isLeft = isEdge3 || isZNarrow;
+                isRight = isEdge4 || isZNarrow;
+                isTop = isEdge1 || isXNarrow;
+                isBottom = isEdge2 || isXNarrow;
             }
-            else if (bed.Rotation == Rot4.South)
+            else if (bed.Rotation == Rot4.South) // Bottom row on bottom
             {
-                minx = fourthFlag ? -maxEdgeOffset : minx;
-
-                maxx = otherFlag ? maxEdgeOffset : maxx;
-
-                minz = flag ? edgeShiftMinusMaxEdge : minz;
-                maxz = flag ? edgePlusMaxEdge : fithFlag ? maxEdgeOffset : maxz;
-
+                isLeft = isEdge1 || isXNarrow;
+                isRight = isEdge2 || isXNarrow;
+                isTop = isEdge3 || isZNarrow;
+                isBottom = isEdge4 || isZNarrow;
             }
-            else // West
+            else // West - Bottom row on left
             {
-                minx = flag ? edgeShiftMinusMaxEdge : minx;
-                maxx = zIsOne ? edgePlusMaxEdge : fithFlag ? maxEdgeOffset : maxx;
-                minz = thirdFlag ? -maxEdgeOffset : minz;
-                maxz = fourthFlag ? maxEdgeOffset : maxz;
+                isLeft = isEdge4 || isZNarrow;
+                isRight = isEdge3 || isZNarrow;
+                isTop = isEdge1 || isXNarrow;
+                isBottom = isEdge2 || isXNarrow;
             }
+
+#pragma warning disable CS0162 // Unreachable code detected
+            // Left/Right
+            if (isLeft && isRight) // 1xN bed
+            {
+                if (MAX_SIDE_EDGE_OFFSET < 0) minx = maxx = 0;
+                else
+                {
+                    minx = -MAX_SIDE_EDGE_OFFSET;
+                    maxx = MAX_SIDE_EDGE_OFFSET;
+                }
+            }
+            else if (isLeft) // Left edge
+            {
+                minx = -MAX_SIDE_EDGE_OFFSET;
+                if (MAX_SIDE_EDGE_OFFSET < 0) maxx = -MAX_SIDE_EDGE_OFFSET + MAX_OFFSET;
+            }
+            else if (isRight) // Right edge
+            {
+                maxx = MAX_SIDE_EDGE_OFFSET;
+                if (MAX_SIDE_EDGE_OFFSET < 0) minx = MAX_SIDE_EDGE_OFFSET - MAX_OFFSET;
+            }
+
+            // Top/Bottom
+            if (isTop && isBottom) // Nx1 bed
+            {
+                if (-MAX_BOTTOM_EDGE_OFFSET > MAX_TOP_EDGE_OFFSET) minz = maxz = 0;
+                else
+                {
+                    minz = -MAX_BOTTOM_EDGE_OFFSET;
+                    maxz = MAX_TOP_EDGE_OFFSET;
+                }
+            }
+            else if (isTop) // Top edge
+            {
+                maxz = MAX_TOP_EDGE_OFFSET;
+                if (MAX_TOP_EDGE_OFFSET < 0) minz = MAX_TOP_EDGE_OFFSET - MAX_OFFSET;
+            }
+            else if (isBottom) // Bottom edge
+            {
+                minz = -MAX_BOTTOM_EDGE_OFFSET;
+                if (MAX_BOTTOM_EDGE_OFFSET < 0) maxz = -MAX_BOTTOM_EDGE_OFFSET + MAX_OFFSET;
+            }
+#pragma warning restore CS0162 // Unreachable code detected
 
             renderData.pos = new Vector3(Rand.RangeSeeded(minx, maxx, seed + 900), 0f, Rand.RangeSeeded(minz, maxz, seed + 1200));
 
