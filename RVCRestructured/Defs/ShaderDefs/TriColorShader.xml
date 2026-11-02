@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<Defs>
+	<ShaderDef>
+		<defName>TriColorShader</defName>
+		<shaderProgram>
+			<fragmentShaderFileName>TriColorShader.frag.glsl</fragmentShaderFileName>
+			<transparent>true</transparent>
+			<depthWrite>true</depthWrite>
+			<renderQueue>2900</renderQueue>
+		</shaderProgram>
+	</ShaderDef>
+</Defs>

@@ -88,14 +88,6 @@ public class RenderableDef : Def
     }
 }
 
-
-public class BodyPartGraphicPos
-{
-    public Vector3 position;
-    public Vector2 size;
-    public Vector2 offsetInBed;
-}
-
 public class HediffTex : BaseTex
 {
     private readonly HediffDef? hediffDef = null;

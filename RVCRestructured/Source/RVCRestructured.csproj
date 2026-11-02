@@ -6,7 +6,7 @@
 		<GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<RootNamespace>RVCRestructured</RootNamespace>
-		<OutputPath>../../1.6/Assemblies</OutputPath>
+		<OutputPath>../../1.7/Assemblies</OutputPath>
 		<LangVersion>12.0</LangVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -37,6 +37,12 @@
 		<DefsDestinations Include="@(Defs -> '$(DefOutputPath)%(Identity)')" />
 		<FileWrites Include="@(DefsDestinations)" />
 		<DirectoryWrites Include="@(DefsDestinations -> '%(RelativeDir)')" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="Waylith">
+	    <HintPath>..\..\..\..\Waylith.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<Target Name="CustomAfterBuildTarget" AfterTargets="Build">

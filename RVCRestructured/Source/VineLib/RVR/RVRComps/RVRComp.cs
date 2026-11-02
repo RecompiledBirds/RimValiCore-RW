@@ -33,11 +33,12 @@ public class RVRComp : ThingComp
     public string GetTexPath(RenderableDef def)
     {
         int texIndex = renderableIndexes[def.defName];
-        if(parent.IsDessicated() && def.Textures[texIndex].HasDessicatedPath)
+        BaseTex defTex = def.Textures[texIndex];
+        if(parent.IsDessicated() && defTex.HasDessicatedPath)
         {
-            return def.Textures[texIndex].DessicatedPath;
+            return defTex.DessicatedPath;
         }
-        return def.Textures[renderableIndexes[def.defName]].TexPath;
+        return defTex.TexPath;
     }
     public int GetTexIndex(RenderableDef def)
     {
@@ -248,7 +249,11 @@ public class RVRComp : ThingComp
             return;
         }
 
-        BaseTex tex = rDef.Textures.RandomElement();
+        if(!rDef.Textures.TryRandomElement(x=>x.CanApply(pawn),out BaseTex tex))
+        {
+            VineLog.Warn($"{rDef} has no valid textures for {pawn.Name.ToStringShort}");
+            return;
+        }
         int index = rDef.Textures.IndexOf(tex);
         renderableIndexes[rDef.defName] = index;
 
