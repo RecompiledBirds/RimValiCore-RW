@@ -106,7 +106,7 @@ public class EditorWindow : Window
             rectList.Add(tempRect);
         }
 
-        RectColorFields = rectList.ToArray();
+        RectColorFields = [.. rectList];
     }
 
     private bool HasOpenColorField => OpenColorField > -1;

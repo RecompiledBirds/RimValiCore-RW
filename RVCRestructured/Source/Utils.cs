@@ -11,6 +11,9 @@ public static class Utils
     private static readonly Dictionary<RaceProperties, ThingDef> thingDefCache = [];
     private static readonly Dictionary<ThingDef, PawnKindDef> pawnKindCache = [];
 
+    private static bool subscribedToCacheReset = false;
+    private static Dictionary<Pawn, DefRestrictionManager?> pawnRestrictionManager = [];
+
     public static ThingDef GetDef(RaceProperties race)
     {
         if (!thingDefCache.ContainsKey(race))
@@ -43,25 +46,45 @@ public static class Utils
     }
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool IsVanilla(this Def def) => def.modContentPack.IsCoreMod || def.modContentPack.IsOfficialMod;
-
+    // This cuts off 10ms
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static DefRestrictionManager? GetRelevantRestrictionComp(this Pawn pawn)
     {
-        ShapeshifterComp shapeshifterComp = pawn.TryGetComp<ShapeshifterComp>();
-        RestrictionComp comp = pawn.TryGetComp<RestrictionComp>();
-        DefRestrictionManager? manager = shapeshifterComp?.GetCompProperties<RVRRestrictionComp>().Restrictions ?? comp?.Props.Restrictions;
-        if (!ModsConfig.BiotechActive || pawn.genes==null || pawn.genes.GenesListForReading==null) return manager;
+        // First time call, sets up the cache reset callback
+        if (!subscribedToCacheReset)
+        {
+            WorldSpecificCacheSignaler.signalCachesReset += ResetCache;
+            subscribedToCacheReset = true;
+        }
+        // attempt to pull a pawn's def retriction manager from cache - if it is not cached, find and add it.
+        if (!pawnRestrictionManager.TryGetValue(pawn, out DefRestrictionManager? restrictionManager))
+        {
+            ShapeshifterComp? shifterComp = pawn.TryGetComp<ShapeshifterComp>();
+            RestrictionComp? restrictionComp = pawn.TryGetComp<RestrictionComp>();
+            restrictionManager = shifterComp?.GetCompProperties<RVRRestrictionComp>().Restrictions ?? restrictionComp?.Props.Restrictions;
+            pawnRestrictionManager[pawn] = restrictionManager;
+        }
+      
+        if (!ModsConfig.BiotechActive || pawn.genes==null || pawn.genes.GenesListForReading==null) return restrictionManager;
 
         foreach (Gene gene in pawn.genes.GenesListForReading)
         {
             if (gene.def.HasModExtension<RestrictionModExtension>())
             {
-                if (manager != null)
-                    manager = manager.MergeManagers(manager, gene.def.GetModExtension<RestrictionModExtension>().Restrictions);
+                if (restrictionManager != null)
+                    restrictionManager = restrictionManager.MergeManagers(restrictionManager, gene.def.GetModExtension<RestrictionModExtension>().Restrictions);
                 else
-                    manager = gene.def.GetModExtension<RestrictionModExtension>().Restrictions;
+                    restrictionManager = gene.def.GetModExtension<RestrictionModExtension>().Restrictions;
             }
         }
-        return manager;
+        return restrictionManager;
+    }
+    /// <summary>
+    /// Clean the pawn comp cache every time we change worlds
+    /// </summary>
+    private static void ResetCache()
+    {
+        pawnRestrictionManager = [];
     }
 
     /// <summary>
